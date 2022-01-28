@@ -2,7 +2,7 @@
 # path to training and validation
 
 dataset_path = "dataset"
-target_type = "Solar"
+target_type = "Green"
 
 
 #model params
@@ -14,4 +14,4 @@ target_size = 256
 batch_size  = 8
 weights = [1.513212, 10.147043]
 checkpoint_path = "checkpoint"
-model_path = ''
+model_path = 'checkpoint/green_demo.pth'
