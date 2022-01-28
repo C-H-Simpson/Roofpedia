@@ -69,9 +69,11 @@ def loop():
         
         print("Train loss: {:.4f}, mIoU: {:.3f}, {} IoU: {:.3f}, MCC: {:.3f}".format(
                 train_hist["loss"], train_hist["miou"], target_type, train_hist["fg_iou"], train_hist["mcc"]))
+        print("Train stats:", ", ".join([f"{key}: {train_hist[key]:.3f}" for key in train_hist]))
         
         print("Validation loss: {:.4f}, mIoU: {:.3f}, {} IoU: {:.3f}, MCC: {:.3f}".format(
                  val_hist["loss"], val_hist["miou"], target_type, val_hist["fg_iou"], val_hist["mcc"]))
+        print("Validation stats:", ", ".join([f"{key}: {val_hist[key]:.3f}" for key in val_hist]))
         
         for key, value in train_hist.items():
             history["train " + key].append(value)
@@ -105,6 +107,8 @@ if __name__ == "__main__":
 
     if config['model_path'] != '':
         model_path = config['model_path']
+    else:
+        model_path = None
 
 
     # make dir for checkpoint
