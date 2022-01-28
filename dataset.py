@@ -6,11 +6,13 @@ from PIL import Image
 import random
 import cv2 
 from src.colors import make_palette
+from pathlib import Path
 os.getcwd()
 
 def load_img(target_path, source_path):
-    files_target = glob.glob(target_path + '\*\*\*.png', recursive=True)
-    files_source = glob.glob(source_path + '\*\*\*.png', recursive=True)
+    print(target_path, source_path)
+    files_target = [str(p) for p in Path(target_path).glob('*/*/*.png')]
+    files_source = [str(p) for p in Path(source_path).glob('*/*/*.png')]
     print(str(len(files_target)) + ' target files found')
     print(str(len(files_source)) + ' source files found')
     return files_target, files_source
@@ -39,8 +41,8 @@ def remove_blank_tiles(files_target):
 def convert_mask(mask_list):
     for i in mask_list:
         img = Image.open(i)
-        thresh = 255
-        fn = lambda x : 255 if x < thresh else 0
+        thresh = 1
+        fn = lambda x : 0 if x < thresh else 255
         out = img.convert('P').point(fn, mode='1')
         out = out.convert('P')
         palette = make_palette("dark", "light")
@@ -130,3 +132,4 @@ if __name__ == "__main__":
         shutil.copy(i, dest)
 
     print("Successfully split dataset according to train-test-val")
+
