@@ -36,8 +36,7 @@ def intersection(target_type, city_name, mask_dir):
     city = gp.GeoDataFrame.from_file(city)[['geometry']]  
     city['area'] = city['geometry'].to_crs({'init': 'epsg:3395'}).map(lambda p: p.area)
     
-    intersections= gp.sjoin(city, prediction, how="inner", op='intersects')
-    intersections = intersections.drop_duplicates(subset=['geometry'])
+    intersections = gp.overlay(city, prediction, how="intersection")
     intersections.to_file('results/04Results/' + city_name + '_' + target_type + ".geojson", driver='GeoJSON')
     
     print()
