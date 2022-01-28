@@ -50,6 +50,7 @@ def get_dataset_loaders(target_size, batch_size, dataset_path):
     )
     assert len(train_dataset) > 0, "at least one tile in training dataset"
     assert len(val_dataset) > 0, "at least one tile in validation dataset"
+    print(f"Dataset sizes: len(train_dataset)={len(train_dataset)}, len(val_dataset)={len(val_dataset)}")
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, drop_last=True)
@@ -90,6 +91,10 @@ def train(loader, num_classes, device, net, optimizer, criterion):
         "miou": metrics.get_miou(),
         "fg_iou": metrics.get_fg_iou(),
         "mcc": metrics.get_mcc(),
+        "fp": metrics.fp,
+        "tp": metrics.tp,
+        "fn": metrics.fn,
+        "tn": metrics.fn,
     }
 
 def validate(loader, num_classes, device, net, criterion):
@@ -120,4 +125,8 @@ def validate(loader, num_classes, device, net, criterion):
             "miou": metrics.get_miou(),
             "fg_iou": metrics.get_fg_iou(),
             "mcc": metrics.get_mcc(),
+            "fp": metrics.fp,
+            "tp": metrics.tp,
+            "fn": metrics.fn,
+            "tn": metrics.fn,
         }
