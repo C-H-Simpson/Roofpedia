@@ -7,7 +7,7 @@
 #$ -ac allow=EF 
 
 # Request wallclock time (format hours:minutes:seconds).
-#$ -l h_rt=0:30:0
+#$ -l h_rt=0:50:0
 
 # Request RAM (must be an integer followed by M, G, or T)
 #$ -l mem=4G
@@ -20,8 +20,9 @@
 
 # Set the working directory to somewhere in your scratch space.
 # Replace "<your_UCL_id>" with your UCL user ID :)
-#$ -wd /home/$USER/Roofpedia_clean/Roofpedia/
+#$ -wd $USER/Roofpedia_clean/Roofpedia/
 
+date
 # Copy everything to the temporary area
 echo "Copying to temp dir"
 cp -r $HOME/Roofpedia_clean/Roofpedia/ $TMPDIR
@@ -62,3 +63,4 @@ echo "Archive directory"
 cp -r $TMPDIR/Roofpedia $HOME/Scratch/files_from_job_$JOB_ID
 
 # Make sure you have given enough time for the copy to complete!
+date
