@@ -6,16 +6,15 @@ See: http://pytorch.org/docs/0.3.1/data.html
 """
 
 import torch
-from PIL import Image
 import torch.utils.data
+from PIL import Image
 
-from src.tiles import tiles_from_slippy_map, buffer_tile_image
+from src.tiles import buffer_tile_image, tiles_from_slippy_map
 
 
 # Single Slippy Map directory structure
 class SlippyMapTiles(torch.utils.data.Dataset):
-    """Dataset for images stored in slippy map format.
-    """
+    """Dataset for images stored in slippy map format."""
 
     def __init__(self, root, transform=None):
         super().__init__()
@@ -42,8 +41,7 @@ class SlippyMapTiles(torch.utils.data.Dataset):
 # Multiple Slippy Map directories.
 # Think: one with images, one with masks, one with rasterized traces.
 class SlippyMapTilesConcatenation(torch.utils.data.Dataset):
-    """Dataset to concate multiple input images stored in slippy map format.
-    """
+    """Dataset to concate multiple input images stored in slippy map format."""
 
     def __init__(self, inputs, target, joint_transform=None):
         super().__init__()
@@ -54,8 +52,12 @@ class SlippyMapTilesConcatenation(torch.utils.data.Dataset):
         self.inputs = [SlippyMapTiles(inp) for inp in inputs]
         self.target = SlippyMapTiles(target)
 
-        assert len(set([len(dataset) for dataset in self.inputs])) == 1, "same number of tiles in all images"
-        assert len(self.target) == len(self.inputs[0]), "same number of tiles in images and label"
+        assert (
+            len(set([len(dataset) for dataset in self.inputs])) == 1
+        ), "same number of tiles in all images"
+        assert len(self.target) == len(
+            self.inputs[0]
+        ), "same number of tiles in images and label"
 
     def __len__(self):
         return len(self.target)
@@ -81,8 +83,7 @@ class SlippyMapTilesConcatenation(torch.utils.data.Dataset):
 # Todo: once we have the SlippyMapDataset this dataset should wrap
 # it adding buffer and unbuffer glue on top of the raw tile dataset.
 class BufferedSlippyMapDirectory(torch.utils.data.Dataset):
-    """Dataset for buffered slippy map tiles with overlap.
-    """
+    """Dataset for buffered slippy map tiles with overlap."""
 
     def __init__(self, root, transform=None, size=512, overlap=32):
         """
@@ -113,7 +114,9 @@ class BufferedSlippyMapDirectory(torch.utils.data.Dataset):
 
     def __getitem__(self, i):
         tile, path = self.tiles[i]
-        image = buffer_tile_image(tile, self.tiles, overlap=self.overlap, tile_size=self.size)
+        image = buffer_tile_image(
+            tile, self.tiles, overlap=self.overlap, tile_size=self.size
+        )
 
         if self.transform is not None:
             image = self.transform(image)

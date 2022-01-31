@@ -11,13 +11,11 @@ See:
 
 import torch
 import torch.nn as nn
-
 from torchvision.models import resnet50
 
 
 class ConvRelu(nn.Module):
-    """3x3 convolution followed by ReLU activation building block.
-    """
+    """3x3 convolution followed by ReLU activation building block."""
 
     def __init__(self, num_in, num_out):
         """Creates a `ConvReLU` building block.
@@ -45,8 +43,7 @@ class ConvRelu(nn.Module):
 
 
 class DecoderBlock(nn.Module):
-    """Decoder building block upsampling resolution by a factor of two.
-    """
+    """Decoder building block upsampling resolution by a factor of two."""
 
     def __init__(self, num_in, num_out):
         """Creates a `DecoderBlock` building block.
@@ -76,7 +73,7 @@ class DecoderBlock(nn.Module):
 class UNet(nn.Module):
     """The "U-Net" architecture for semantic segmentation, adapted by changing the encoder to a ResNet feature extractor.
 
-       Also known as AlbuNet due to its inventor Alexander Buslaev.
+    Also known as AlbuNet due to its inventor Alexander Buslaev.
     """
 
     def __init__(self, num_classes, num_filters=32, pretrained=True):
@@ -117,7 +114,9 @@ class UNet(nn.Module):
           The networks output tensor.
         """
         size = x.size()
-        assert size[-1] % 32 == 0 and size[-2] % 32 == 0, "image resolution has to be divisible by 32 for resnet"
+        assert (
+            size[-1] % 32 == 0 and size[-2] % 32 == 0
+        ), "image resolution has to be divisible by 32 for resnet"
 
         enc0 = self.resnet.conv1(x)
         enc0 = self.resnet.bn1(enc0)

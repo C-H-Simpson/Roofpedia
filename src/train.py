@@ -1,26 +1,22 @@
-import os
-import sys
 import argparse
 import collections
+import os
+import sys
+
 import toml
-from tqdm import tqdm
-from PIL import Image
 import torch
+from PIL import Image
 from torch.nn import DataParallel
 from torch.optim import Adam
 from torch.utils.data import DataLoader
-from torchvision.transforms import Resize, CenterCrop, Normalize
-from src.transforms import (
-    JointCompose,
-    JointTransform,
-    JointRandomHorizontalFlip,
-    JointRandomRotation,
-    ConvertImageMode,
-    ImageToTensor,
-    MaskToTensor,
-)
+from torchvision.transforms import CenterCrop, Normalize, Resize
+from tqdm import tqdm
+
 from src.datasets import SlippyMapTilesConcatenation
 from src.metrics import Metrics
+from src.transforms import (ConvertImageMode, ImageToTensor, JointCompose,
+                            JointRandomHorizontalFlip, JointRandomRotation,
+                            JointTransform, MaskToTensor)
 
 
 def get_dataset_loaders(target_size, batch_size, dataset_path):
@@ -29,9 +25,11 @@ def get_dataset_loaders(target_size, batch_size, dataset_path):
     # using imagenet mean and std for Normalization
     mean, std = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
     transform = JointCompose(
-        [   
+        [
             JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
-            JointTransform(Resize(target_size, Image.BILINEAR), Resize(target_size, Image.NEAREST)),
+            JointTransform(
+                Resize(target_size, Image.BILINEAR), Resize(target_size, Image.NEAREST)
+            ),
             JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
             JointRandomHorizontalFlip(0.5),
             JointRandomRotation(0.5, 90),
@@ -42,19 +40,28 @@ def get_dataset_loaders(target_size, batch_size, dataset_path):
         ]
     )
     train_dataset = SlippyMapTilesConcatenation(
-        [os.path.join(path, "training", "images")], os.path.join(path, "training", "labels"), transform
+        [os.path.join(path, "training", "images")],
+        os.path.join(path, "training", "labels"),
+        transform,
     )
 
     val_dataset = SlippyMapTilesConcatenation(
-        [os.path.join(path, "validation", "images")], os.path.join(path, "validation", "labels"), transform
+        [os.path.join(path, "validation", "images")],
+        os.path.join(path, "validation", "labels"),
+        transform,
     )
     assert len(train_dataset) > 0, "at least one tile in training dataset"
     assert len(val_dataset) > 0, "at least one tile in validation dataset"
 
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, drop_last=True)
+    train_loader = DataLoader(
+        train_dataset, batch_size=batch_size, shuffle=True, drop_last=True
+    )
+    val_loader = DataLoader(
+        val_dataset, batch_size=batch_size, shuffle=False, drop_last=True
+    )
 
     return train_loader, val_loader
+
 
 def train(loader, num_classes, device, net, optimizer, criterion):
     num_samples = 0
@@ -64,13 +71,15 @@ def train(loader, num_classes, device, net, optimizer, criterion):
     metrics = Metrics(range(num_classes))
     # initialized model
     net.train()
-    
+
     # training loop
     for images, masks, tiles in tqdm(loader, desc="Train", unit="batch", ascii=True):
         images = images.to(device)
         masks = masks.to(device)
 
-        assert images.size()[2:] == masks.size()[1:], "resolutions for images and masks are in sync"
+        assert (
+            images.size()[2:] == masks.size()[1:]
+        ), "resolutions for images and masks are in sync"
 
         num_samples += int(images.size(0))
         optimizer.zero_grad()
@@ -92,6 +101,7 @@ def train(loader, num_classes, device, net, optimizer, criterion):
         "mcc": metrics.get_mcc(),
     }
 
+
 def validate(loader, num_classes, device, net, criterion):
     num_samples = 0
     running_loss = 0
@@ -101,11 +111,15 @@ def validate(loader, num_classes, device, net, criterion):
     with torch.no_grad():
         net.eval()
 
-        for images, masks, tiles in tqdm(loader, desc="Validate", unit="batch", ascii=True):
+        for images, masks, tiles in tqdm(
+            loader, desc="Validate", unit="batch", ascii=True
+        ):
             images = images.to(device)
             masks = masks.to(device)
 
-            assert images.size()[2:] == masks.size()[1:], "resolutions for images and masks are in sync"
+            assert (
+                images.size()[2:] == masks.size()[1:]
+            ), "resolutions for images and masks are in sync"
 
             num_samples += int(images.size(0))
             outputs = net(images)

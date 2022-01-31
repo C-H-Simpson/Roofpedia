@@ -2,9 +2,7 @@
 """
 
 import colorsys
-
 from enum import Enum, unique
-
 
 # Todo: user should be able to bring her own color palette.
 # Functions need to account for that and not use one palette.

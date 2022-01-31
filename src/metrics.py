@@ -1,14 +1,14 @@
 """Metrics for segmentation.
 """
 
-import torch
 import math
+
 import numpy as np
+import torch
 
 
 class Metrics:
-    """Tracking mean metrics
-    """
+    """Tracking mean metrics"""
 
     def __init__(self, labels):
         """Creates an new `Metrics` instance.
@@ -47,7 +47,12 @@ class Metrics:
           The mean Intersection over Union score for all observations seen so far.
         """
         try:
-            miou = np.nanmean([self.tn / (self.tn + self.fn + self.fp), self.tp / (self.tp + self.fn + self.fp)])
+            miou = np.nanmean(
+                [
+                    self.tn / (self.tn + self.fn + self.fp),
+                    self.tp / (self.tp + self.fn + self.fp),
+                ]
+            )
         except ZeroDivisionError:
             miou = float("NaN")
 
@@ -76,7 +81,10 @@ class Metrics:
 
         try:
             mcc = (self.tp * self.tn - self.fp * self.fn) / math.sqrt(
-                (self.tp + self.fp) * (self.tp + self.fn) * (self.tn + self.fp) * (self.tn + self.fn)
+                (self.tp + self.fp)
+                * (self.tp + self.fn)
+                * (self.tn + self.fp)
+                * (self.tn + self.fn)
             )
         except ZeroDivisionError:
             mcc = float("NaN")
