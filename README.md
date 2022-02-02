@@ -70,7 +70,7 @@ Custom Dataset pairs can be created with QGIS using tiling functions.
 1. Create a WMTS satellite tile connection with any WMTS server. You can use Mapbox's WMTS server for good quality images.
 2. With QuickOSM, query and download the building footprint of a desired area for prediction.
 3. Save the building polygons to `01City` folder.
-4. Callup QGIS toolbar (`Ctrl + Alt +T`), in `Raster Tools`, choose `Generate XYZ Tiles(Directory)` to generate satellite tiles for the area by using Canvas Extent. Use Zoom 19 and save to `02Images/Cityname`. Make sure the QGIS project CRS is "EPSG:4326" when you do this.
+4. Callup QGIS toolbar (`Ctrl + Alt +T`), in `Raster Tools`, choose `Generate XYZ Tiles(Directory)` to generate satellite tiles for the area by using Canvas Extent. Use Zoom 19 and save to `02Images/Cityname`.
 5. Check that `config/predict_config.toml` points to the city, target, and checkpoint that you want to use for prediction.
 
 A unified script in extracting building polygons and downloading satellite tiles from Mapbox is a work-in-progress.
@@ -105,7 +105,7 @@ The structure of the `results` folder is as follows:
 
 ### Training
 
-1. Produce labels in QGIS. Export using "Generate XYZ Tile (Directory)" as white polygons on a black background, making sure the QGIS project CRS is set to "EPSG:4326". Put in `dataset/labels/`. The labels are not limited to green roof or solar panels, but can be any custom object on the roof as long as sufficient labels are provided.
+1. Produce labels in QGIS. Export using "Generate XYZ Tile (Directory)" as white polygons on a black background. Put in `dataset/labels/`. The labels are not limited to green roof or solar panels, but can be any custom object on the roof as long as sufficient labels are provided.
 2. Get imagery and export in QGIS with same method. Put in `dataset/images/`.
 3. Run `dataset.py`. This will remove images in which nothing is labelled, and do a train/test split. Visually check the resulting image labels make sense.
 4. Check `config/train-config.toml` identifies the data you are training with. If you want to continue from a pre-trained model, set the 'model_path' to the path of the pre-trained model.
