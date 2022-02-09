@@ -1,5 +1,5 @@
 # enter variables for easy prediction config
-city_name = "London"
+city_name = "LondonInner"
 
 # for green roofs, change to "Green"
 target_type = "Green"
