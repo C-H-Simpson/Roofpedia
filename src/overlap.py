@@ -16,6 +16,7 @@ smoothing or binary opening of the results.
 """
 
 import geopandas as gpd
+import argparse
 
 
 def overlapping_threshold(gdf_bui, gdf_feat, min_area, min_overlap):
@@ -71,10 +72,11 @@ if __name__ == "__main__":
         "type", help="Roof Typology, Green for Greenroof, Solar for PV Roof"
     )
     parser.add_argument("crs", help="CRS in which to perform the geometric operations.")
-    parser.add_argument("min_area", help="Minimum area for a feature polygon.")
+    parser.add_argument("min_area", help="Minimum area for a feature polygon.", type=float)
     parser.add_argument(
         "min_overlap",
         help="Minimum overlap between feature an and building footprints.",
+        type=float
     )
     args = parser.parse_args()
 
