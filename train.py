@@ -15,6 +15,8 @@ from src.unet import UNet
 from src.utils import plot
 from src.train import get_dataset_loaders, train, validate
 
+import json
+
 def loop():
     device = torch.device("cuda")
 
@@ -86,13 +88,21 @@ def loop():
             visual = "history-{:05d}-of-{:05d}.png".format(epoch + 1, num_epochs)
             plot(os.path.join(checkpoint_path, visual), history)
         
-        if (epoch+1)%20 == 0:
+        if (epoch+1)%50 == 0:
             checkpoint = target_type + "-checkpoint-{:03d}-of-{:03d}.pth".format(epoch + 1, num_epochs)
             states = {"epoch": epoch + 1, "state_dict": net.state_dict(), "optimizer": optimizer.state_dict()}
             torch.save(states, os.path.join(checkpoint_path, checkpoint))
 
+        if epoch > early_stopping_epochs:
+            if history["val loss"][epoch - early_stopping_epochs] <= val_hist["loss"]:
+                print("Invoking early stopping")
+                break
+    with open("history.json", 'w') as f:
+        json.dump(history, f)
+
 if __name__ == "__main__":
     config = toml.load('config/train-config.toml')
+    print(config)
 
     num_classes = 2
     lr = config['lr']
@@ -104,6 +114,7 @@ if __name__ == "__main__":
     dataset_path = config['dataset_path']
     checkpoint_path = config['checkpoint_path']
     target_type = config['target_type']
+    early_stopping_epochs = config['early_stopping_epochs']
 
     if config['model_path'] != '':
         model_path = config['model_path']
