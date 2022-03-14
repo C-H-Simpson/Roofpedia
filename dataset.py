@@ -53,13 +53,15 @@ def convert_mask(mask_list):
         out.save(i)
     print("Masks converted to 1bit labels, please check for correctness")
 # train test val split
-def train_test_split(file_list, train_size = 0.7):
+def train_test_split(file_list, test_size = 0.2, val_size=0.2):
     random.Random(123).shuffle(file_list)
+    train_size = 1 - test_size - val_size
+    assert train_size>0
     train_stop = int(len(file_list)*train_size)
-    test_stop = int((len(file_list) - train_stop)/2)
+    test_stop = int((len(file_list) * (train_size+test_size))
     train_data = file_list[:train_stop]
-    test_data = file_list[train_stop: train_stop + test_stop]
-    val_data = file_list[train_stop + test_stop:]
+    test_data = file_list[train_stop: test_stop]
+    val_data = file_list[test_stop:]
     return train_data, test_data, val_data
 
 
@@ -72,7 +74,7 @@ if __name__ == "__main__":
     files_target, files_source = load_img(target_path, source_path)
     convert_mask(files_target)
 
-    train_data, test_data, val_data = train_test_split(files_target, train_size = 0.7)
+    train_data, test_data, val_data = train_test_split(files_target)
     train_data_img = []
     test_data_img =[]
     val_data_img =[]
