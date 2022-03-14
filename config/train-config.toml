@@ -7,12 +7,11 @@ target_type = "Green"
 
 #model params
 tile_size = 256
-lr = 0.00005 
+lr = 0.0005 
 loss_func = "Lovasz"
-num_epochs = 1000
+num_epochs = 100
 target_size = 256
 batch_size  = 8
 weights = [1.513212, 10.147043]
 checkpoint_path = "checkpoint"
-model_path = ''
-early_stopping_epochs=3
+model_path = 'checkpoint/green_demo.pth'
