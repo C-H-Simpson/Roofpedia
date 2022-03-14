@@ -6,6 +6,7 @@ from PIL import Image
 import random
 import cv2 
 from src.colors import make_palette
+import argparse
 from pathlib import Path
 os.getcwd()
 
@@ -17,12 +18,12 @@ def load_img(target_path, source_path):
     print(str(len(files_source)) + ' source files found')
     return files_target, files_source
 
-def remove_blank_tiles(files_target):
+def remove_blank_tiles(files_target, keep_fraction=0):
     # find all blank tiles
     rm_list = []
     for file in files_target:
         img = cv2.imread(file)
-        if np.unique(img, return_counts=True)[1][0] == 196608:
+        if not a.any()
             rm_list.append(file)
 
     # get list of all blank tiles in all folders
@@ -31,9 +32,11 @@ def remove_blank_tiles(files_target):
         for i in rm_list:
             rm_sat_image.append(i.replace('labels', 'images')) 
 
-        # remove all blank tiles
-    all_list = zip(rm_list, rm_sat_image)
-    for f in all_list:
+    # remove some blank tiles
+    random.Random(123).shuffle(file_list)
+    keep_stop = int(len(file_list)*keep_fraction)
+    print(f"Keeping {keep_stop} of {len(file_list)} blank files")
+    for f in zip(rm_list[keep_stop], rm_sat_image[keep_stop]):
         os.remove(f[0])
         if Path(f[1]).is_file():
             os.remove(f[1])
@@ -69,7 +72,7 @@ if __name__ == "__main__":
     target_path = 'dataset/labels'
     source_path = 'dataset/images'
     files_target, files_source = load_img(target_path, source_path)
-    remove_blank_tiles(files_target)
+    remove_blank_tiles(files_target, 0.1)
     print("reloading trimmed data")
     files_target, files_source = load_img(target_path, source_path)
     convert_mask(files_target)
