@@ -35,7 +35,10 @@ def remove_blank_tiles(files_target):
     all_list = zip(rm_list, rm_sat_image)
     for f in all_list:
         os.remove(f[0])
-        os.remove(f[1])
+        if Path(f[1]).is_file():
+            os.remove(f[1])
+        else:
+            print(f[1], "does not exist")
     print(str(len(rm_list)) + " blank images removed")
 
 def convert_mask(mask_list):
