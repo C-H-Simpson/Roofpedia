@@ -18,37 +18,37 @@ def load_img(target_path, source_path):
     print(str(len(files_source)) + ' source files found')
     return files_target, files_source
 
-def remove_blank_tiles(files_target, keep_fraction=0):
-    # find all blank tiles
-    rm_list = []
-    for file in files_target:
-        img = cv2.imread(file)
-        if not a.any()
-            rm_list.append(file)
+def select_tiles(training_area_path, keep_fraction=0):
+    # Check for tiles inside the training area.
+    # The training area label acts like another layer of labelling.
+    training_area_list = [str(p) for p in Path(training_area_path).glob("*/*/*.png")]
+    training_area_list = [p for p in training_area_list if not cv2.imread(p).any()]
+    training_area_list = [p.replace("training_area", "labels") for p in training_area_list]
 
-    # get list of all blank tiles in all folders
-    rm_sat_image = []
-    if len(rm_list) != 0:
-        for i in rm_list:
-            rm_sat_image.append(i.replace('labels', 'images')) 
+    # Find non-blank tiles within the training area.
+    fileexists = [Path(p).is_file() for p in training_area_list]
+    assert np.count_nonzero(fileexists) == len(fileexists)
+    any_list = [cv2.imread(p).any() for p in training_area_list]
+    blank_tiles_list = [p for p, i in zip(training_area_list, any_list) if not i]
+    notblank_tiles_list = [p for p, i in zip(training_area_list, any_list) if i]
 
-    # remove some blank tiles
-    random.Random(123).shuffle(file_list)
-    keep_stop = int(len(file_list)*keep_fraction)
-    print(f"Keeping {keep_stop} of {len(file_list)} blank files")
-    for f in zip(rm_list[keep_stop], rm_sat_image[keep_stop]):
-        os.remove(f[0])
-        if Path(f[1]).is_file():
-            os.remove(f[1])
-        else:
-            print(f[1], "does not exist")
-    print(str(len(rm_list)) + " blank images removed")
+    # Keep a fraction of blank tiles.
+    random.Random(123).shuffle(blank_tiles_list)
+    keep_stop = int(len(blank_tiles_list)*keep_fraction)
+    print(f"Keeping {keep_stop} of {len(blank_tiles_list)} blank tiles")
+    print(f"With {len(notblank_tiles_list)} not blank tiles.")
+    blank_tiles_list = blank_tiles_list[:keep_stop]
+    files_target = notblank_tiles_list + blank_tiles_list
+
+    files_source = [i.replace("labels", "images") for i in files_target]
+
+    return files_target, files_source
+
 
 def convert_mask(mask_list):
     for i in mask_list:
         img = Image.open(i)
-        thresh = 1
-        fn = lambda x : 0 if x < thresh else 255
+        fn = lambda x : 255 if x >= 1 else 0
         out = img.convert('P').point(fn, mode='1')
         out = out.convert('P')
         palette = make_palette("dark", "light")
@@ -61,7 +61,7 @@ def train_test_split(file_list, test_size = 0.2, val_size=0.2):
     train_size = 1 - test_size - val_size
     assert train_size>0
     train_stop = int(len(file_list)*train_size)
-    test_stop = int((len(file_list) * (train_size+test_size))
+    test_stop = int((len(file_list) * (train_size+test_size)))
     train_data = file_list[:train_stop]
     test_data = file_list[train_stop: test_stop]
     val_data = file_list[test_stop:]
@@ -71,10 +71,9 @@ def train_test_split(file_list, test_size = 0.2, val_size=0.2):
 if __name__ == "__main__":
     target_path = 'dataset/labels'
     source_path = 'dataset/images'
-    files_target, files_source = load_img(target_path, source_path)
-    remove_blank_tiles(files_target, 0.1)
-    print("reloading trimmed data")
-    files_target, files_source = load_img(target_path, source_path)
+    training_area_path = 'dataset/training_area'
+    keep_blank_tiles = 0.01
+    files_target, files_source = select_tiles(training_area_path, keep_blank_tiles)
     convert_mask(files_target)
 
     train_data, test_data, val_data = train_test_split(files_target)
