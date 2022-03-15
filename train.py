@@ -1,20 +1,23 @@
+import collections
+import json
 import os
 import sys
-import collections
+
 import toml
-from tqdm import tqdm
-import json
-import webp
 import torch
+import webp
 from torch.nn import DataParallel
 from torch.optim import Adam
 from torch.utils.data import DataLoader
-from torchvision.transforms import Resize, CenterCrop, Normalize
+from tqdm import tqdm
 
-from src.losses import CrossEntropyLoss2d, mIoULoss2d, FocalLoss2d, LovaszLoss2d
+from src.augmentations import augs
+from src.losses import (CrossEntropyLoss2d, FocalLoss2d, LovaszLoss2d,
+                        mIoULoss2d)
+from src.train import get_dataset_loaders, train, validate
 from src.unet import UNet
 from src.utils import plot
-from src.train import get_dataset_loaders, train, validate
+
 
 def loop():
     device = torch.device("cuda")
@@ -57,7 +60,7 @@ def loop():
         sys.exit("Error: Unknown Loss Function value !")
 
     #loading data
-    train_loader, val_loader = get_dataset_loaders(target_size, batch_size, dataset_path)
+    train_loader, val_loader = get_dataset_loaders(target_size, batch_size, dataset_path, augs[transform_name])
     history = collections.defaultdict(list)
 
     # training loop
@@ -108,12 +111,12 @@ if __name__ == "__main__":
     dataset_path = config['dataset_path']
     checkpoint_path = config['checkpoint_path']
     target_type = config['target_type']
+    transform_name = config["transform"]
 
     if config['model_path'] != '':
         model_path = config['model_path']
     else:
         model_path = None
-
 
     # make dir for checkpoint
     os.makedirs(checkpoint_path, exist_ok=True)
