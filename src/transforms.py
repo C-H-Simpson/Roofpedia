@@ -15,8 +15,7 @@ ImageToTensor = torchvision.transforms.ToTensor
 
 
 class MaskToTensor:
-    """Callable to convert a PIL image into a PyTorch tensor.
-    """
+    """Callable to convert a PIL image into a PyTorch tensor."""
 
     def __call__(self, image):
         """Converts the image into a tensor.
@@ -32,8 +31,7 @@ class MaskToTensor:
 
 
 class ConvertImageMode:
-    """Callable to convert a PIL image into a specific image mode (e.g. RGB, P)
-    """
+    """Callable to convert a PIL image into a specific image mode (e.g. RGB, P)"""
 
     def __init__(self, mode):
         """Creates an `ConvertImageMode` instance.
@@ -55,8 +53,7 @@ class ConvertImageMode:
 
 
 class JointCompose:
-    """Callable to transform an image and it's mask at the same time.
-    """
+    """Callable to transform an image and it's mask at the same time."""
 
     def __init__(self, transforms):
         """Creates an `JointCompose` instance.
@@ -125,8 +122,7 @@ class JointTransform:
 
 
 class JointRandomVerticalFlip:
-    """Callable to randomly flip images and its mask top to bottom.
-    """
+    """Callable to randomly flip images and its mask top to bottom."""
 
     def __init__(self, p):
         """Creates an `JointRandomVerticalFlip` instance.
@@ -149,14 +145,15 @@ class JointRandomVerticalFlip:
         """
 
         if random.random() < self.p:
-            return [v.transpose(Image.FLIP_TOP_BOTTOM) for v in images], mask.transpose(Image.FLIP_TOP_BOTTOM)
+            return [v.transpose(Image.FLIP_TOP_BOTTOM) for v in images], mask.transpose(
+                Image.FLIP_TOP_BOTTOM
+            )
         else:
             return images, mask
 
 
 class JointRandomHorizontalFlip:
-    """Callable to randomly flip images and their mask left to right.
-    """
+    """Callable to randomly flip images and their mask left to right."""
 
     def __init__(self, p):
         """Creates an `JointRandomHorizontalFlip` instance.
@@ -179,14 +176,15 @@ class JointRandomHorizontalFlip:
         """
 
         if random.random() < self.p:
-            return [v.transpose(Image.FLIP_LEFT_RIGHT) for v in images], mask.transpose(Image.FLIP_LEFT_RIGHT)
+            return [v.transpose(Image.FLIP_LEFT_RIGHT) for v in images], mask.transpose(
+                Image.FLIP_LEFT_RIGHT
+            )
         else:
             return images, mask
 
 
 class JointRandomRotation:
-    """Callable to randomly rotate images and their mask.
-    """
+    """Callable to randomly rotate images and their mask."""
 
     def __init__(self, p, degree):
         """Creates an `JointRandomRotation` instance.
@@ -200,7 +198,9 @@ class JointRandomRotation:
         methods = {90: Image.ROTATE_90, 180: Image.ROTATE_180, 270: Image.ROTATE_270}
 
         if degree not in methods.keys():
-            raise NotImplementedError("We only support multiple of 90 degree rotations for now")
+            raise NotImplementedError(
+                "We only support multiple of 90 degree rotations for now"
+            )
 
         self.method = methods[degree]
 
@@ -216,6 +216,8 @@ class JointRandomRotation:
         """
 
         if random.random() < self.p:
-            return [v.transpose(self.method) for v in images], mask.transpose(self.method)
+            return [v.transpose(self.method) for v in images], mask.transpose(
+                self.method
+            )
         else:
             return images, mask

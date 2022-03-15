@@ -16,8 +16,7 @@ from torchvision.models import resnet50
 
 
 class ConvRelu(nn.Module):
-    """3x3 convolution followed by ReLU activation building block.
-    """
+    """3x3 convolution followed by ReLU activation building block."""
 
     def __init__(self, num_in, num_out):
         """Creates a `ConvReLU` building block.
@@ -45,8 +44,7 @@ class ConvRelu(nn.Module):
 
 
 class DecoderBlock(nn.Module):
-    """Decoder building block upsampling resolution by a factor of two.
-    """
+    """Decoder building block upsampling resolution by a factor of two."""
 
     def __init__(self, num_in, num_out):
         """Creates a `DecoderBlock` building block.
@@ -76,10 +74,12 @@ class DecoderBlock(nn.Module):
 class UNet(nn.Module):
     """The "U-Net" architecture for semantic segmentation, adapted by changing the encoder to a ResNet feature extractor.
 
-       Also known as AlbuNet due to its inventor Alexander Buslaev.
+    Also known as AlbuNet due to its inventor Alexander Buslaev.
     """
 
-    def __init__(self, num_classes, num_filters=32, pretrained=True):
+    def __init__(
+        self, num_classes, num_filters=32, pretrained=True, freeze_pretrained=False
+    ):
         """Creates an `UNet` instance for semantic segmentation.
 
         Args:
@@ -91,9 +91,14 @@ class UNet(nn.Module):
 
         # Todo: make input channels configurable, not hard-coded to three channels for RGB
 
+        # Consider freezing the ResNet, so we are only training the decoder, see https://www.oreilly.com/library/view/programming-pytorch-for/9781492045342/ch04.html
         self.resnet = resnet50(pretrained=pretrained)
+        if freeze_pretrained:
+            for name, param in self.resnet.named_parameters():
+                if "bn" not in name:
+                    param.requires_grad = False
 
-        # Access resnet directly in forward pass; do not store refs here due to
+        # Access resnet directle in forward pass; do not store refs here due to
         # https://github.com/pytorch/pytorch/issues/8392
 
         self.center = DecoderBlock(2048, num_filters * 8)
@@ -117,7 +122,9 @@ class UNet(nn.Module):
           The networks output tensor.
         """
         size = x.size()
-        assert size[-1] % 32 == 0 and size[-2] % 32 == 0, "image resolution has to be divisible by 32 for resnet"
+        assert (
+            size[-1] % 32 == 0 and size[-2] % 32 == 0
+        ), "image resolution has to be divisible by 32 for resnet"
 
         enc0 = self.resnet.conv1(x)
         enc0 = self.resnet.bn1(enc0)

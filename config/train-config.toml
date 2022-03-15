@@ -16,3 +16,4 @@ weights = [1.513212, 10.147043]
 checkpoint_path = "checkpoint"
 model_path = 'checkpoint/green_demo.pth'
 transform = "original"
+freeze_pretrained = 1
