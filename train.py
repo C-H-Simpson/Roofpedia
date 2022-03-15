@@ -3,6 +3,7 @@ import sys
 import collections
 import toml
 from tqdm import tqdm
+import json
 import webp
 import torch
 from torch.nn import DataParallel
@@ -80,6 +81,9 @@ def loop():
 
         for key, value in val_hist.items():
             history["val " + key].append(value)
+
+        with open(checkpoint_path + "history.json", "w") as f:
+            json.dump(history, f)
 
         if (epoch+1)%5 == 0:
             # plotter use history values, no need for log
