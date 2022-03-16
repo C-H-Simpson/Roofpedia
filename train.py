@@ -13,7 +13,7 @@ from torch.optim import Adam
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from src.augmentations import augs
+from src.augmentations import get_transforms
 from src.losses import CrossEntropyLoss2d, FocalLoss2d, LovaszLoss2d, mIoULoss2d
 from src.train import get_dataset_loaders, train, validate
 from src.unet import UNet
@@ -62,7 +62,7 @@ def run_training():
 
     # loading data
     train_loader, val_loader = get_dataset_loaders(
-        target_size, batch_size, dataset_path, augs[transform_name]
+        target_size, batch_size, dataset_path, get_transforms(target_size)[transform_name]
     )
     history = collections.defaultdict(list)
 
