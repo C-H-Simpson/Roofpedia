@@ -8,6 +8,7 @@ import cv2
 from src.colors import make_palette
 import argparse
 from pathlib import Path
+from tqdm import tqdm
 os.getcwd()
 
 def load_img(target_path, source_path):
@@ -22,13 +23,13 @@ def select_tiles(training_area_path, keep_fraction=0):
     # Check for tiles inside the training area.
     # The training area label acts like another layer of labelling.
     training_area_list = [str(p) for p in Path(training_area_path).glob("*/*/*.png")]
-    training_area_list = [p for p in training_area_list if not cv2.imread(p).any()]
+    training_area_list = [p for p in tqdm(training_area_list, desc="training area") if not cv2.imread(p).any()]
     training_area_list = [p.replace("training_area", "labels") for p in training_area_list]
 
     # Find non-blank tiles within the training area.
-    fileexists = [Path(p).is_file() for p in training_area_list]
-    assert np.count_nonzero(fileexists) == len(fileexists)
-    any_list = [cv2.imread(p).any() for p in training_area_list]
+    #fileexists = [Path(p).is_file() for p in tqdm(training_area_list, desc="file exists")]
+    #assert np.count_nonzero(fileexists) == len(fileexists)
+    any_list = [cv2.imread(p).any() for p in tqdm(training_area_list, desc="blanks")]
     blank_tiles_list = [p for p, i in zip(training_area_list, any_list) if not i]
     notblank_tiles_list = [p for p, i in zip(training_area_list, any_list) if i]
 
@@ -39,8 +40,10 @@ def select_tiles(training_area_path, keep_fraction=0):
     print(f"With {len(notblank_tiles_list)} not blank tiles.")
     blank_tiles_list = blank_tiles_list[:keep_stop]
     files_target = notblank_tiles_list + blank_tiles_list
+    print("files_target", files_target)
 
     files_source = [i.replace("labels", "images") for i in files_target]
+    print("files_source:", files_source)
 
     return files_target, files_source
 
