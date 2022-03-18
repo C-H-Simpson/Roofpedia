@@ -62,7 +62,7 @@ def run_training():
 
     # loading data
     train_loader, val_loader = get_dataset_loaders(
-        target_size, batch_size, dataset_path, get_transforms(target_size)[transform_name]
+        target_size, batch_size, dataset_path, augs[transform_name]
     )
     history = collections.defaultdict(list)
 
@@ -108,7 +108,7 @@ def run_training():
         for key, value in val_hist.items():
             history["val " + key].append(value)
 
-        with open(checkpoint_path + "history.json", "w") as f:
+        with open(checkpoint_path + "/history.json", "w") as f:
             json.dump(history, f)
 
         if (epoch + 1) % 5 == 0:
@@ -143,24 +143,28 @@ if __name__ == "__main__":
     target_type = config["target_type"]
     freeze_pretrained = config["freeze_pretrained"]
 
-    if config["model_path"] != "":
-        model_path = config["model_path"]
-    else:
-        model_path = None
+    #if config["model_path"] != "":
+        #model_path = config["model_path"]
+    #else:
+        #model_path = None
 
-    # make dir for checkpoint
-    os.makedirs(checkpoint_path, exist_ok=True)
 
     transform_name = config["transform"]
 
+    augs = get_transforms(target_size)
     for transform_name in augs:
         print("Testing augmentation:", transform_name)
         config["transform"] = transform_name
+        # Training a model from scratch
+        config["model_path"] = ""
+        model_path = ""
         for freeze_pretrained in (0,1):
             print("Testing freeze_pretrained", freeze_pretrained)
             config["freeze_pretrained"] = freeze_pretrained
+            # make dir for checkpoint
+            os.makedirs(checkpoint_path, exist_ok=True)
             # Write the testing config to file
-            with open(checkpoint_path + "config.toml", "w") as f:
+            with open(checkpoint_path + "/config.toml", "w") as f:
                 f.write(toml.dumps(config))
 
             run_training()
@@ -168,3 +172,20 @@ if __name__ == "__main__":
             # Move the config and results to a new directory
             fname = "experiment_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
             shutil.move(checkpoint_path, fname)
+
+        # Training a model from a checkpoint
+        config["model_path"] = "green_demo.pth"
+        model_path = "green_demo.pth"
+        print("Testing checkpoint start")
+        config["freeze_pretrained"] = 0
+        # make dir for checkpoint
+        os.makedirs(checkpoint_path, exist_ok=True)
+        # Write the testing config to file
+        with open(checkpoint_path + "/config.toml", "w") as f:
+            f.write(toml.dumps(config))
+
+        run_training()
+
+        # Move the config and results to a new directory
+        fname = "experiment_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        shutil.move(checkpoint_path, fname)
