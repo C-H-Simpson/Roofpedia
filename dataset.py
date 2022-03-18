@@ -23,13 +23,16 @@ def select_tiles(training_area_path, keep_fraction=0):
     # Check for tiles inside the training area.
     # The training area label acts like another layer of labelling.
     training_area_list = [str(p) for p in Path(training_area_path).glob("*/*/*.png")]
-    training_area_list = [p for p in tqdm(training_area_list, desc="training area") if not cv2.imread(p).any()]
-    training_area_list = [p.replace("training_area", "labels") for p in training_area_list]
+    # Check which tiles are in the training area
+    training_area_list = [p for p in tqdm(training_area_list, desc="training area") if cv2.imread(p).any()]
 
     # Find non-blank tiles within the training area.
-    #fileexists = [Path(p).is_file() for p in tqdm(training_area_list, desc="file exists")]
-    #assert np.count_nonzero(fileexists) == len(fileexists)
+    training_area_list = [p.replace("training_area", "labels") for p in training_area_list]
+    training_area_list = [p for p in tqdm(training_area_list, desc="file exists") if Path(p).is_file()]
     any_list = [cv2.imread(p).any() for p in tqdm(training_area_list, desc="blanks")]
+    if not any_list:
+        breakpoint()
+        raise ValueError("All tiles are blank")
     blank_tiles_list = [p for p, i in zip(training_area_list, any_list) if not i]
     notblank_tiles_list = [p for p, i in zip(training_area_list, any_list) if i]
 
@@ -40,10 +43,8 @@ def select_tiles(training_area_path, keep_fraction=0):
     print(f"With {len(notblank_tiles_list)} not blank tiles.")
     blank_tiles_list = blank_tiles_list[:keep_stop]
     files_target = notblank_tiles_list + blank_tiles_list
-    print("files_target", files_target)
 
     files_source = [i.replace("labels", "images") for i in files_target]
-    print("files_source:", files_source)
 
     return files_target, files_source
 
@@ -51,7 +52,7 @@ def select_tiles(training_area_path, keep_fraction=0):
 def convert_mask(mask_list):
     for i in mask_list:
         img = Image.open(i)
-        fn = lambda x : 255 if x >= 1 else 0
+        fn = lambda x : 255 if x >= 200 else 0
         out = img.convert('P').point(fn, mode='1')
         out = out.convert('P')
         palette = make_palette("dark", "light")
@@ -77,7 +78,7 @@ if __name__ == "__main__":
     training_area_path = 'dataset/training_area'
     keep_blank_tiles = 0.01
     files_target, files_source = select_tiles(training_area_path, keep_blank_tiles)
-    convert_mask(files_target)
+    #convert_mask(files_target)
 
     train_data, test_data, val_data = train_test_split(files_target)
     train_data_img = []
