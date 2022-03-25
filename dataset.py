@@ -52,7 +52,11 @@ def select_tiles(training_area_path, keep_fraction=0):
 def convert_mask(mask_list):
     for i in mask_list:
         img = Image.open(i)
-        fn = lambda x : 255 if x >= 200 else 0
+        thresh = 255
+        fn = lambda x : 255 if x < thresh else 0
+        values = np.unique(img.convert('P'))
+        print(values)
+        breakpoint()
         out = img.convert('P').point(fn, mode='1')
         out = out.convert('P')
         palette = make_palette("dark", "light")
@@ -76,7 +80,7 @@ if __name__ == "__main__":
     target_path = 'dataset/labels'
     source_path = 'dataset/images'
     training_area_path = 'dataset/training_area'
-    keep_blank_tiles = 0.01
+    keep_blank_tiles = 0.1
     files_target, files_source = select_tiles(training_area_path, keep_blank_tiles)
     #convert_mask(files_target)
 
