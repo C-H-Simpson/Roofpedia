@@ -8,6 +8,8 @@ import numpy as np
 from PIL import Image
 
 import torchvision
+import torchvision.transforms
+from torchvision.transforms import functional as F
 
 
 # Callable to convert a RGB image into a PyTorch tensor.
@@ -119,6 +121,79 @@ class JointTransform:
             mask = self.mask_transform(mask)
 
         return images, mask
+
+class JointRandomCrop:
+    """Callable to randomly crop images and its mask.
+
+    See torchvision.transforms.transforms.RandomCrop
+    """
+    def __init__(self, size, output_size, padding=None, pad_if_needed=False, fill=0, padding_mode="constant"):
+        self.output_size = output_size
+        self.random_crop = torchvision.transforms.RandomCrop(size, padding, pad_if_needed, fill, padding_mode)
+
+    def get_params(self, h, w, output_size):
+        """Copied from parent transform."""
+        th, tw = output_size
+
+        if h + 1 < th or w + 1 < tw:
+            raise ValueError(f"Required crop size {(th, tw)} is larger then input image size {(h, w)}")
+
+        if w == tw and h == th:
+            return 0, 0, h, w
+
+        i = torch.randint(0, h - th + 1, size=(1,)).item()
+        j = torch.randint(0, w - tw + 1, size=(1,)).item()
+        return i, j, th, tw
+
+    def prepare_one(self, img):
+        """Copied from parent transform, but without get_params"""
+        if self.random_crop.padding is not None:
+            img = F.pad(img, self.random_crop.padding, self.random_crop.fill, self.random_crop.padding_mode)
+
+        height, width = F._get_image_size(img)
+        # pad the width if needed
+        if self.random_crop.pad_if_needed and width < self.random_crop.size[1]:
+            padding = [self.random_crop.size[1] - width, 0]
+            img = F.pad(img, padding, self.random_crop.fill, self.random_crop.padding_mode)
+        # pad the height if needed
+        if self.random_crop.pad_if_needed and height < self.random_crop.size[0]:
+            padding = [0, self.random_crop.size[0] - height]
+            img = F.pad(img, padding, self.random_crop.fill, self.random_crop.padding_mode)
+
+        return img
+        
+    def forward(self, img, mask):
+        img, mask = [self.prepare_one(k) for k in (img, mask)]
+        h, w = F._get_image_size(img)
+        params = self.get_params(h, w, self.output_size)
+        return F.crop(img, *params), F.crop(mask, *params)
+        
+class JointFullyRandomRotation:
+    """Callable to randomly rotate images and its mask.
+
+    See torchvision.transforms.transforms.RandomRotation
+    """
+    def __init__(self, degrees, interpolation=F.InterpolationMode.NEAREST, expand=False, center=None, fill=0, resample=None):
+        self.random_rotation = torchvision.transforms.RandomRotation(degrees, interpolation, expand, center, fill, resample)
+
+    def get_fill(self, img):
+        fill = self.random_rotation.fill
+        channels = F._get_image_num_channels(img)
+        if isinstance(img, torch.Tensor):
+            if isinstance(fill, (int, float)):
+                fill = [float(fill)] * channels
+            else:
+                fill = [float(f) for f in fill]
+        return fill
+        
+
+    def forward(self, img, mask):
+        fill = self.get_fill(img)
+        angle = self.random_rotation.get_params(self.random_rotation.degrees)
+        return (
+            F.rotate(img, angle, self.random_rotation.resample, self.random_rotation.expand, self.random_rotation.center, fill),
+            F.rotate(mask, angle, self.random_rotation.resample, self.random_rotation.expand, self.random_rotation.center, fill)
+        )
 
 
 class JointRandomVerticalFlip:
