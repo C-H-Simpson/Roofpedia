@@ -11,6 +11,8 @@ from src.transforms import (
     JointRandomVerticalFlip,
     JointTransform,
     MaskToTensor,
+    JointFullyRandomRotation,
+    JointRandomCrop,
 )
 
 def get_transforms(target_size):
@@ -60,6 +62,35 @@ def get_transforms(target_size):
                 JointTransform(
                     ColorJitter(brightness=0.1, hue=0.1, contrast=0.1, saturation=0.1), None
                 ),
+                JointTransform(ImageToTensor(), MaskToTensor()),
+                JointTransform(Normalize(mean=mean, std=std), None),
+            ]
+        ),
+        flips_and_fullrotations=JointCompose(
+            [
+                JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
+                JointTransform(
+                    Resize(target_size, Image.BILINEAR), Resize(target_size, Image.NEAREST)
+                ),
+                JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
+                JointRandomHorizontalFlip(0.5),
+                JointRandomVerticalFlip(0.5),
+                JointFullyRandomRotation(360),
+                JointTransform(ImageToTensor(), MaskToTensor()),
+                JointTransform(Normalize(mean=mean, std=std), None),
+            ]
+        ),
+        flips_and_rotations_and_crops=JointCompose(
+            [
+                JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
+                JointRandomCrop((target_size, target_size), (int(target_size*0.9), int(target_size*0.9))),
+                JointTransform(
+                    Resize(target_size, Image.BILINEAR), Resize(target_size, Image.NEAREST)
+                ),
+                JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
+                JointRandomHorizontalFlip(0.5),
+                JointRandomVerticalFlip(0.5),
+                JointFullyRandomRotation(360),
                 JointTransform(ImageToTensor(), MaskToTensor()),
                 JointTransform(Normalize(mean=mean, std=std), None),
             ]
