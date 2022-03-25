@@ -7,7 +7,7 @@
 #$ -ac allow=EF 
 
 # Request wallclock time (format hours:minutes:seconds).
-#$ -l h_rt=16:00:0
+#$ -l h_rt=23:00:0
 
 # Request RAM (must be an integer followed by M, G, or T)
 #$ -l mem=8G
@@ -43,7 +43,7 @@ module load torch-deps
 #module load opencv/3.4.1/gnu-4.9.2
 echo "Shell: installing pip dependencies"
 module load python3/recommended
-pip3 install --user geopandas webp mercantile==1.0.4 opencv-python geojson pygeos
+pip3 install --user geopandas webp mercantile==1.0.4 opencv-python geojson pygeos toml
 pip install --user torch==1.8.1+cu101 torchvision==0.9.1+cu101 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html
 
 # Run the application
