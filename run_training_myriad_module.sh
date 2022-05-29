@@ -20,7 +20,7 @@
 
 # Set the working directory to somewhere in your scratch space.
 # Replace "<your_UCL_id>" with your UCL user ID :)
-#$ -wd /home/ucbqc38/Scratch/Roofpedia/
+#$ -wd /home/ucbqc38/Roofpedia_clean/Roofpedia/
 
 date
 
