@@ -40,12 +40,12 @@ def plot(imgs, with_orig=True, row_title=None, **imshow_kwargs):
     plt.tight_layout()
 
 from src.transforms import JointRandomCrop
-img, mask = JointRandomCrop((255,255), (200,200)).forward(orig_img, orig_mask)
-plot([orig_img,img, orig_mask, mask], with_orig=False)
+img, mask = JointRandomCrop((255,255), (200,200))([orig_img], orig_mask)
+plot([orig_img,img[0], orig_mask, mask], with_orig=False)
 plt.show()
 
 from src.transforms import JointFullyRandomRotation
 jfrr = JointFullyRandomRotation(180)
-images = [item for t in [jfrr.forward(orig_img, orig_mask) for i in range(5)] for item in t]
-plot(images, with_orig=False)
+images = jfrr([orig_img, img[0]], orig_mask)
+plot(images[0]+[images[1]], with_orig=False)
 plt.show()
