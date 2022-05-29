@@ -162,11 +162,13 @@ class JointRandomCrop:
 
         return img
         
-    def forward(self, img, mask):
-        img, mask = [self.prepare_one(k) for k in (img, mask)]
-        h, w = F._get_image_size(img)
+    def __call__(self, images, mask):
+        assert isinstance(images, list)
+        images = [self.prepare_one(img) for img in images]
+        mask = self.prepare_one(mask)
+        h, w = F._get_image_size(images[0])
         params = self.get_params(h, w, self.output_size)
-        return F.crop(img, *params), F.crop(mask, *params)
+        return [F.crop(img, *params) for img in images], F.crop(mask, *params)
         
 class JointFullyRandomRotation:
     """Callable to randomly rotate images and its mask.
@@ -187,14 +189,14 @@ class JointFullyRandomRotation:
         return fill
         
 
-    def forward(self, img, mask):
-        fill = self.get_fill(img)
+    def __call__(self, images, mask):
+        assert isinstance(images, list)
+        fill = self.get_fill(images[0])
         angle = self.random_rotation.get_params(self.random_rotation.degrees)
         return (
-            F.rotate(img, angle, self.random_rotation.resample, self.random_rotation.expand, self.random_rotation.center, fill),
+            [F.rotate(img, angle, self.random_rotation.resample, self.random_rotation.expand, self.random_rotation.center, fill) for img in images],
             F.rotate(mask, angle, self.random_rotation.resample, self.random_rotation.expand, self.random_rotation.center, fill)
         )
-
 
 class JointRandomVerticalFlip:
     """Callable to randomly flip images and its mask top to bottom."""
