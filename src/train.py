@@ -27,7 +27,9 @@ from src.transforms import (
 from src.resampling_dataloader import BackgroundResamplingLoader
 
 
-def get_dataset_loaders(target_size, batch_size, dataset_path, training_background_fraction, transform=None):
+def get_dataset_loaders(
+    target_size, batch_size, dataset_path, training_background_fraction, transform=None
+):
     target_size = (target_size, target_size)
     dataset_path = Path(dataset_path)
     # using imagenet mean and std for Normalization
@@ -49,37 +51,37 @@ def get_dataset_loaders(target_size, batch_size, dataset_path, training_backgrou
                 JointTransform(Normalize(mean=mean, std=std), None),
             ]
         )
-    val_transform =  JointCompose(
-            [
-                JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
-                JointTransform(
-                    Resize(target_size, Image.BILINEAR),
-                    Resize(target_size, Image.NEAREST),
-                ),
-                JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
-                JointRandomHorizontalFlip(0.5),
-                JointRandomRotation(0.5, 90),
-                JointRandomRotation(0.5, 90),
-                JointRandomRotation(0.5, 90),
-                JointTransform(ImageToTensor(), MaskToTensor()),
-                JointTransform(Normalize(mean=mean, std=std), None),
-            ]
-        )
+    val_transform = JointCompose(
+        [
+            JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
+            JointTransform(
+                Resize(target_size, Image.BILINEAR),
+                Resize(target_size, Image.NEAREST),
+            ),
+            JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
+            JointRandomHorizontalFlip(0.5),
+            JointRandomRotation(0.5, 90),
+            JointRandomRotation(0.5, 90),
+            JointRandomRotation(0.5, 90),
+            JointTransform(ImageToTensor(), MaskToTensor()),
+            JointTransform(Normalize(mean=mean, std=std), None),
+        ]
+    )
     train_dataset = SlippyMapTilesConcatenation(
-        [path/"training"/ "images"],
-        [path/"training"/ "labels"],
+        [path / "training" / "images"],
+        [path / "training" / "labels"],
         transform,
     )
 
     train_bg_dataset = SlippyMapTilesConcatenation(
-        [path/"training_bg"/ "images"],
-        [path/"training_bg"/ "labels"],
+        [path / "training_bg" / "images"],
+        [path / "training_bg" / "labels"],
         transform,
     )
 
     val_dataset = SlippyMapTilesConcatenation(
-        [path/"validation"/ "images"],
-        [path/"validation"/ "labels"],
+        [path / "validation" / "images"],
+        [path / "validation" / "labels"],
         val_transform,
     )
 
@@ -91,7 +93,12 @@ def get_dataset_loaders(target_size, batch_size, dataset_path, training_backgrou
     )
 
     train_loader = DataLoader(
-        BackgroundResamplingLoader(train_dataset, train_bg_dataset, training_background_fraction), batch_size=batch_size, shuffle=True, drop_last=True
+        BackgroundResamplingLoader(
+            train_dataset, train_bg_dataset, training_background_fraction
+        ),
+        batch_size=batch_size,
+        shuffle=True,
+        drop_last=True,
     )
     val_loader = DataLoader(
         val_dataset, batch_size=batch_size, shuffle=False, drop_last=True
