@@ -17,7 +17,7 @@ from src.transforms import ConvertImageMode, ImageToTensor
 from src.colors import make_palette
 
 
-def predict(tiles_dir, mask_dir, tile_size, device, chkpt):
+def predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=1):
     # load device
     net = UNet(2).to(device)
     net = nn.DataParallel(net)
@@ -37,7 +37,7 @@ def predict(tiles_dir, mask_dir, tile_size, device, chkpt):
     assert len(directory) > 0, "at least one tile in dataset"
 
     # loading data
-    loader = DataLoader(directory, batch_size=1)
+    loader = DataLoader(directory, batch_size=batch_size)
 
     # don't track tensors with autograd during prediction
     with torch.no_grad():
