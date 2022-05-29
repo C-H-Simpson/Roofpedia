@@ -129,7 +129,7 @@ def train(loader, num_classes, device, net, optimizer, criterion):
         "fp": metrics.fp,
         "tp": metrics.tp,
         "fn": metrics.fn,
-        "tn": metrics.fn,
+        "tn": metrics.tn,
     }
 
 
