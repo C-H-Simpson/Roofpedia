@@ -39,6 +39,15 @@ class Metrics:
         self.fp += torch.sum(confusion == 0).item()
         self.tp += torch.sum(confusion == 1).item()
 
+    def add_binary(self, actual, masks):
+        confusion = masks.view(-1).float() / actual.view(-1).float()
+
+        self.tn += torch.sum(torch.isnan(confusion)).item()
+        self.fn += torch.sum(confusion == float("inf")).item()
+        self.fp += torch.sum(confusion == 0).item()
+        self.tp += torch.sum(confusion == 1).item()
+        
+
     def get_miou(self):
         """Retrieves the mean Intersection over Union score.
 
