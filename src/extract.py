@@ -10,9 +10,12 @@ from src.tiles import tiles_from_slippy_map
 from src.features.building import Roof_features
 
 
-def mask_to_feature(mask_dir):
+def mask_to_feature(mask_dir, kernel_size_denoise, kernel_size_grow, simplify_threshold):
 
     handler = Roof_features()
+    handler.kernel_size_denoise = kernel_size_denoise
+    handler.kernel_size_grow = kernel_size_grow
+    handler.simplify_threshold = simplify_threshold
     tiles = list(tiles_from_slippy_map(mask_dir))
 
     for tile, path in tqdm(tiles, ascii=True, unit="mask"):
@@ -26,11 +29,11 @@ def mask_to_feature(mask_dir):
     return feature
 
 
-def intersection(target_type, city_name, mask_dir):
+def intersection(target_type, city_name, mask_dir, kernel_size_denoise=15, kernel_size_grow=10, simplify_threshold=0.01):
     # predicted features
     print()
     print("Converting Prediction Masks to GeoJson Features")
-    features = mask_to_feature(mask_dir)
+    features = mask_to_feature(mask_dir, kernel_size_denoise, kernel_size_grow, simplify_threshold)
     prediction = gp.GeoDataFrame.from_features(features, crs="EPSG:4326")
     print(prediction)
     if prediction.empty:
@@ -112,4 +115,4 @@ if __name__ == "__main__":
     target_type = args.type
     mask_dir = os.path.join("results", "03Masks", target_type, city_name)
 
-    intersection(target_type, city_name, mask_dir)
+    intersection(target_type, city_name, mask_dir, 0, 0, 0.001)

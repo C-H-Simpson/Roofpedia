@@ -21,8 +21,15 @@ class Roof_features:
         # The post-processing pipeline removes noise and fills in smaller holes. We then
         # extract contours, simplify them and transform tile pixels into coordinates.
 
-        denoised = denoise(mask, self.kernel_size_denoise)
-        grown = grow(denoised, self.kernel_size_grow)
+        if self.kernel_size_denoise>0:
+            denoised = denoise(mask, self.kernel_size_denoise)
+        else:
+            denoised = mask
+
+        if self.kernel_size_grow>0:
+            grown = grow(denoised, self.kernel_size_grow)
+        else:
+            grown = denoised
 
         # Contours have a hierarchy: for example an outer ring, and an inner ring for a polygon with a hole.
         #
@@ -59,7 +66,7 @@ class Roof_features:
         features = collections.defaultdict(set)
 
         for i, (polygon, node) in enumerate(zip(polygons, hierarchy)):
-            if len(polygon) < 1:
+            if len(polygon) < 3:
                 print("Warning: simplified feature no longer valid polygon, skipping", file=sys.stderr)
                 continue
 
@@ -85,12 +92,18 @@ class Roof_features:
             children = inner.difference(set([outer]))
 
             for child in children:
-                rings.append(featurize(tile, polygons[child], mask.shape[:2]))
+                ring = featurize(tile, polygons[child], mask.shape[:2])
+                rings.append(ring)
 
             assert 0 < len(rings), "at least one outer ring in a polygon"
 
             geometry = geojson.Polygon(rings)
-            shape = shapely.geometry.shape(geometry)
+            try:
+                shape = shapely.geometry.shape(geometry)
+            except ValueError:
+                print("Warning: extracted feature is not valid, skipping", file=sys.stderr)
+                breakpoint()
+                continue
 
             if shape.is_valid:
                 self.features.append(geojson.Feature(geometry=geometry))
