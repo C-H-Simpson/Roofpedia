@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 import collections
 import os
 import sys
@@ -23,11 +24,12 @@ from src.transforms import (
     JointTransform,
     MaskToTensor,
 )
+from src.resampling_dataloader import BackgroundResamplingLoader
 
 
-def get_dataset_loaders(target_size, batch_size, dataset_path, transform=None):
+def get_dataset_loaders(target_size, batch_size, dataset_path, training_background_fraction, transform=None):
     target_size = (target_size, target_size)
-    path = dataset_path
+    dataset_path = Path(dataset_path)
     # using imagenet mean and std for Normalization
     mean, std = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
     if transform is None:
@@ -64,16 +66,24 @@ def get_dataset_loaders(target_size, batch_size, dataset_path, transform=None):
             ]
         )
     train_dataset = SlippyMapTilesConcatenation(
-        [os.path.join(path, "training", "images")],
-        os.path.join(path, "training", "labels"),
+        [path/"training"/ "images"],
+        [path/"training"/ "labels"],
+        transform,
+    )
+
+    train_bg_dataset = SlippyMapTilesConcatenation(
+        [path/"training_bg"/ "images"],
+        [path/"training_bg"/ "labels"],
         transform,
     )
 
     val_dataset = SlippyMapTilesConcatenation(
-        [os.path.join(path, "validation", "images")],
-        os.path.join(path, "validation", "labels"),
+        [path/"validation"/ "images"],
+        [path/"validation"/ "labels"],
         val_transform,
     )
+
+    assert len(train_bg_dataset) > 0, "at least one tile in training background dataset"
     assert len(train_dataset) > 0, "at least one tile in training dataset"
     assert len(val_dataset) > 0, "at least one tile in validation dataset"
     print(
@@ -81,7 +91,7 @@ def get_dataset_loaders(target_size, batch_size, dataset_path, transform=None):
     )
 
     train_loader = DataLoader(
-        train_dataset, batch_size=batch_size, shuffle=True, drop_last=True
+        BackgroundResamplingLoader(train_dataset, train_bg_dataset, training_background_fraction), batch_size=batch_size, shuffle=True, drop_last=True
     )
     val_loader = DataLoader(
         val_dataset, batch_size=batch_size, shuffle=False, drop_last=True
