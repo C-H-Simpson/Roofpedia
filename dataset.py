@@ -19,7 +19,7 @@ def load_img(target_path, source_path):
     print(str(len(files_source)) + ' source files found')
     return files_target, files_source
 
-def select_tiles(training_area_path, keep_fraction=0):
+def select_tiles(training_area_path, blank_proportion=0):
     # Check for tiles inside the training area.
     # The training area label acts like another layer of labelling.
     training_area_list = [str(p) for p in Path(training_area_path).glob("*/*/*.png")]
@@ -31,14 +31,13 @@ def select_tiles(training_area_path, keep_fraction=0):
     training_area_list = [p for p in tqdm(training_area_list, desc="file exists") if Path(p).is_file()]
     any_list = [cv2.imread(p).any() for p in tqdm(training_area_list, desc="blanks")]
     if not any_list:
-        breakpoint()
         raise ValueError("All tiles are blank")
     blank_tiles_list = [p for p, i in zip(training_area_list, any_list) if not i]
     notblank_tiles_list = [p for p, i in zip(training_area_list, any_list) if i]
 
     # Keep a fraction of blank tiles.
     random.Random(123).shuffle(blank_tiles_list)
-    keep_stop = int(len(blank_tiles_list)*keep_fraction)
+    keep_stop = min(len(blank_tiles_list), int(len(notblank_tiles_list)*blank_proportion))
     print(f"Keeping {keep_stop} of {len(blank_tiles_list)} blank tiles")
     print(f"With {len(notblank_tiles_list)} not blank tiles.")
     blank_tiles_list = blank_tiles_list[:keep_stop]
@@ -52,11 +51,10 @@ def select_tiles(training_area_path, keep_fraction=0):
 def convert_mask(mask_list):
     for i in mask_list:
         img = Image.open(i)
-        thresh = 255
-        fn = lambda x : 255 if x < thresh else 0
-        values = np.unique(img.convert('P'))
-        print(values)
-        breakpoint()
+        thresh = 0
+        fn = lambda x : 255 if x > thresh else 0
+        #values = np.unique(img.convert('P'))
+        #print(values)
         out = img.convert('P').point(fn, mode='1')
         out = out.convert('P')
         palette = make_palette("dark", "light")
@@ -80,9 +78,9 @@ if __name__ == "__main__":
     target_path = 'dataset/labels'
     source_path = 'dataset/images'
     training_area_path = 'dataset/training_area'
-    keep_blank_tiles = 0.1
+    keep_blank_tiles = 0.25
     files_target, files_source = select_tiles(training_area_path, keep_blank_tiles)
-    #convert_mask(files_target)
+    convert_mask(files_target)
 
     train_data, test_data, val_data = train_test_split(files_target)
     train_data_img = []
