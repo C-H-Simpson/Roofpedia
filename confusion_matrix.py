@@ -1,10 +1,10 @@
 import argparse
-import pandas as pd
 import collections
 import os
 import sys
 
 import numpy as np
+import pandas as pd
 import toml
 import torch
 import torch.nn as nn
@@ -88,12 +88,14 @@ def optimise_postprocessing(loader, num_classes, device, net):
         outputs = np.concatenate(outputs, axis=0)
         masks = torch.Tensor(np.concatenate(masks_list, axis=0))
 
-        outputs= np.argmax(np.array(outputs), axis=1).astype("float")
-        for kernel_size_denoise in tqdm(list(range(1,15)), desc="denoise", leave=False):
+        outputs = np.argmax(np.array(outputs), axis=1).astype("float")
+        for kernel_size_denoise in tqdm(
+            list(range(1, 15)), desc="denoise", leave=False
+        ):
             outputs_denoise = [
                 denoise(img, kernel_size_denoise) for img in outputs
-            ] # You could do this slightly faster by splitting the loops
-            for kernel_size_grow in tqdm(list(range(1,10)), desc="grow", leave=False):
+            ]  # You could do this slightly faster by splitting the loops
+            for kernel_size_grow in tqdm(list(range(1, 10)), desc="grow", leave=False):
                 metrics = Metrics(range(num_classes))
                 outputs_postprocess = [
                     grow(img, kernel_size_grow) for img in outputs_denoise
@@ -202,16 +204,15 @@ net.load_state_dict(chkpt["state_dict"])
 net.eval()
 
 # Optimize the postprocessing
-#ds = "validation"
-#ds_dir = os.path.join("dataset", ds)
-#loader = get_plain_dataset_loader(config["target_size"], 64, ds_dir)
-#loader = get_plain_dataset_loader(config["target_size"], 64, ds_dir)
-#tile_size = config["target_size"]
-#opt = optimise_postprocessing(loader, num_classes, device, net)
-#df_opt = pd.DataFrame(opt)
-#print(df_opt)
-#df_opt.to_csv("optimise_postprocessing.csv")
-
+# ds = "validation"
+# ds_dir = os.path.join("dataset", ds)
+# loader = get_plain_dataset_loader(config["target_size"], 64, ds_dir)
+# loader = get_plain_dataset_loader(config["target_size"], 64, ds_dir)
+# tile_size = config["target_size"]
+# opt = optimise_postprocessing(loader, num_classes, device, net)
+# df_opt = pd.DataFrame(opt)
+# print(df_opt)
+# df_opt.to_csv("optimise_postprocessing.csv")
 
 
 # Run on the datasets
@@ -229,7 +230,6 @@ for ds in ("training", "validation", "evaluation"):
     val["postprocess"]["postprocess"] = True
     results.append(val["raw"])
     results_postprocess.append(val["postprocess"])
-
 
 
 df = pd.DataFrame(results + results_postprocess)

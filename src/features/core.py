@@ -54,7 +54,7 @@ def featurize(tile, polygon, shape):
         px, py = point[0]
         dx, dy = px / xmax, py / ymax
 
-        feature.append(pixel_to_location(tile, dx, 1. - dy))
+        feature.append(pixel_to_location(tile, dx, 1.0 - dy))
 
     assert feature, "at least one location in polygon"
     feature.append(feature[0])  # polygons are closed

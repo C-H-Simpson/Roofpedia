@@ -1,17 +1,17 @@
-import glob
-import numpy as np
-import os
-import shutil
-from PIL import Image
-import random
-import cv2
-from src.colors import make_palette
 import argparse
+import glob
+import os
+import random
+import shutil
 from pathlib import Path
-from tqdm import tqdm
-import joblib
 
-os.getcwd()
+import cv2
+import joblib
+import numpy as np
+from PIL import Image
+from tqdm import tqdm
+
+from src.colors import make_palette
 
 
 def load_img(label_path, source_path):

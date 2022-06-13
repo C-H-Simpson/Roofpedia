@@ -1,20 +1,19 @@
 import os
-import numpy as np
 
+import numpy as np
+import toml
 import torch
-import torch.nn as nn
 import torch.backends.cudnn
+import torch.nn as nn
+from PIL import Image
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, Normalize
-
 from tqdm import tqdm
-from PIL import Image
-import toml
 
-from src.datasets import BufferedSlippyMapDirectory
-from src.unet import UNet
-from src.transforms import ConvertImageMode, ImageToTensor
 from src.colors import make_palette
+from src.datasets import BufferedSlippyMapDirectory
+from src.transforms import ConvertImageMode, ImageToTensor
+from src.unet import UNet
 
 
 def predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=1):

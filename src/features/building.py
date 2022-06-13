@@ -1,11 +1,17 @@
-import sys
 import collections
+import sys
 
 import geojson
-
 import shapely.geometry
 
-from src.features.core import denoise, grow, contours, simplify, featurize, parents_in_hierarchy
+from src.features.core import (
+    contours,
+    denoise,
+    featurize,
+    grow,
+    parents_in_hierarchy,
+    simplify,
+)
 
 
 class Roof_features:
@@ -17,16 +23,16 @@ class Roof_features:
         self.features = []
 
     def apply(self, tile, mask):
-        
+
         # The post-processing pipeline removes noise and fills in smaller holes. We then
         # extract contours, simplify them and transform tile pixels into coordinates.
 
-        if self.kernel_size_denoise>0:
+        if self.kernel_size_denoise > 0:
             denoised = denoise(mask, self.kernel_size_denoise)
         else:
             denoised = mask
 
-        if self.kernel_size_grow>0:
+        if self.kernel_size_grow > 0:
             grown = grow(denoised, self.kernel_size_grow)
         else:
             grown = denoised
@@ -53,12 +59,16 @@ class Roof_features:
 
         # This seems to be a bug in the OpenCV Python bindings; the C++ interface
         # returns a vector<vec4> but here it's always wrapped in an extra list.
-        assert len(hierarchy) == 1, "always single hierarchy for all polygons in multipolygon"
+        assert (
+            len(hierarchy) == 1
+        ), "always single hierarchy for all polygons in multipolygon"
         hierarchy = hierarchy[0]
 
         assert len(multipolygons) == len(hierarchy), "polygons and hierarchy in sync"
 
-        polygons = [simplify(polygon, self.simplify_threshold) for polygon in multipolygons]
+        polygons = [
+            simplify(polygon, self.simplify_threshold) for polygon in multipolygons
+        ]
 
         # Todo: generalize and move to features.core
 
@@ -67,7 +77,10 @@ class Roof_features:
 
         for i, (polygon, node) in enumerate(zip(polygons, hierarchy)):
             if len(polygon) < 3:
-                print("Warning: simplified feature no longer valid polygon, skipping", file=sys.stderr)
+                print(
+                    "Warning: simplified feature no longer valid polygon, skipping",
+                    file=sys.stderr,
+                )
                 continue
 
             _, _, _, parent_idx = node
@@ -76,7 +89,10 @@ class Roof_features:
 
             # Only handles polygons with a nesting of two levels for now => no multipolygons.
             if len(ancestors) > 1:
-                print("Warning: polygon ring nesting level too deep, skipping", file=sys.stderr)
+                print(
+                    "Warning: polygon ring nesting level too deep, skipping",
+                    file=sys.stderr,
+                )
                 continue
 
             # A single mapping: i => {i} implies single free-standing polygon, no inner rings.
@@ -101,14 +117,18 @@ class Roof_features:
             try:
                 shape = shapely.geometry.shape(geometry)
             except ValueError:
-                print("Warning: extracted feature is not valid, skipping", file=sys.stderr)
+                print(
+                    "Warning: extracted feature is not valid, skipping", file=sys.stderr
+                )
                 breakpoint()
                 continue
 
             if shape.is_valid:
                 self.features.append(geojson.Feature(geometry=geometry))
             else:
-                print("Warning: extracted feature is not valid, skipping", file=sys.stderr)
+                print(
+                    "Warning: extracted feature is not valid, skipping", file=sys.stderr
+                )
 
     def save(self, out):
         collection = geojson.FeatureCollection(self.features)
@@ -119,5 +139,4 @@ class Roof_features:
     def jsonify(self):
         collection = geojson.FeatureCollection(self.features)
 
-        return collection 
-        
+        return collection

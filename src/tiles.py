@@ -12,8 +12,8 @@ import csv
 import io
 import os
 
-from PIL import Image
 import mercantile
+from PIL import Image
 
 
 def pixel_to_location(tile, dx, dy):

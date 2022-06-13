@@ -1,8 +1,8 @@
 import argparse
-from pathlib import Path
 import collections
 import os
 import sys
+from pathlib import Path
 
 import toml
 import torch
@@ -15,6 +15,7 @@ from tqdm import tqdm
 
 from src.datasets import SlippyMapTilesConcatenation
 from src.metrics import Metrics
+from src.resampling_dataloader import BackgroundResamplingLoader
 from src.transforms import (
     ConvertImageMode,
     ImageToTensor,
@@ -24,7 +25,6 @@ from src.transforms import (
     JointTransform,
     MaskToTensor,
 )
-from src.resampling_dataloader import BackgroundResamplingLoader
 
 
 def get_dataset_loaders(
@@ -105,7 +105,6 @@ def get_dataset_loaders(
     )
 
     return train_loader, val_loader
-
 
 
 def train(loader, num_classes, device, net, optimizer, criterion):

@@ -10,4 +10,4 @@ import geopandas as gpd
 
 # Take the green roofs layer in the validation areas only.
 
-# Take the intersection of the 
+# Take the intersection of the

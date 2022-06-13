@@ -1,13 +1,12 @@
 import collections
+import datetime
 import json
 import os
-import sys
 import shutil
-import datetime
+import sys
 
 import toml
 import torch
-import webp
 from torch.nn import DataParallel
 from torch.optim import Adam
 from torch.utils.data import DataLoader

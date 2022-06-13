@@ -6,10 +6,10 @@ See: http://pytorch.org/docs/0.3.1/data.html
 """
 
 import torch
-from PIL import Image
 import torch.utils.data
+from PIL import Image
 
-from src.tiles import tiles_from_slippy_map, buffer_tile_image
+from src.tiles import buffer_tile_image, tiles_from_slippy_map
 
 
 # Single Slippy Map directory structure

@@ -1,19 +1,19 @@
-from torchvision.transforms import CenterCrop, ColorJitter, Normalize, Resize
-
 from PIL import Image
+from torchvision.transforms import CenterCrop, ColorJitter, Normalize, Resize
 
 from src.transforms import (
     ConvertImageMode,
     ImageToTensor,
     JointCompose,
+    JointFullyRandomRotation,
+    JointRandomCrop,
     JointRandomHorizontalFlip,
     JointRandomRotation,
     JointRandomVerticalFlip,
     JointTransform,
     MaskToTensor,
-    JointFullyRandomRotation,
-    JointRandomCrop,
 )
+
 
 def get_transforms(target_size):
     # using imagenet mean and std for Normalization
@@ -24,7 +24,8 @@ def get_transforms(target_size):
             [
                 JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
                 JointTransform(
-                    Resize(target_size, Image.BILINEAR), Resize(target_size, Image.NEAREST)
+                    Resize(target_size, Image.BILINEAR),
+                    Resize(target_size, Image.NEAREST),
                 ),
                 JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
                 JointRandomHorizontalFlip(0.5),
@@ -40,7 +41,8 @@ def get_transforms(target_size):
             [
                 JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
                 JointTransform(
-                    Resize(target_size, Image.BILINEAR), Resize(target_size, Image.NEAREST)
+                    Resize(target_size, Image.BILINEAR),
+                    Resize(target_size, Image.NEAREST),
                 ),
                 JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
                 JointTransform(ImageToTensor(), MaskToTensor()),
@@ -51,7 +53,8 @@ def get_transforms(target_size):
             [
                 JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
                 JointTransform(
-                    Resize(target_size, Image.BILINEAR), Resize(target_size, Image.NEAREST)
+                    Resize(target_size, Image.BILINEAR),
+                    Resize(target_size, Image.NEAREST),
                 ),
                 JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
                 JointRandomRotation(0.5, 90),
@@ -60,7 +63,10 @@ def get_transforms(target_size):
                 JointRandomHorizontalFlip(0.5),
                 JointRandomVerticalFlip(0.5),
                 JointTransform(
-                    ColorJitter(brightness=0.2, ), None
+                    ColorJitter(
+                        brightness=0.2,
+                    ),
+                    None,
                 ),
                 JointTransform(ImageToTensor(), MaskToTensor()),
                 JointTransform(Normalize(mean=mean, std=std), None),
@@ -70,7 +76,8 @@ def get_transforms(target_size):
             [
                 JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
                 JointTransform(
-                    Resize(target_size, Image.BILINEAR), Resize(target_size, Image.NEAREST)
+                    Resize(target_size, Image.BILINEAR),
+                    Resize(target_size, Image.NEAREST),
                 ),
                 JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
                 JointRandomHorizontalFlip(0.5),
@@ -83,9 +90,13 @@ def get_transforms(target_size):
         flips_and_rotations_and_crops=JointCompose(
             [
                 JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
-                JointRandomCrop((target_size, target_size), (int(target_size*0.9), int(target_size*0.9))),
+                JointRandomCrop(
+                    (target_size, target_size),
+                    (int(target_size * 0.9), int(target_size * 0.9)),
+                ),
                 JointTransform(
-                    Resize(target_size, Image.BILINEAR), Resize(target_size, Image.NEAREST)
+                    Resize(target_size, Image.BILINEAR),
+                    Resize(target_size, Image.NEAREST),
                 ),
                 JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
                 JointRandomHorizontalFlip(0.5),

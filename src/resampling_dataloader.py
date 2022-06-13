@@ -1,4 +1,5 @@
 import random
+
 from torch.utils.data import Dataset
 
 
@@ -14,7 +15,7 @@ class BackgroundResamplingLoader(Dataset):
 
         self.n_signal = len(self.signal_tiles)
         self.n_background = len(self.background_tiles)
-        self.length = int(self.n_background/(1-signal_p))
+        self.length = int(self.n_background / (1 - signal_p))
 
     def __len__(self):
         return self.length
@@ -25,4 +26,3 @@ class BackgroundResamplingLoader(Dataset):
         else:
             idx = (idx - self.n_background) % self.n_signal
             return self.signal_tiles[idx]
-

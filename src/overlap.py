@@ -15,8 +15,9 @@ The area threshold might not be very important if you have already done
 smoothing or binary opening of the results.
 """
 
-import geopandas as gpd
 import argparse
+
+import geopandas as gpd
 
 
 def overlapping_threshold(gdf_bui, gdf_feat, min_area, min_overlap):

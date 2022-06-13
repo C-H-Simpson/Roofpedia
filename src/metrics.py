@@ -1,9 +1,10 @@
 """Metrics for segmentation.
 """
 
-import torch
 import math
+
 import numpy as np
+import torch
 
 
 class Metrics:
@@ -46,7 +47,6 @@ class Metrics:
         self.fn += torch.sum(confusion == float("inf")).item()
         self.fp += torch.sum(confusion == 0).item()
         self.tp += torch.sum(confusion == 1).item()
-        
 
     def get_miou(self):
         """Retrieves the mean Intersection over Union score.

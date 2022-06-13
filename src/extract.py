@@ -1,16 +1,18 @@
-import os
 import argparse
+import os
 
-from tqdm import tqdm
-from PIL import Image
 import geopandas as gp
 import numpy as np
+from PIL import Image
+from tqdm import tqdm
 
-from src.tiles import tiles_from_slippy_map
 from src.features.building import Roof_features
+from src.tiles import tiles_from_slippy_map
 
 
-def mask_to_feature(mask_dir, kernel_size_denoise, kernel_size_grow, simplify_threshold):
+def mask_to_feature(
+    mask_dir, kernel_size_denoise, kernel_size_grow, simplify_threshold
+):
 
     handler = Roof_features()
     handler.kernel_size_denoise = kernel_size_denoise
@@ -29,11 +31,20 @@ def mask_to_feature(mask_dir, kernel_size_denoise, kernel_size_grow, simplify_th
     return feature
 
 
-def intersection(target_type, city_name, mask_dir, kernel_size_denoise=15, kernel_size_grow=10, simplify_threshold=0.01):
+def intersection(
+    target_type,
+    city_name,
+    mask_dir,
+    kernel_size_denoise=15,
+    kernel_size_grow=10,
+    simplify_threshold=0.01,
+):
     # predicted features
     print()
     print("Converting Prediction Masks to GeoJson Features")
-    features = mask_to_feature(mask_dir, kernel_size_denoise, kernel_size_grow, simplify_threshold)
+    features = mask_to_feature(
+        mask_dir, kernel_size_denoise, kernel_size_grow, simplify_threshold
+    )
     prediction = gp.GeoDataFrame.from_features(features, crs="EPSG:4326")
     print(prediction)
     if prediction.empty:
