@@ -24,5 +24,5 @@ class BackgroundResamplingLoader(Dataset):
         if i < self.n_background:
             return self.background_tiles[i]
         else:
-            idx = (idx - self.n_background) % self.n_signal
+            idx = (i - self.n_background) % self.n_signal
             return self.signal_tiles[idx]
