@@ -18,3 +18,5 @@ New Cities.qgz
 *.qmd
 dataset/images
 dataset/labels
+*.toml
+*.json
