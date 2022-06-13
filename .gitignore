@@ -15,3 +15,6 @@ Pipeline.ipynb
 *.ipynb
 New Cities.qgz
 *.geojson
+*.qmd
+dataset/images
+dataset/labels
