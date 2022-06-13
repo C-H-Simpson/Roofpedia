@@ -118,6 +118,8 @@ def train(loader, num_classes, device, net, optimizer, criterion):
 
     # training loop
     for images, masks, tiles in tqdm(loader, desc="Train", unit="batch", ascii=True):
+        num_samples += int(images.size(0))
+
         images = images.to(device)
         masks = masks.to(device)
 
@@ -125,7 +127,6 @@ def train(loader, num_classes, device, net, optimizer, criterion):
             images.size()[2:] == masks.size()[1:]
         ), "resolutions for images and masks are in sync"
 
-        num_samples += int(images.size(0))
         optimizer.zero_grad()
         outputs = net(images)
         loss = criterion(outputs, masks)
