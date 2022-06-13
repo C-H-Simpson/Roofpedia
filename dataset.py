@@ -9,6 +9,7 @@ from src.colors import make_palette
 import argparse
 from pathlib import Path
 from tqdm import tqdm
+import joblib
 
 os.getcwd()
 
@@ -27,8 +28,14 @@ def select_tiles(training_area_path, background_proportion=0):
     # The training area label acts like another layer of labelling.
     training_area_list = [str(p) for p in Path(training_area_path).glob("*/*/*.png")]
     # Check which tiles are in the training area
+    training_area_hasSignal = joblib.Parallel(n_jobs=4)(
+        (
+            joblib.delayed(lambda _p: cv2.imread(p).any())(p)
+            for p in tqdm(training_area_list, desc="training area")
+        )
+    )
     training_area_list = [
-        p for p in tqdm(training_area_list, desc="training area") if cv2.imread(p).any()
+        p for p, i in zip(training_area_list, training_area_hasSignal) if i
     ]
 
     # Find non-background tiles within the training area.
@@ -53,7 +60,7 @@ def select_tiles(training_area_path, background_proportion=0):
         len(background_tiles_list), int(len(signal_tiles_list) * background_proportion)
     )
     print(f"Keeping {len(background_tiles_list)} background tiles")
-    print(f"With {len(signal_tiles_list)} not signal tiles.")
+    print(f"With {len(signal_tiles_list)} signal tiles.")
 
     signal_labels = signal_tiles_list
     signal_images = [i.replace("labels", "images") for i in signal_labels]
@@ -123,7 +130,7 @@ if __name__ == "__main__":
             for i_name, i_path in (("labels", label_path), ("images", img_path)):
                 location = output_folder / name / i_name
                 dest = location / label_path[-20:]
-                dest.mkdir(exist_ok=True, parents=True)
+                dest.parent.mkdir(exist_ok=True, parents=True)
                 shutil.copy(label_path, dest)
 
     print("Successfully split dataset according to train-test-val")
