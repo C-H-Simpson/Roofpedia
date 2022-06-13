@@ -27,6 +27,7 @@ def select_tiles(training_area_path, background_proportion=0):
     # Check for tiles inside the training area.
     # The training area label acts like another layer of labelling.
     training_area_list = [str(p) for p in Path(training_area_path).glob("*/*/*.png")]
+    print(f"{len(training_area_list)} tiles in training area")
     # Check which tiles are in the training area
     training_area_hasSignal = joblib.Parallel(n_jobs=4)(
         (
