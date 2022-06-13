@@ -28,7 +28,8 @@ def run_training():
     # weighted values for loss functions
     # add a helper to return weights seamlessly
     try:
-        weight = torch.Tensor([1.513212, 10.147043])
+        # The weights should actually be based on the proportions in the loader...
+        weight = torch.Tensor([signal_fraction, 1])
     except KeyError:
         if model["opt"]["loss"] in ("CrossEntropy", "mIoU", "Focal"):
             sys.exit("Error: The loss function used, need dataset weights values")
