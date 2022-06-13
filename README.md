@@ -1,21 +1,13 @@
-<p align="center">
-  <a href="https://ual.sg/">
-    <img src="images/logo.jpg" alt="Logo">
-  </a>
-  <h3 align="center">Roofpedia - Mapping Roofscapes with AI</h3>
-  <p align="center">
-    <br />
-    <a href="https://ual.sg/project/roofpedia/"><strong>Explore Sustainable Roofscapes Around the World »</strong></a>
-  </p>
-</p>
-
-This is the official repo of Roofpedia, an open registry of green roofs and solar roofs across the globe identified by Roofpedia through deep learning.
-
 In this repo you will find:
 * A ready to use dataset of 1,812 manually labelled polygons of rooftop greenery and solar panels covering 8 cities. 
 * A ready to use dataset of building footprints identified with Green Roofs and/or Solar roofs by Roofpedia. Download data and labels [here](https://doi.org/10.6084/m9.figshare.19314422)
 * A straight forward pipeline to run prediction on your own satellite image dataset
 * A guide on how you can tweak the pipeline to detect and tag roof features to OSM building footprints (coming up)
+
+## A note on this fork
+This is a fork of Roofpedia, an open registry of green roofs and solar roofs across the globe identified by Roofpedia through deep learning.
+This fork is the result of our experiments trying to improve the performance of Roofpedia.
+If you aren't familiar with Roofpedia, we recommend looking at the main repo first, not this fork.
 
 ## Running Roofpedia 
 Steps:

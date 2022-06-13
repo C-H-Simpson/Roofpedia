@@ -144,11 +144,10 @@ if __name__ == "__main__":
     freeze_pretrained = config["freeze_pretrained"]
     signal_fraction = config["signal_fraction"]
 
-    #if config["model_path"] != "":
-        #model_path = config["model_path"]
-    #else:
-        #model_path = None
-
+    # if config["model_path"] != "":
+    # model_path = config["model_path"]
+    # else:
+    # model_path = None
 
     transform_name = config["transform"]
 
@@ -158,7 +157,7 @@ if __name__ == "__main__":
         print("Testing loss function:", lossfunc)
         config["loss_func"] = lossfunc
         for lr_factor in (1.0, 0.1, 10, 0.01):
-            lr = lr_base*lr_factor
+            lr = lr_base * lr_factor
             config["lr"] = lr
             print("Testing learning rate:", lr)
             for transform_name in augs:
@@ -176,6 +175,7 @@ if __name__ == "__main__":
                 run_training()
 
                 # Move the config and results to a new directory
-                fname = "experiment_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                fname = "experiment_" + datetime.datetime.now().strftime(
+                    "%Y%m%d_%H%M%S"
+                )
                 shutil.move(checkpoint_path, fname)
-
