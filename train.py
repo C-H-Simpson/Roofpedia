@@ -62,7 +62,7 @@ def run_training():
 
     # loading data
     train_loader, val_loader = get_dataset_loaders(
-        target_size, batch_size, dataset_path, bg_fraction, augs[transform_name]
+        target_size, batch_size, dataset_path, signal_fraction, augs[transform_name]
     )
     history = collections.defaultdict(list)
 
@@ -142,7 +142,7 @@ if __name__ == "__main__":
     checkpoint_path = config["checkpoint_path"]
     target_type = config["target_type"]
     freeze_pretrained = config["freeze_pretrained"]
-    background_fraction = config["background_fraction"]
+    signal_fraction = config["signal_fraction"]
 
     #if config["model_path"] != "":
         #model_path = config["model_path"]

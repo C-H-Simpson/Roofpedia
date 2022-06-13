@@ -69,19 +69,19 @@ def get_dataset_loaders(
     )
     train_dataset = SlippyMapTilesConcatenation(
         [str(dataset_path / "training" / "images")],
-        [str(dataset_path / "training" / "labels")],
+        str(dataset_path / "training" / "labels"),
         transform,
     )
 
     train_bg_dataset = SlippyMapTilesConcatenation(
         [str(dataset_path / "training_bg" / "images")],
-        [str(dataset_path / "training_bg" / "labels")],
+        str(dataset_path / "training_bg" / "labels"),
         transform,
     )
 
     val_dataset = SlippyMapTilesConcatenation(
         [str(dataset_path / "validation" / "images")],
-        [str(dataset_path / "validation" / "labels")],
+        str(dataset_path / "validation" / "labels"),
         val_transform,
     )
 
@@ -105,6 +105,7 @@ def get_dataset_loaders(
     )
 
     return train_loader, val_loader
+
 
 
 def train(loader, num_classes, device, net, optimizer, criterion):

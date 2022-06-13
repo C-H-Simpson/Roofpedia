@@ -18,3 +18,4 @@ model_path = ''
 transform = "original"
 freeze_pretrained = 0
 pretrained_type = "resnet50"
+signal_fraction = 0.5

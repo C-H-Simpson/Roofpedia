@@ -1,4 +1,5 @@
 import random
+from torch.utils.data import Dataset
 
 class BackgroundResamplingLoader(Dataset):
     """Do resampling with replacement, compensating for class imbalance.
@@ -11,18 +12,16 @@ class BackgroundResamplingLoader(Dataset):
 
         self.n_signal = len(self.signal_tiles)
         self.n_background = len(self.background_tiles)
-        self.length = self.n_signal + self.n_background
-        assert signal_p == -1 or (signal_p>=0 and signal_p<=1)
+        self.length = int(self.n_background/(1-signal_p))
+        assert (signal_p>=0 and signal_p<=1)
 
-    def __iter__(self):
-        if signal_p != -1:
-            if random.random() < signal_p:
-                yield self.signal_tiles[int(random.random() * self.n_signal)]
-            else:
-                yield self.background_tiles[int(random.random() * self.n_background)]
+    def __len__(self):
+        return self.length
+
+    def __getitem__(self, i):
+        if i < self.n_background:
+            return self.background_tiles[i]
         else:
-            idx = random.random()*self.length
-            if idx < self.n_signal:
-                yield self.signal_tiles[idx]
-            else:
-                yield self.background_tiles[idx-self.n_signal]
+            idx = (idx - self.n_background) % self.n_signal
+            return self.signal_tiles[idx]
+
