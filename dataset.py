@@ -87,7 +87,7 @@ def convert_mask(mask_list):
 
 
 # train test val split
-def train_test_split(file_list, test_size=0.2, val_size=0.2):
+def train_test_split(file_list, test_size=0.1, val_size=0.1):
     random.Random(123).shuffle(file_list)
     train_size = 1 - test_size - val_size
     assert train_size > 0
