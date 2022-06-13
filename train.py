@@ -153,29 +153,24 @@ if __name__ == "__main__":
 
     augs = get_transforms(target_size)
     lr_base = lr
-    for lossfunc in ("Focal", "CrossEntropy", "Lovasz"):
-        print("Testing loss function:", lossfunc)
-        config["loss_func"] = lossfunc
-        for lr_factor in (1.0, 0.1, 10, 0.01):
-            lr = lr_base * lr_factor
-            config["lr"] = lr
-            print("Testing learning rate:", lr)
-            for transform_name in augs:
-                print("Testing augmentation:", transform_name)
-                config["transform"] = transform_name
-                # Training a model from scratch
-                config["model_path"] = ""
-                model_path = ""
-                # make dir for checkpoint
-                os.makedirs(checkpoint_path, exist_ok=True)
-                # Write the testing config to file
-                with open(checkpoint_path + "/config.toml", "w") as f:
-                    f.write(toml.dumps(config))
+    for lr_factor in (1.0, 0.1, 10):
+        lr = lr_base * lr_factor
+        config["lr"] = lr
+        print("Testing learning rate:", lr)
+        for transform_name in augs:
+            print("Testing augmentation:", transform_name)
+            config["transform"] = transform_name
+            # Training a model from scratch
+            config["model_path"] = ""
+            model_path = ""
+            # make dir for checkpoint
+            os.makedirs(checkpoint_path, exist_ok=True)
+            # Write the testing config to file
+            with open(checkpoint_path + "/config.toml", "w") as f:
+                f.write(toml.dumps(config))
 
-                run_training()
+            run_training()
 
-                # Move the config and results to a new directory
-                fname = "experiment_" + datetime.datetime.now().strftime(
-                    "%Y%m%d_%H%M%S"
-                )
-                shutil.move(checkpoint_path, fname)
+            # Move the config and results to a new directory
+            fname = "experiment_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            shutil.move(checkpoint_path, fname)
