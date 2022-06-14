@@ -186,5 +186,5 @@ def validate(loader, num_classes, device, net, criterion):
             "fp": metrics.fp,
             "tp": metrics.tp,
             "fn": metrics.fn,
-            "tn": metrics.fn,
+            "tn": metrics.tn,
         }
