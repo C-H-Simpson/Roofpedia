@@ -23,21 +23,22 @@ def load_img(label_path, source_path):
     return signal_labels, signal_images
 
 
-def select_tiles(training_area_path, background_proportion=0):
+def select_tiles(training_area_path, keep_background_proportion=0):
     # Check for tiles inside the training area.
     # The training area label acts like another layer of labelling.
     training_area_list = [str(p) for p in Path(training_area_path).glob("*/*/*.png")]
     print(f"{len(training_area_list)} tiles in training area")
     # Check which tiles are in the training area
-    training_area_hasSignal = joblib.Parallel(n_jobs=4)(
+    in_training_area = joblib.Parallel(n_jobs=4)(
         (
             joblib.delayed(lambda _p: cv2.imread(p).any())(p)
             for p in tqdm(training_area_list, desc="training area")
         )
     )
     training_area_list = [
-        p for p, i in zip(training_area_list, training_area_hasSignal) if i
+        p for p, i in zip(training_area_list, in_training_area) if i
     ]
+    print(f"{len(training_area_list)} tiles in training area")
 
     # Find non-background tiles within the training area.
     training_area_list = [
@@ -51,21 +52,22 @@ def select_tiles(training_area_path, background_proportion=0):
     ]
     if not any_list:
         raise ValueError("All tiles are background")
-    background_tiles_list = [p for p, i in zip(training_area_list, any_list) if not i]
-    signal_tiles_list = [p for p, i in zip(training_area_list, any_list) if i]
+    background_label = [p for p, i in zip(training_area_list, any_list) if not i]
+    signal_label = [p for p, i in zip(training_area_list, any_list) if i]
+
+    print(f"{len(background_label)} background tiles, {len(signal_label)} signal tiles")
 
     # Separate the background only tiles.
     # Keep a fraction of background tiles.
-    random.Random(123).shuffle(background_tiles_list)
-    keep_stop = min(
-        len(background_tiles_list), int(len(signal_tiles_list) * background_proportion)
-    )
-    print(f"Keeping {len(background_tiles_list)} background tiles")
-    print(f"With {len(signal_tiles_list)} signal tiles.")
+    random.Random(123).shuffle(background_label)
+    print(f"Keeping {len(background_label)} background tiles")
+    print(f"With {len(signal_label)} signal tiles.")
 
-    signal_labels = signal_tiles_list
+    signal_labels = signal_label
     signal_images = [i.replace("labels", "images") for i in signal_labels]
-    background_label = background_tiles_list
+    if keep_background_proportion<1:
+        keep_stop = int(keep_background_proportion * len(background_label))
+        background_label = background_label[:keep_stop]
     background_source = [i.replace("labels", "images") for i in background_label]
 
     return signal_labels, signal_images, background_label, background_source
@@ -103,7 +105,7 @@ if __name__ == "__main__":
     label_path = "dataset/labels"
     source_path = "dataset/images"
     training_area_path = "dataset/training_area"
-    keep_background_tiles = 0.25
+    keep_background_tiles = 1
     signal_labels, signal_images, bg_label, bg_source = select_tiles(
         training_area_path, keep_background_tiles
     )
