@@ -75,7 +75,7 @@ def run_training():
         val_hist = validate(val_loader, num_classes, device, net, criterion)
 
         print(
-            "Train loss: {:.4f}, mIoU: {:.3f}, {} IoU: {:.3f}, MCC: {:.3f}".format(
+            "Train loss: {:.4f}, mIoU: {:.3e}, {} IoU: {:.3e}, MCC: {:.3e}".format(
                 train_hist["loss"],
                 train_hist["miou"],
                 target_type,
@@ -85,11 +85,11 @@ def run_training():
         )
         print(
             "Train stats:",
-            ", ".join([f"{key}: {train_hist[key]:.3f}" for key in train_hist]),
+            ", ".join([f"{key}: {train_hist[key]:.3e}" for key in train_hist]),
         )
 
         print(
-            "Validation loss: {:.4f}, mIoU: {:.3f}, {} IoU: {:.3f}, MCC: {:.3f}".format(
+            "Validation loss: {:.4f}, mIoU: {:.3ee, {} IoU: {:.3e}, MCC: {:.3e}".format(
                 val_hist["loss"],
                 val_hist["miou"],
                 target_type,
@@ -99,7 +99,7 @@ def run_training():
         )
         print(
             "Validation stats:",
-            ", ".join([f"{key}: {val_hist[key]:.3f}" for key in val_hist]),
+            ", ".join([f"{key}: {val_hist[key]:.3e}" for key in val_hist]),
         )
 
         for key, value in train_hist.items():
@@ -126,6 +126,9 @@ def run_training():
                 "optimizer": optimizer.state_dict(),
             }
             torch.save(states, os.path.join(checkpoint_path, checkpoint))
+
+            if history["val loss"][-11] > history["val loss"][-1]:
+                break
 
 
 if __name__ == "__main__":
