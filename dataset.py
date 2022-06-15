@@ -23,7 +23,9 @@ def load_img(label_path, source_path):
     return signal_labels, signal_images
 
 
-def select_tiles(training_area_path, keep_background_proportion=0):
+def select_tiles(
+    training_area_path, keep_signal_proportion=1, keep_background_proportion=0
+):
     # Check for tiles inside the training area.
     # The training area label acts like another layer of labelling.
     training_area_list = [str(p) for p in Path(training_area_path).glob("*/*/*.png")]
@@ -35,9 +37,7 @@ def select_tiles(training_area_path, keep_background_proportion=0):
             for p in tqdm(training_area_list, desc="training area")
         )
     )
-    training_area_list = [
-        p for p, i in zip(training_area_list, in_training_area) if i
-    ]
+    training_area_list = [p for p, i in zip(training_area_list, in_training_area) if i]
     print(f"{len(training_area_list)} tiles in training area")
 
     # Find non-background tiles within the training area.
@@ -60,15 +60,22 @@ def select_tiles(training_area_path, keep_background_proportion=0):
     # Separate the background only tiles.
     # Keep a fraction of background tiles.
     random.Random(123).shuffle(background_label)
-    print(f"Keeping {len(background_label)} background tiles")
+    random.Random(123).shuffle(signal_label)
     print(f"With {len(signal_label)} signal tiles.")
 
     signal_labels = signal_label
     signal_images = [i.replace("labels", "images") for i in signal_labels]
-    if keep_background_proportion<1:
+    if keep_background_proportion < 1:
         keep_stop = int(keep_background_proportion * len(background_label))
+        print(f"Keeping {keep_stop}/{len(background_label)} background tiles")
         background_label = background_label[:keep_stop]
     background_source = [i.replace("labels", "images") for i in background_label]
+
+    if keep_signal_proportion < 1:
+        keep_stop = int(keep_signal_proportion * len(signal_label))
+        print(f"Keeping {keep_stop}/{len(signal_label)} signal tiles")
+        signal_label = signal_label[:keep_stop]
+    signal_source = [i.replace("labels", "images") for i in signal_label]
 
     return signal_labels, signal_images, background_label, background_source
 
@@ -105,9 +112,10 @@ if __name__ == "__main__":
     label_path = "dataset/labels"
     source_path = "dataset/images"
     training_area_path = "dataset/training_area"
-    keep_background_tiles = 1
+    keep_background_proportion = 1.0  # 0.1
+    keep_signal_proportion = 1.0  # 0.1
     signal_labels, signal_images, bg_label, bg_source = select_tiles(
-        training_area_path, keep_background_tiles
+        training_area_path, keep_signal_proportion, keep_background_proportion
     )
     convert_mask(signal_labels)
     convert_mask(bg_label)
@@ -127,7 +135,6 @@ if __name__ == "__main__":
         ("evaluation", test_bg_data),
         ("validation", val_bg_data),
     ):
-
         for label_path in labels_paths:
             img_path = label_path.replace("labels", "images")
             for i_name, i_path in (("labels", label_path), ("images", img_path)):

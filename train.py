@@ -29,6 +29,7 @@ def run_training():
     # add a helper to return weights seamlessly
     try:
         # The weights should actually be based on the proportions in the loader...
+        # This is currently only correct if there is no under/over sampling.
         weight = torch.Tensor([signal_fraction, 1])
     except KeyError:
         if model["opt"]["loss"] in ("CrossEntropy", "mIoU", "Focal"):
