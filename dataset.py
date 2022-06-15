@@ -13,6 +13,8 @@ from tqdm import tqdm
 
 from src.colors import make_palette
 
+random_obj = random.Random(144)
+
 
 def load_img(label_path, source_path):
     print(label_path, source_path)
@@ -59,8 +61,8 @@ def select_tiles(
 
     # Separate the background only tiles.
     # Keep a fraction of background tiles.
-    random.Random(123).shuffle(background_label)
-    random.Random(123).shuffle(signal_label)
+    random_obj.shuffle(background_label)
+    random_obj.shuffle(signal_label)
     print(f"With {len(signal_label)} signal tiles.")
 
     signal_labels = signal_label
@@ -80,24 +82,23 @@ def select_tiles(
     return signal_labels, signal_images, background_label, background_source
 
 
-def convert_mask(mask_list):
-    for i in mask_list:
-        img = Image.open(i)
-        thresh = 0
-        fn = lambda x: 255 if x > thresh else 0
-        # values = np.unique(img.convert('P'))
-        # print(values)
-        out = img.convert("P").point(fn, mode="1")
-        out = out.convert("P")
-        palette = make_palette("dark", "light")
-        out.putpalette(palette)
-        out.save(i)
-    print("Masks converted to 1bit labels, please check for correctness")
+def convert_mask(file):
+    # file = r"C:\Users\ucbqc38\Documents\RoofPedia\data_220131\\19\261990\174317.png"
+    img = Image.open(file)
+    thresh = 1
+    fn = lambda x: 255 if x > thresh else 0
+    # values = np.unique(img.convert('P'))
+    # print(values)
+    out = img.convert("P").point(fn, mode="1")
+    out = out.convert("P")
+    palette = make_palette("dark", "light")
+    out.putpalette(palette)
+    out.save(file)
 
 
 # train test val split
 def train_test_split(file_list, test_size=0.1, val_size=0.1):
-    random.Random(123).shuffle(file_list)
+    random_obj.shuffle(file_list)
     train_size = 1 - test_size - val_size
     assert train_size > 0
     train_stop = int(len(file_list) * train_size)
@@ -112,16 +113,16 @@ if __name__ == "__main__":
     label_path = "dataset/labels"
     source_path = "dataset/images"
     training_area_path = "dataset/training_area"
-    keep_background_proportion = 1.0  # 0.1
+    keep_background_proportion = 0.01  # 0.1
     keep_signal_proportion = 1.0  # 0.1
-    signal_labels, signal_images, bg_label, bg_source = select_tiles(
+    signal_labels, signal_images, bg_labels, bg_source = select_tiles(
         training_area_path, keep_signal_proportion, keep_background_proportion
     )
-    convert_mask(signal_labels)
-    convert_mask(bg_label)
+    print("signal label e.g.", signal_labels[0])
+    print("background label e.g.", bg_labels[1])
 
     train_data, test_data, val_data = train_test_split(signal_labels)
-    train_bg_data, test_bg_data, val_bg_data = train_test_split(bg_label)
+    train_bg_data, test_bg_data, val_bg_data = train_test_split(bg_labels)
 
     output_folder = Path("dataset")
 
@@ -142,5 +143,7 @@ if __name__ == "__main__":
                 dest = location / label_path[-20:]
                 dest.parent.mkdir(exist_ok=True, parents=True)
                 shutil.copy(label_path, dest)
+                # convert_mask(dest)
+        print(name, "e.g.", dest)
 
     print("Successfully split dataset according to train-test-val")
