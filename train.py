@@ -76,28 +76,10 @@ def run_training():
         val_hist = validate(val_loader, num_classes, device, net, criterion)
 
         print(
-            "Train loss: {:.4f}, mIoU: {:.3e}, {} IoU: {:.3e}, MCC: {:.3e}".format(
-                train_hist["loss"],
-                train_hist["miou"],
-                target_type,
-                train_hist["fg_iou"],
-                train_hist["mcc"],
-            )
-        )
-        print(
             "Train stats:",
             ", ".join([f"{key}: {train_hist[key]:.3e}" for key in train_hist]),
         )
 
-        print(
-            "Validation loss: {:.4f}, mIoU: {:.3ee, {} IoU: {:.3e}, MCC: {:.3e}".format(
-                val_hist["loss"],
-                val_hist["miou"],
-                target_type,
-                val_hist["fg_iou"],
-                val_hist["mcc"],
-            )
-        )
         print(
             "Validation stats:",
             ", ".join([f"{key}: {val_hist[key]:.3e}" for key in val_hist]),
@@ -117,8 +99,9 @@ def run_training():
             visual = "history-{:05d}-of-{:05d}.png".format(epoch + 1, num_epochs)
             plot(os.path.join(checkpoint_path, visual), history)
 
-        if history["val loss"][-11] > history["val loss"][-1]:
-            break
+        if epoch > 10:
+            if history["val loss"][-6] > history["val loss"][-1]:
+                break
 
     # Save the model
     checkpoint = target_type + "-checkpoint-{:03d}-of-{:03d}.pth".format(
