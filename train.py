@@ -100,7 +100,7 @@ def run_training():
             plot(os.path.join(checkpoint_path, visual), history)
 
         if epoch > 10:
-            if history["val loss"][-6] > history["val loss"][-1]:
+            if history["val loss"][-6] < history["val loss"][-1]:
                 break
 
     # Save the model
