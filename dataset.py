@@ -83,12 +83,9 @@ def select_tiles(
 
 
 def convert_mask(file):
-    # file = r"C:\Users\ucbqc38\Documents\RoofPedia\data_220131\\19\261990\174317.png"
     img = Image.open(file)
-    thresh = 1
-    fn = lambda x: 255 if x > thresh else 0
-    # values = np.unique(img.convert('P'))
-    # print(values)
+    thresh = 255
+    fn = lambda x: 255 if x < thresh else 0
     out = img.convert("P").point(fn, mode="1")
     out = out.convert("P")
     palette = make_palette("dark", "light")
@@ -143,7 +140,7 @@ if __name__ == "__main__":
                 dest = location / label_path[-20:]
                 dest.parent.mkdir(exist_ok=True, parents=True)
                 shutil.copy(label_path, dest)
-                # convert_mask(dest)
+                convert_mask(dest)
         print(name, "e.g.", dest)
 
     print("Successfully split dataset according to train-test-val")
