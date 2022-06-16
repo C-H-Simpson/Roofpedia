@@ -21,3 +21,4 @@ dataset/labels
 *.toml
 *.json
 dataset/training_area
+*.zip

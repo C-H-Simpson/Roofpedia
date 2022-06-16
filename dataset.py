@@ -14,6 +14,7 @@ from tqdm import tqdm
 from src.colors import make_palette
 
 random_obj = random.Random(144)
+# %%
 
 
 def load_img(label_path, source_path):
@@ -31,11 +32,11 @@ def select_tiles(
     # Check for tiles inside the training area.
     # The training area label acts like another layer of labelling.
     training_area_list = [str(p) for p in Path(training_area_path).glob("*/*/*.png")]
-    print(f"{len(training_area_list)} tiles in training area")
+    print(f"{len(training_area_list)} tiles in training extent")
     # Check which tiles are in the training area
     in_training_area = joblib.Parallel(n_jobs=4)(
         (
-            joblib.delayed(lambda _p: cv2.imread(p).any())(p)
+            joblib.delayed(lambda _p: not cv2.imread(p).any())(p)
             for p in tqdm(training_area_list, desc="training area")
         )
     )
@@ -49,6 +50,7 @@ def select_tiles(
     training_area_list = [
         p for p in tqdm(training_area_list, desc="file exists") if Path(p).is_file()
     ]
+    print(f"Labels exist for {len(training_area_list)} tiles")
     any_list = [
         cv2.imread(p).any() for p in tqdm(training_area_list, desc="backgrounds")
     ]
@@ -106,6 +108,7 @@ def train_test_split(file_list, test_size=0.1, val_size=0.1):
     return train_data, test_data, val_data
 
 
+# %%
 if __name__ == "__main__":
     label_path = "dataset/labels"
     source_path = "dataset/images"
