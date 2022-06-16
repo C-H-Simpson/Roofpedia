@@ -11,6 +11,7 @@ from torch.nn import DataParallel
 from torch.optim import Adam
 from torch.utils.data import DataLoader
 from tqdm import tqdm
+import numpy as np
 
 from src.augmentations import get_transforms
 from src.losses import CrossEntropyLoss2d, FocalLoss2d, LovaszLoss2d, mIoULoss2d
@@ -100,7 +101,7 @@ def run_training():
             plot(os.path.join(checkpoint_path, visual), history)
 
         if epoch > 10:
-            if history["val loss"][-6] < history["val loss"][-1]:
+            if np.mean(history["val loss"][-11:-6]) < np.mean(history["val loss"][-6:]):
                 break
 
     # Save the model
