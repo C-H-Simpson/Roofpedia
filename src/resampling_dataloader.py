@@ -15,7 +15,9 @@ class BackgroundResamplingLoader(Dataset):
 
         self.n_signal = len(self.signal_tiles)
         self.n_background = len(self.background_tiles)
-        self.length = int(self.n_background / (1 - signal_p))
+        self.length = max(
+            int(self.n_background / (1 - signal_p)), self.n_background + self.n_signal
+        )
 
     def __len__(self):
         return self.length
