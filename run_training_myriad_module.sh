@@ -7,25 +7,25 @@
 #$ -ac allow=EF 
 
 # Request wallclock time (format hours:minutes:seconds).
-#$ -l h_rt=23:00:0
+#$ -l h_rt=48:00:0
 
 # Request RAM (must be an integer followed by M, G, or T)
-#$ -l mem=8G
+#$ -l mem=16G
 
 # Request 15 gigabyte of TMPDIR space (default is 10 GB)
-#$ -l tmpfs=0G
+#$ -l tmpfs=10G
 
 # Set the name of the job.
 #$ -N GPUJob_module
 
 # Set the working directory to somewhere in your scratch space.
 # Replace "<your_UCL_id>" with your UCL user ID :)
-#$ -wd /home/ucbqc38/Roofpedia_clean/Roofpedia/
+#$ -wd /home/ucbqc38/Roofpedia_clean/Roofpedia_resample/
 
 date
 
 # Clean pip local env
-rm -r $HOME/.python3local/
+#rm -r $HOME/.python3local/
 
 
 # load the cuda module (in case you are running a CUDA program)
