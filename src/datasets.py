@@ -5,6 +5,7 @@ Guaranteed to implement `__len__`, and `__getitem__`.
 See: http://pytorch.org/docs/0.3.1/data.html
 """
 
+from pathlib import Path
 import torch
 import torch.utils.data
 from PIL import Image
@@ -108,6 +109,69 @@ class BufferedSlippyMapDirectory(torch.utils.data.Dataset):
         self.size = size
         self.overlap = overlap
         self.tiles = list(tiles_from_slippy_map(root))
+
+    def __len__(self):
+        return len(self.tiles)
+
+    def __getitem__(self, i):
+        tile, path = self.tiles[i]
+        image = buffer_tile_image(
+            tile, self.tiles, overlap=self.overlap, tile_size=self.size
+        )
+
+        if self.transform is not None:
+            image = self.transform(image)
+
+        return image, torch.IntTensor([tile.x, tile.y, tile.z])
+
+    def unbuffer(self, probs):
+        """Removes borders from segmentation probabilities added to the original tile image.
+
+        Args:
+          probs: the segmentation probability mask to remove buffered borders.
+
+        Returns:
+          The probability mask with the original tile's dimensions without added overlap borders.
+        """
+
+        o = self.overlap
+        _, x, y = probs.shape
+
+        return probs[:, o : x - o, o : y - o]
+
+class BufferedSlippyMapDirectory_noexist(torch.utils.data.Dataset):
+    """Dataset for buffered slippy map tiles with overlap."""
+
+    def __init__(self, root, write_directory, transform=None, size=512, overlap=32, ):
+        """
+        Args:
+          root: the slippy map directory root with a `z/x/y.png` sub-structure.
+          transform: the transformation to run on the buffered tile.
+          size: the Slippy Map tile size in pixels
+          overlap: the tile border to add on every side; in pixel.
+
+        Note:
+          The overlap must not span multiple tiles.
+
+          Use `unbuffer` to get back the original tile.
+        """
+
+        super().__init__()
+
+        assert overlap >= 0
+        assert size >= 256
+
+        self.transform = transform
+        self.size = size
+        self.overlap = overlap
+        self.tiles = list(tiles_from_slippy_map(root))
+
+        # Don't overwrite if the predictions already exist This is useful if
+        # the prediction area is so large that you need to do it across
+        # multiple sessions.
+        xyz = ([int(t) for t in tile] for tile in self.tiles)
+        prediction_not_exists = [not (Path(write_directory) / z / x / f"{y}.png").is_file() for x, y, z in xyz]
+        self.tiles= self.tiles[prediction_not_exists]
 
     def __len__(self):
         return len(self.tiles)

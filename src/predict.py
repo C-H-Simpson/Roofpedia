@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 import numpy as np
 import toml
@@ -11,12 +12,12 @@ from torchvision.transforms import Compose, Normalize
 from tqdm import tqdm
 
 from src.colors import make_palette
-from src.datasets import BufferedSlippyMapDirectory
+from src.datasets import BufferedSlippyMapDirectory, BufferedSlippyMapDirectory_noexist
 from src.transforms import ConvertImageMode, ImageToTensor
 from src.unet import UNet
 
 
-def predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=1):
+def predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=1, overwrite=True):
     # load device
     net = UNet(2).to(device)
     net = nn.DataParallel(net)
@@ -29,10 +30,14 @@ def predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=1):
         [ConvertImageMode(mode="RGB"), ImageToTensor(), Normalize(mean=mean, std=std)]
     )
 
-    # tiles file, need to get it again, or do we really need it? why not just predict
-    directory = BufferedSlippyMapDirectory(
-        tiles_dir, transform=transform, size=tile_size
-    )
+    if overwrite:
+        directory = BufferedSlippyMapDirectory(
+            tiles_dir, transform=transform, size=tile_size
+        )
+    else:
+        directory = BufferedSlippyMapDirectory_noexist(
+            tiles_dir, mask_dir, transform=transform, size=tile_size
+        )
     assert len(directory) > 0, "at least one tile in dataset"
 
     # loading data
@@ -41,6 +46,11 @@ def predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=1):
     # don't track tensors with autograd during prediction
     with torch.no_grad():
         for images, tiles in tqdm(loader, desc="Eval", unit="batch", ascii=True):
+            if not overwrite:
+                xyz = ([int(t) for t in tile] for tile in tiles)
+                prediction_not_exists = [not (Path(mask_dir) / z / x / f"{y}.png").is_file() for x, y, z in xyz]
+                images = images[prediction_not_exists]
+                tiles = tiles[prediction_not_exists]
             images = images.to(device)
             outputs = net(images)
 
