@@ -7,20 +7,20 @@
 #$ -ac allow=EF 
 
 # Request wallclock time (format hours:minutes:seconds).
-#$ -l h_rt=23:00:0
+#$ -l h_rt=48:00:0
 
 # Request RAM (must be an integer followed by M, G, or T)
 #$ -l mem=16G
 
 # Request 15 gigabyte of TMPDIR space (default is 10 GB)
-#$ -l tmpfs=0G
+#$ -l tmpfs=8G
 
 # Set the name of the job.
-#$ -N GPUJob_module
+#$ -N Predict
 
 # Set the working directory to somewhere in your scratch space.
 # Replace "<your_UCL_id>" with your UCL user ID :)
-#$ -wd /home/ucbqc38/Roofpedia_clean/Roofpedia
+#$ -wd /home/ucbqc38/Roofpedia_clean/Roofpedia_resample/
 
 date
 
@@ -50,7 +50,7 @@ pip3 install --user toml
 # Run the application
 echo "Shell: Running python script"
 #python3 -u train.py
-python3 -u predict_from_best.py LondonInner
+python3 -u predict_from_best.py InnerLondon
 # NB python directs to the wrong install of python!
 
 # Make sure you have given enough time for the copy to complete!
