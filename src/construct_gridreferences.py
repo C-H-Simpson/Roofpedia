@@ -9,7 +9,7 @@ import shapely
 
 gdf = gpd.read_file("../data/OSGB_10km_shp/OSGB_Grid_10km.shp")
 gdf_london = gpd.read_file("../data/London_borough_shp/London_Borough_Excluding_MHW.shp")
-gdf = gdf[gdf.intersects(gdf_london.unary_union)]
+gdf = gpd.overlay(gdf, gdf_london)
 gdf=gdf.to_crs("EPSG:4326")
 
 ftiles = list(Path("results/02Images/GreaterLondon").glob("*/*/*png"))
