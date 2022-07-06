@@ -13,6 +13,7 @@ best_config = ""
 # %%
 for p in paths:
     config = toml.load(p / "config.toml")
+    config["path"] = str(p)
     with open(p / "history.json", "r") as f:
         history = json.load(f)
     # print(config)
@@ -33,6 +34,7 @@ for p in paths:
     config["miou"] = history["val miou"][-1]
     results.append(config)
     y = 1 - f_score
+    config["1-f"] = y[-1]
     # y = f_score_train - f_score
     # y = accuracy_n
     plt.plot(y, label=label)
@@ -42,11 +44,16 @@ for p in paths:
     if f_score[-1] > best_f1:
         best_f1 = f_score[-1]
         best_config = p
+        best_config_spec = config
 # %%
 
-# df = pd.DataFrame(results).sort_values("f_score")
-# df.to_csv("results.csv")
-# print(df.tail())
+df = pd.DataFrame(results).sort_values("f_score")
+df.to_csv("results.csv")
+print(df)
+
+print("Best with no augs")
+print(df[df["transform"]=="no_augs"].tail(1).reset_index().to_dict())
 
 print("Best config:", best_config)
+print(best_config_spec)
 plt.show()
