@@ -10,6 +10,9 @@ import joblib
 import numpy as np
 from PIL import Image
 from tqdm import tqdm
+import mercantile
+import shapely
+import geopandas as gpd
 
 from src.colors import make_palette
 
@@ -29,35 +32,40 @@ def load_img(label_path, source_path):
 def select_tiles(
     training_area_path, keep_signal_proportion=1, keep_background_proportion=0
 ):
-    # Check for tiles inside the training area.
-    # The training area label acts like another layer of labelling.
-    training_area_list = [str(p) for p in Path(training_area_path).glob("*/*/*.png")]
-    print(f"{len(training_area_list)} tiles in training extent")
-    # Check which tiles are in the training area
-    in_training_area = joblib.Parallel(n_jobs=4)(
-        (
-            joblib.delayed(lambda _p: not cv2.imread(p).any())(p)
-            for p in tqdm(training_area_list, desc="training area")
-        )
+    # Load the limits of the labelled area.
+    gdf_labelled_area = gpd.read_file(training_area_path).to_crs("EPSG:4326")
+
+    # Load a glob of all the label tiles, some of which won't be valid.
+    label_tiles = list(Path("dataset/labels").glob("*/*/*png"))
+
+    # Check the training area returned is correct
+    tiles = [
+        (int(Path(s).parent.stem), int(Path(s).stem), int(Path(s).parent.parent.stem))
+        for s in label_tiles
+    ]
+    bounds = [mercantile.bounds(*s) for s in tiles]
+    boxes = [shapely.geometry.box(*b) for b in bounds]
+    gdf = gpd.GeoDataFrame(
+        {"label_tiles": [str(a) for a in label_tiles]}, geometry=boxes, crs="EPSG:4326"
     )
-    training_area_list = [p for p, i in zip(training_area_list, in_training_area) if i]
-    print(f"{len(training_area_list)} tiles in training area")
+    # gdf.to_file("dataset/label_tiles_return.geojson", driver="GeoJSON")
+
+    # Limit to the valid labelled area.
+    intersect = gpd.overlay(gdf, gdf_labelled_area)
+    intersect.to_file("dataset/labelled_tiles_return.geojson", driver="GeoJSON")
+    del gdf
+
+    label_tiles = np.unique(intersect.label_tiles.values)
+
+    print(f"{len(label_tiles)} tiles in training area")
 
     # Find non-background tiles within the training area.
-    training_area_list = [
-        p.replace("training_area", "labels") for p in training_area_list
-    ]
-    training_area_list = [
-        p for p in tqdm(training_area_list, desc="file exists") if Path(p).is_file()
-    ]
-    print(f"Labels exist for {len(training_area_list)} tiles")
-    any_list = [
-        cv2.imread(p).any() for p in tqdm(training_area_list, desc="backgrounds")
-    ]
+    any_list = [cv2.imread(p).any() for p in tqdm(label_tiles, desc="backgrounds")]
+    print(f"Labels exist for {sum(any_list)} tiles")
     if not any_list:
         raise ValueError("All tiles are background")
-    background_label = [p for p, i in zip(training_area_list, any_list) if not i]
-    signal_label = [p for p, i in zip(training_area_list, any_list) if i]
+    background_label = [p for p, i in zip(label_tiles, any_list) if not i]
+    signal_label = [p for p, i in zip(label_tiles, any_list) if i]
 
     print(f"{len(background_label)} background tiles, {len(signal_label)} signal tiles")
 
@@ -112,9 +120,9 @@ def train_test_split(file_list, test_size=0.1, val_size=0.1):
 if __name__ == "__main__":
     label_path = "dataset/labels"
     source_path = "dataset/images"
-    training_area_path = "dataset/training_area"
-    keep_background_proportion = 0.01  # 0.1
-    keep_signal_proportion = 1.0  # 0.1
+    training_area_path = "../data_220401/selected_area_220404.gpkg"
+    keep_background_proportion = 1.0
+    keep_signal_proportion = 1.0
     signal_labels, signal_images, bg_labels, bg_source = select_tiles(
         training_area_path, keep_signal_proportion, keep_background_proportion
     )
@@ -140,10 +148,11 @@ if __name__ == "__main__":
             img_path = label_path.replace("labels", "images")
             for i_name, i_path in (("labels", label_path), ("images", img_path)):
                 location = output_folder / name / i_name
-                dest = location / label_path[-20:]
+                dest = location / i_path[-20:]
                 dest.parent.mkdir(exist_ok=True, parents=True)
-                shutil.copy(label_path, dest)
-                convert_mask(dest)
+                shutil.copy(i_path, dest)
+                if i_name == "labels":
+                    convert_mask(dest)
         print(name, "e.g.", dest)
 
     print("Successfully split dataset according to train-test-val")
