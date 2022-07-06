@@ -30,7 +30,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 chkpt = torch.load(checkpoint_path, map_location=device)
 
-predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=64, overwrite=False)
+predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=64)
 
 #intersection(
     #target_type, city_name, mask_dir, kernel_size_denoise=15, kernel_size_grow=10
