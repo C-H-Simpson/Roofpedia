@@ -141,7 +141,7 @@ if __name__ == "__main__":
 
     augs = get_transforms(target_size)
     lr_base = lr
-    for lr_factor in (1, 0.1, 0.01, ):
+    for lr_factor in (0.1, 0.01, 0.001):
         lr = lr_base * lr_factor
         config["lr"] = lr
         print("Testing learning rate:", lr)
