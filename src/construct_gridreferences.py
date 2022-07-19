@@ -6,6 +6,8 @@ import geopandas as gpd
 from pathlib import Path
 import mercantile
 import shapely
+import numpy as np
+from tqdm import tqdm
 
 gdf = gpd.read_file("../data/OSGB_10km_shp/OSGB_Grid_10km.shp")
 gdf_london = gpd.read_file("../data/London_borough_shp/London_Borough_Excluding_MHW.shp")
@@ -28,18 +30,22 @@ gdf_tiles = gdf_tiles.sjoin(gdf[["geometry", "TILE_NAME"]])
 print(gdf_tiles)
 
 # %%
-for TILE_NAME, df in gdf_tiles[["label_tiles", "TILE_NAME"]].groupby("TILE_NAME"):
+"""
+for TILE_NAME, df in tqdm(gdf_tiles[["label_tiles", "TILE_NAME"]].groupby("TILE_NAME")):
     destination_dir = Path(f"results/02Images/{TILE_NAME}")
     paths = [Path(p) for p in df.label_tiles]
-    for p in df.label_tiles:
+    for p in tqdm(df.label_tiles.values, desc=TILE_NAME, leave=False):
         p = Path(p).resolve()
         dest = destination_dir / p.parent.parent.stem / p.parent.stem / p.name
+        if dest.is_symlink():
+            continue
         dest.parent.mkdir(exist_ok=True, parents=True)
         symlink(p, dest)
+        """
 
 # %%
 # Save the list of grid references
 with open("grid_references.txt", 'w') as f:
-    for gref in gdf.TILE_NAME.values:
+    for gref in np.unique(gdf.TILE_NAME.values):
        f.write(f"{gref}\n") 
     
