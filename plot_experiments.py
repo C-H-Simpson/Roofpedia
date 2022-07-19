@@ -30,8 +30,12 @@ for p in paths:
     f_score_train = history["train tp"] / (
         history["train tp"] + 0.5 * (history["train fp"] + history["train fn"])
     )
+    config["accuracy_train"] = ((history["train tp"] + history["train tn"]) / (history["train tp"] + history["train tn"] + history["train fp"] + history["train fn"]))[-1]
+    config["accuracy_val"] = ((history["val tp"] + history["val tn"]) / (history["val tp"] + history["val tn"] + history["val fp"] + history["val fn"]))[-1]
+
     config["f_score"] = f_score[-1]
     config["miou"] = history["val miou"][-1]
+    
     results.append(config)
     y = 1 - f_score
     config["1-f"] = y[-1]
