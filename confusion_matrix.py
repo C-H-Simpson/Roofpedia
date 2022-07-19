@@ -20,16 +20,9 @@ from src.extract import intersection
 from src.features.core import denoise, grow
 from src.metrics import Metrics
 from src.predict import predict
-from src.transforms import (
-    ConvertImageMode,
-    ImageToTensor,
-    JointCompose,
-    JointRandomHorizontalFlip,
-    JointRandomRotation,
-    JointTransform,
-    MaskToTensor,
-)
-
+from src.transforms import (ConvertImageMode, ImageToTensor, JointCompose,
+                            JointRandomHorizontalFlip, JointRandomRotation,
+                            JointTransform, MaskToTensor)
 # from src.train import validate
 from src.unet import UNet
 

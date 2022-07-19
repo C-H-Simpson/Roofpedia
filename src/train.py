@@ -16,15 +16,9 @@ from tqdm import tqdm
 from src.datasets import SlippyMapTilesConcatenation
 from src.metrics import Metrics
 from src.resampling_dataloader import BackgroundResamplingLoader
-from src.transforms import (
-    ConvertImageMode,
-    ImageToTensor,
-    JointCompose,
-    JointRandomHorizontalFlip,
-    JointRandomRotation,
-    JointTransform,
-    MaskToTensor,
-)
+from src.transforms import (ConvertImageMode, ImageToTensor, JointCompose,
+                            JointRandomHorizontalFlip, JointRandomRotation,
+                            JointTransform, MaskToTensor)
 
 
 def get_dataset_loaders(

@@ -30,12 +30,28 @@ for p in paths:
     f_score_train = history["train tp"] / (
         history["train tp"] + 0.5 * (history["train fp"] + history["train fn"])
     )
-    config["accuracy_train"] = ((history["train tp"] + history["train tn"]) / (history["train tp"] + history["train tn"] + history["train fp"] + history["train fn"]))[-1]
-    config["accuracy_val"] = ((history["val tp"] + history["val tn"]) / (history["val tp"] + history["val tn"] + history["val fp"] + history["val fn"]))[-1]
+    config["accuracy_train"] = (
+        (history["train tp"] + history["train tn"])
+        / (
+            history["train tp"]
+            + history["train tn"]
+            + history["train fp"]
+            + history["train fn"]
+        )
+    )[-1]
+    config["accuracy_val"] = (
+        (history["val tp"] + history["val tn"])
+        / (
+            history["val tp"]
+            + history["val tn"]
+            + history["val fp"]
+            + history["val fn"]
+        )
+    )[-1]
 
     config["f_score"] = f_score[-1]
     config["miou"] = history["val miou"][-1]
-    
+
     results.append(config)
     y = 1 - f_score
     config["1-f"] = y[-1]
@@ -56,7 +72,7 @@ df.to_csv("results.csv")
 print(df)
 
 print("Best with no augs")
-print(df[df["transform"]=="no_augs"].tail(1).reset_index().to_dict())
+print(df[df["transform"] == "no_augs"].tail(1).reset_index().to_dict())
 
 print("Best config:", best_config)
 print(best_config_spec)

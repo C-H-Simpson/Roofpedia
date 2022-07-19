@@ -1,24 +1,12 @@
 from PIL import Image
-from torchvision.transforms import (
-    CenterCrop,
-    ColorJitter,
-    Normalize,
-    Resize,
-    RandomAdjustSharpness,
-)
+from torchvision.transforms import (CenterCrop, ColorJitter, Normalize,
+                                    RandomAdjustSharpness, Resize)
 
-from src.transforms import (
-    ConvertImageMode,
-    ImageToTensor,
-    JointCompose,
-    JointFullyRandomRotation,
-    JointRandomCrop,
-    JointRandomHorizontalFlip,
-    JointRandomRotation,
-    JointRandomVerticalFlip,
-    JointTransform,
-    MaskToTensor,
-)
+from src.transforms import (ConvertImageMode, ImageToTensor, JointCompose,
+                            JointFullyRandomRotation, JointRandomCrop,
+                            JointRandomHorizontalFlip, JointRandomRotation,
+                            JointRandomVerticalFlip, JointTransform,
+                            MaskToTensor)
 
 
 def get_transforms(target_size):

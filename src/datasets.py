@@ -6,6 +6,7 @@ See: http://pytorch.org/docs/0.3.1/data.html
 """
 
 from pathlib import Path
+
 import torch
 import torch.utils.data
 from PIL import Image
@@ -138,4 +139,3 @@ class BufferedSlippyMapDirectory(torch.utils.data.Dataset):
         _, x, y = probs.shape
 
         return probs[:, o : x - o, o : y - o]
-

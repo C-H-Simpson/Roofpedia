@@ -2,17 +2,20 @@
 Divide London into gridsquares for paralell prediction.
 """
 from os import symlink
-import geopandas as gpd
 from pathlib import Path
+
+import geopandas as gpd
 import mercantile
-import shapely
 import numpy as np
+import shapely
 from tqdm import tqdm
 
 gdf = gpd.read_file("../data/OSGB_10km_shp/OSGB_Grid_10km.shp")
-gdf_london = gpd.read_file("../data/London_borough_shp/London_Borough_Excluding_MHW.shp")
+gdf_london = gpd.read_file(
+    "../data/London_borough_shp/London_Borough_Excluding_MHW.shp"
+)
 gdf = gpd.overlay(gdf, gdf_london)
-gdf=gdf.to_crs("EPSG:4326")
+gdf = gdf.to_crs("EPSG:4326")
 
 ftiles = list(Path("results/02Images/GreaterLondon").glob("*/*/*png"))
 tiles = [
@@ -45,7 +48,6 @@ for TILE_NAME, df in tqdm(gdf_tiles[["label_tiles", "TILE_NAME"]].groupby("TILE_
 
 # %%
 # Save the list of grid references
-with open("grid_references.txt", 'w') as f:
+with open("grid_references.txt", "w") as f:
     for gref in np.unique(gdf.TILE_NAME.values):
-       f.write(f"{gref}\n") 
-    
+        f.write(f"{gref}\n")

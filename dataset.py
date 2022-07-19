@@ -6,13 +6,13 @@ import shutil
 from pathlib import Path
 
 import cv2
+import geopandas as gpd
 import joblib
+import mercantile
 import numpy as np
+import shapely
 from PIL import Image
 from tqdm import tqdm
-import mercantile
-import shapely
-import geopandas as gpd
 
 from src.colors import make_palette
 

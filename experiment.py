@@ -5,16 +5,17 @@ import os
 import shutil
 import sys
 
+import numpy as np
 import toml
 import torch
 from torch.nn import DataParallel
 from torch.optim import Adam
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-import numpy as np
 
 from src.augmentations import get_transforms
-from src.losses import CrossEntropyLoss2d, FocalLoss2d, LovaszLoss2d, mIoULoss2d
+from src.losses import (CrossEntropyLoss2d, FocalLoss2d, LovaszLoss2d,
+                        mIoULoss2d)
 from src.train import get_dataset_loaders, train, validate
 from src.unet import UNet
 from src.utils import plot
