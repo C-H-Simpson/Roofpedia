@@ -1,7 +1,7 @@
 #!/bin/bash -l
 
 # Request wallclock time (format hours:minutes:seconds).
-#$ -l h_rt=00:05:0
+#$ -l h_rt=24:00:0
 
 # Request RAM (must be an integer followed by M, G, or T)
 #$ -l mem=16G
@@ -19,19 +19,28 @@
 date
 
 echo "Loading recommended python"
+module load gcc-libs/4.9.2
 module load python3/recommended
 
 echo "Loaded torch from local install"
 . /home/ucbqc38/torch/install/bin/torch-activate
 
 # Get the grid reference
+echo $SGE_TASK_ID
 gref=$(sed "${SGE_TASK_ID}q;d" grid_references.txt)
 echo $gref
 
 # Run the application
 echo "Shell: Running python script"
 #python3 -u train.py
-echo python3 -u predict_from_best.py $gref
+module load python3/recommended
+# Don't overwrite
+#if [ ! -d 'results/03Masks/Green/${gref}' ] 
+#then
+    #python3 -u predict_from_best.py $gref;
+#fi
+# or overwrite
+python3 -u predict_from_best.py $gref
 # NB python directs to the wrong install of python!
 
 date
