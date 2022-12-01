@@ -252,12 +252,18 @@ for k in range(1, k_folds):
                     / p.name
                 )
                 print(p, dest_file)
+                if not p.is_file():
+                    raise ValueError()
                 dest_file.parent.mkdir(exist_ok=True, parents=True)
-                symlink(p, dest_file)
+                symlink(p.resolve(), dest_file)
                 p = Path(str(p).replace("labels", "images"))
+                if not p.is_file():
+                    raise ValueError()
                 dest_file = Path(str(dest_file).replace("labels", "images"))
                 dest_file.parent.mkdir(exist_ok=True, parents=True)
                 print(p, dest_file)
-                symlink(p, dest_file)
+                symlink(p.resolve(), dest_file)
 
 print("Successfully split dataset according to kfold split")
+
+# %%

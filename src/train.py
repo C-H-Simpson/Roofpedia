@@ -16,9 +16,15 @@ from tqdm import tqdm
 from src.datasets import SlippyMapTilesConcatenation
 from src.metrics import Metrics
 from src.resampling_dataloader import BackgroundResamplingLoader
-from src.transforms import (ConvertImageMode, ImageToTensor, JointCompose,
-                            JointRandomHorizontalFlip, JointRandomRotation,
-                            JointTransform, MaskToTensor)
+from src.transforms import (
+    ConvertImageMode,
+    ImageToTensor,
+    JointCompose,
+    JointRandomHorizontalFlip,
+    JointRandomRotation,
+    JointTransform,
+    MaskToTensor,
+)
 
 
 def get_dataset_loaders(
@@ -62,14 +68,14 @@ def get_dataset_loaders(
         ]
     )
     train_dataset = SlippyMapTilesConcatenation(
-        [str(dataset_path / "training" / "images")],
-        str(dataset_path / "training" / "labels"),
+        [str(dataset_path / "training_s" / "images")],
+        str(dataset_path / "training_s" / "labels"),
         transform,
     )
 
     train_bg_dataset = SlippyMapTilesConcatenation(
-        [str(dataset_path / "training_bg" / "images")],
-        str(dataset_path / "training_bg" / "labels"),
+        [str(dataset_path / "training_b" / "images")],
+        str(dataset_path / "training_b" / "labels"),
         transform,
     )
 
