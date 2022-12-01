@@ -19,4 +19,4 @@ for ds in ("training", "validation", "evaluation", "training_bg"):
     boxes[ds] = [shapely.geometry.box(*b) for b in bounds[ds]]
     gdf = gpd.GeoDataFrame(geometry=boxes[ds])
     gdf["ds"] = ds
-    gdf.to_file(f"dataset/{ds}.geojson", driver="GeoJSON")
+    gdf.to_file(f"dataset/{ds}.geojson", driver="GeoJSON", index=False)
