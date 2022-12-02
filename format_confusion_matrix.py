@@ -1,3 +1,6 @@
+"""
+From already calculated confusion matrix results, make a nicely formatted table.
+"""
 import matplotlib.pyplot as plt
 import pandas as pd
 

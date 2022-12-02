@@ -85,7 +85,6 @@ def select_tiles(
         keep_stop = int(keep_signal_proportion * len(signal_label))
         print(f"Keeping {keep_stop}/{len(signal_label)} signal tiles")
         signal_label = signal_label[:keep_stop]
-    signal_source = [i.replace("labels", "images") for i in signal_label]
 
     return signal_labels, signal_images, background_label, background_source
 
@@ -93,8 +92,7 @@ def select_tiles(
 def convert_mask(file):
     img = Image.open(file)
     thresh = 255
-    fn = lambda x: 255 if x < thresh else 0
-    out = img.convert("P").point(fn, mode="1")
+    out = img.convert("P").point(lambda x: 255 if x < thresh else 0, mode="1")
     out = out.convert("P")
     palette = make_palette("dark", "light")
     out.putpalette(palette)
@@ -191,7 +189,7 @@ if __name__ == "__main__":
         training_area_path, keep_signal_proportion, keep_background_proportion
     )
     print("s label e.g.", s_labels[0])
-    print("background label e.g.", bg_labels[1])
+    print("background label e.g.", b_labels[1])
 
     k_folds = 5
     s_splits = kfold_split(s_labels)
@@ -265,5 +263,3 @@ for k in range(1, k_folds):
                 symlink(p.resolve(), dest_file)
 
 print("Successfully split dataset according to kfold split")
-
-# %%

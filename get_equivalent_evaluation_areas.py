@@ -1,3 +1,6 @@
+"""
+Get images corresponding to evaluation/testing from the alternative imageset.
+"""
 # %%
 from pathlib import Path
 import shutil

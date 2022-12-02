@@ -1,3 +1,6 @@
+"""
+Make a geojson showing what areas are in each dataset.
+"""
 from pathlib import Path
 
 import geopandas as gpd

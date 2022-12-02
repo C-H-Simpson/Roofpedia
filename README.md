@@ -18,7 +18,8 @@ If you aren't familiar with Roofpedia, we recommend looking at the [main repo](h
 2. Prepare data (see below).
 3. Run `dataset.py` to apply a train test split.
 4. Run experiments.py. This will produce a large number of directories with the pattern `experiment_{timestamp}`. Each of these has the results of one training experiment. Training will require a GPU.
-5. Select the best experiment, and manually set the name of the directory and checkpoint in `predict_from_best.py`.
+5. Select the best experiment, overwrite `config/best-predict-config.toml`.
+6. Run K-fold testing to produce the confusion matrices using `kfold_testing.py`.
 
 ## Prediction process
 1. Prepare data.

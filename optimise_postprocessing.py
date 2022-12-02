@@ -99,7 +99,7 @@ if __name__ == "__main__":
 
     # Optimize the postprocessing
     ds = "validation"
-    ds_dir = os.path.join("dataset", ds)
+    ds_dir = os.path.join(config["dataset_path"], ds)
     loader = get_plain_dataset_loader(config["target_size"], 64, ds_dir)
     loader = get_plain_dataset_loader(config["target_size"], 64, ds_dir)
     tile_size = config["target_size"]

@@ -1,3 +1,6 @@
+"""
+Run experiments to find a good training configuration.
+"""
 import collections
 import datetime
 import json
@@ -152,6 +155,8 @@ if __name__ == "__main__":
             model_path = ""
             # make dir for checkpoint
             os.makedirs(checkpoint_path, exist_ok=True)
+            fname = "experiment_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            config["checkpoint_path"] = fname
             # Write the testing config to file
             with open(checkpoint_path + "/config.toml", "w") as f:
                 f.write(toml.dumps(config))
@@ -159,7 +164,6 @@ if __name__ == "__main__":
             run_training()
 
             # Move the config and results to a new directory
-            fname = "experiment_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
             shutil.move(checkpoint_path, fname)
             break
         break

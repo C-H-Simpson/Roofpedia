@@ -7,7 +7,7 @@ import pandas as pd
 import toml
 
 paths = list(Path("/home/ucbqc38/Scratch/experiments").glob("experiment_*"))
-assert len(paths)>0
+assert len(paths) > 0
 results = []
 best_f1 = 0
 best_config = ""
@@ -75,7 +75,13 @@ print(df)
 
 # %%
 # Get best for a given set of parameters (across learning rates).
-df_best_lr = df.groupby(["loss_func","transform","freeze_pretrained"]).apply(lambda _df:_df.iloc[_df.f_score.argmax()]).sort_values("f_score")[["loss_func","transform","freeze_pretrained", "f_score", "lr"]]
+df_best_lr = (
+    df.groupby(["loss_func", "transform", "freeze_pretrained"])
+    .apply(lambda _df: _df.iloc[_df.f_score.argmax()])
+    .sort_values("f_score")[
+        ["loss_func", "transform", "freeze_pretrained", "f_score", "lr"]
+    ]
+)
 df_best_lr.to_csv("df_best_lr.csv")
 
 # %%
@@ -89,7 +95,7 @@ print(best_config_spec)
 fig, ax = plt.subplots()
 best_config_spec["path"] = str(p)
 with open(p / "history.json", "r") as f:
-        history = json.load(f)
+    history = json.load(f)
 ax.plot(history["train loss"], label="Training")
 ax.plot(history["val loss"], label="Validation")
 ax.legend()
