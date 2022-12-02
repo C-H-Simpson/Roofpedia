@@ -31,4 +31,15 @@ chkpt = torch.load(os.path.join(checkpoint_path, checkpoint_name), map_location=
 
 predict(tiles_dir, mask_dir, tile_size, device, chkpt)
 
-intersection(target_type, city_name, mask_dir)
+kernel_size_denoise = (
+    config["kernel_size_denoise"] if "kernel_size_denoise" in config else 0
+)
+kernel_size_grow = config["kernel_size_grow"] if "kernel_size_grow" in config else 0
+
+intersection(
+    target_type,
+    city_name,
+    mask_dir,
+    kernel_size_denoise=kernel_size_denoise,
+    kernel_size_grow=kernel_size_grow,
+)
