@@ -89,6 +89,6 @@ if __name__ == "__main__":
             print(val)
 
     df = pd.DataFrame(results)
-    df.to_csv("confusion_matrix.csv")
+    df.to_csv("confusion_matrix.csv", index=False)
     print(df)
-    print("wrote to confusion_matrix.csv", index=False)
+    print("wrote to confusion_matrix.csv")
