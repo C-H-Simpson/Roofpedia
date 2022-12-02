@@ -15,7 +15,6 @@ import toml
 import torch
 from torch.nn import DataParallel
 from torch.optim import Adam
-from torch.utils.data import DataLoader
 
 from src.augmentations import get_transforms
 from src.losses import CrossEntropyLoss2d, FocalLoss2d, LovaszLoss2d, mIoULoss2d
@@ -138,18 +137,19 @@ if __name__ == "__main__":
     # Training a model from scratch
     config["model_path"] = ""
     model_path = ""
-    # make dir for checkpoint - will get moved
-    checkpoint_path.mkdir(exist_ok=True)
     augs = get_transforms(target_size)
 
     # Fold 0 is the test data in this code, so there will be 4 iterations with 5 folds.
     k_folds = 5
     for k in range(1, k_folds):
         print(f"Starting fold {k} of {k_folds}")
+        config["kfold"] = k
+        # make dir for checkpoint - will get moved
+        checkpoint_path.mkdir(exist_ok=True)
         dataset_path = f"dataset/k{k}"
         # Write the testing config to file
         with open(checkpoint_path / "config.toml", "w") as f:
-            f.write(toml.dumps(config))
+            toml.dump(config, f)
 
         run_training()
 
