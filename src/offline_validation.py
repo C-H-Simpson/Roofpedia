@@ -2,17 +2,16 @@
 Get the confusion matrix from an already trained model.
 """
 import os
-import argparse
 from pathlib import Path
 
-import numpy as np
+# import numpy as np
 import pandas as pd
 import toml
 import torch
 import torch.nn as nn
 from tqdm import tqdm
 
-from src.features.core import denoise, grow
+# from src.features.core import denoise, grow
 from src.metrics import Metrics
 from src.plain_dataloader import get_plain_dataset_loader
 
@@ -23,12 +22,12 @@ from src.unet import UNet
 def validate_offline(loader, num_classes, device, net, use_postprocess=False):
     """This version of the validate routine can be used to test postprocess.
     Also, can take different loaders as input."""
-    kernel_size_denoise = 1
-    kernel_size_grow = 9
+    # kernel_size_denoise = 1
+    # kernel_size_grow = 9
     num_samples = 0
 
     metrics = Metrics(range(num_classes))
-    metrics_postprocess = Metrics(range(num_classes))
+    # metrics_postprocess = Metrics(range(num_classes))
 
     with torch.no_grad():
         net.eval()
@@ -45,24 +44,9 @@ def validate_offline(loader, num_classes, device, net, use_postprocess=False):
 
             num_samples += int(images.size(0))
             outputs = net(images)
-            if use_postprocess:
-                outputs_postprocess = np.argmax(np.array(outputs), axis=1).astype(
-                    "float"
-                )
-                outputs_postprocess = [
-                    denoise(img, kernel_size_denoise) for img in outputs_postprocess
-                ]
-                outputs_postprocess = [
-                    grow(img, kernel_size_grow) for img in outputs_postprocess
-                ]
-                outputs_postprocess = torch.Tensor(outputs_postprocess)
 
             for mask, output in zip(masks, outputs):
                 metrics.add(mask, output)
-
-            if use_postprocess:
-                for mask, output in zip(masks, outputs_postprocess):
-                    metrics_postprocess.add_binary(mask, output)
 
         result = {
             "miou": metrics.get_miou(),
@@ -72,25 +56,34 @@ def validate_offline(loader, num_classes, device, net, use_postprocess=False):
             "tp": metrics.tp,
             "fn": metrics.fn,
             "tn": metrics.tn,
+            "tp+fn" : metrics.tp+metrics.fn,
+            "f1": metrics.tp / (metrics.tp + 0.5 * (metrics.fp + metrics.fn)),
         }
-        if use_postprocess:
-            result_postprocess = {
-                "miou": metrics_postprocess.get_miou(),
-                "fg_iou": metrics_postprocess.get_fg_iou(),
-                "mcc": metrics_postprocess.get_mcc(),
-                "fp": metrics_postprocess.fp,
-                "tp": metrics_postprocess.tp,
-                "fn": metrics_postprocess.fn,
-                "tn": metrics_postprocess.tn,
-            }
-        else:
-            result_postprocess = {}
+        # if use_postprocess:
+        #     result_postprocess = {
+        #         "miou": metrics_postprocess.get_miou(),
+        #         "fg_iou": metrics_postprocess.get_fg_iou(),
+        #         "mcc": metrics_postprocess.get_mcc(),
+        #         "fp": metrics_postprocess.fp,
+        #         "tp": metrics_postprocess.tp,
+        #         "fn": metrics_postprocess.fn,
+        #         "tn": metrics_postprocess.tn,
+        #     }
+        # else:
+        #     result_postprocess = {}
 
-        return {"raw": result, "postprocess": result_postprocess}
+        return {
+            "raw": result,
+            # "postprocess": result_postprocess
+        }
 
 
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    # Can increase batch size on a better GPU.
+    # Doesn't need to be the same batch size as in training.
+    batch_size = 8
 
     # We will iterate over the "best config" and its kfolds
     original_config = toml.load("config/best-predict-config.toml")
@@ -104,7 +97,8 @@ if __name__ == "__main__":
                 continue
             if config[key] != original_config[key]:
                 raise ValueError(
-                    f"Non matching kfold config {p} {key} {config[key]} != {original_config[key]}"
+                    "Non matching kfold config"
+                    + f"{p} {key} {config[key]} != {original_config[key]}"
                 )
 
         print(f"{config['kfold']=}")
@@ -126,21 +120,28 @@ if __name__ == "__main__":
         net.eval()
 
         # Run on the datasets
-        for ds in ("training", "validation", "evaluation"):
-            ds_dir = os.path.join(config["dataset_path"], ds)
-            loader = get_plain_dataset_loader(config["target_size"], 64, ds_dir)
+        for ds in ("training_s", "training_b", "validation", "evaluation"):
+            if ds == "evaluation":
+                ds_dir = Path(config["dataset_path"]).parent / "testing"
+            else:
+                ds_dir = Path(config["dataset_path"]) / ds
+            print(ds_dir)
+            loader = get_plain_dataset_loader(config["target_size"], batch_size, ds_dir)
             tile_size = config["target_size"]
 
             val = validate_offline(loader, num_classes, device, net, True)
-            val["raw"]["ds"] = ds
-            val["raw"]["postprocess"] = False
-            val["postprocess"]["ds"] = ds
-            val["postprocess"]["postprocess"] = True
+            # val["raw"]["ds"] = ds
+            # val["raw"]["postprocess"] = False
+            # val["postprocess"]["ds"] = ds
+            # val["postprocess"]["postprocess"] = True
             results.append(val["raw"])
-            results_postprocess.append(val["postprocess"])
+            # results_postprocess.append(val["postprocess"])
         break
 
-    df = pd.DataFrame(results + results_postprocess)
-    # df.to_csv("confusion_matrix.csv")
+    df = pd.DataFrame(
+        results
+        # + results_postprocess
+    )
+    df.to_csv("confusion_matrix.csv")
     print(df)
     print("wrote to confusion_matrix.csv")
