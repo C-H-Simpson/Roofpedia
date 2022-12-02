@@ -45,13 +45,14 @@ if __name__ == "__main__":
         print(f"Starting fold {k} of {k_folds}")
         config["kfold"] = k
         # make dir for checkpoint - will get moved
+        checkpoint_path = f"results/kfold_{k}_" + datetime.datetime.now().strftime(
+            "%Y%m%d_%H%M%S"
+        )
+        config["checkpoint_path"] = checkpoint_path
+        checkpoint_path = Path(checkpoint_path)
         checkpoint_path.mkdir(exist_ok=True)
         dataset_path = f"dataset/k{k}"
         config["dataset_path"] = dataset_path
-        fname = f"results/kfold_{k}_" + datetime.datetime.now().strftime(
-            "%Y%m%d_%H%M%S"
-        )
-        config["checkpoint_path"] = fname
         # Write the testing config to file
         with open(checkpoint_path / "config.toml", "w") as f:
             toml.dump(config, f)
@@ -71,6 +72,3 @@ if __name__ == "__main__":
             target_size=target_size,
             transform_name=transform_name,
         )
-
-        # Move the config and results to a new directory
-        shutil.move(checkpoint_path, fname)
