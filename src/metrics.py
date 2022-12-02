@@ -23,6 +23,9 @@ class Metrics:
         self.fn = 0
         self.fp = 0
         self.tp = 0
+        self.actual = 0
+        self.predicted = 0
+        self.M = 0
 
     def add(self, actual, predicted):
         """Adds an observation to the tracker.
@@ -32,21 +35,22 @@ class Metrics:
           predicted: the predicted labels.
         """
 
+        assert predicted.size(0) == 2
         masks = torch.argmax(predicted, 0)
-        confusion = masks.view(-1).float() / actual.view(-1).float()
-
-        self.tn += torch.sum(torch.isnan(confusion)).item()
-        self.fn += torch.sum(confusion == float("inf")).item()
-        self.fp += torch.sum(confusion == 0).item()
-        self.tp += torch.sum(confusion == 1).item()
+        self.add_binary(actual, masks)
 
     def add_binary(self, actual, masks):
-        confusion = masks.view(-1).float() / actual.view(-1).float()
+        # confusion = masks.view(-1).float() / actual.view(-1).float()
 
-        self.tn += torch.sum(torch.isnan(confusion)).item()
-        self.fn += torch.sum(confusion == float("inf")).item()
-        self.fp += torch.sum(confusion == 0).item()
-        self.tp += torch.sum(confusion == 1).item()
+        self.tn += torch.sum(
+            torch.logical_and(torch.logical_not(actual), torch.logical_not(masks))
+        ).item()
+        self.fn += torch.sum(torch.logical_and(torch.logical_not(masks), actual)).item()
+        self.fp += torch.sum(torch.logical_and(masks, torch.logical_not(actual))).item()
+        self.tp += torch.sum(torch.logical_and(actual, masks)).item()
+        self.actual += torch.sum(actual).item()
+        self.predicted += torch.sum(masks).item()
+        self.M += actual.nelement()
 
     def get_miou(self):
         """Retrieves the mean Intersection over Union score.
