@@ -7,6 +7,7 @@ import json
 import os
 import shutil
 import sys
+from pathlib import Path
 
 import numpy as np
 import toml
@@ -141,6 +142,8 @@ if __name__ == "__main__":
 
     transform_name = config["transform"]
 
+    Path("results").mkdir(exist_ok=True)
+
     augs = get_transforms(target_size)
     lr_base = lr
     for lr_factor in (0.1, 0.01, 0.001):
@@ -155,7 +158,9 @@ if __name__ == "__main__":
             model_path = ""
             # make dir for checkpoint
             os.makedirs(checkpoint_path, exist_ok=True)
-            fname = "experiment_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            fname = "results/experiment_" + datetime.datetime.now().strftime(
+                "%Y%m%d_%H%M%S"
+            )
             config["checkpoint_path"] = fname
             # Write the testing config to file
             with open(checkpoint_path + "/config.toml", "w") as f:
