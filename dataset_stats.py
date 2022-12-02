@@ -8,7 +8,7 @@ import numpy as np
 
 dataset_parents = Path("dataset").glob("*")
 for p in dataset_parents:
-    for s in ("training", "validation", "evaluation"):
+    for s in ("training_s", "training_b", "validation"):
         if not (p / s).is_dir():
             # print(p / s, "not a dir")
             continue
