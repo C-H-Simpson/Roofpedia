@@ -70,7 +70,7 @@ def run_training():
         target_size, batch_size, dataset_path, signal_fraction, augs[transform_name]
     )
     eval_loader = get_plain_dataset_loader(
-        target_size, batch_size, Path(dataset_path) / "evaluation"
+        target_size, batch_size, Path(dataset_path).parent / "testing"
     )
     history = collections.defaultdict(list)
 
@@ -151,12 +151,15 @@ if __name__ == "__main__":
         # make dir for checkpoint - will get moved
         checkpoint_path.mkdir(exist_ok=True)
         dataset_path = f"dataset/k{k}"
-        fname = f"kfold_{k}_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        fname = f"results/kfold_{k}_" + datetime.datetime.now().strftime(
+            "%Y%m%d_%H%M%S"
+        )
         config["checkpoint_path"] = fname
         # Write the testing config to file
         with open(checkpoint_path / "config.toml", "w") as f:
             toml.dump(config, f)
 
+        # NB this routine is not the same as in experiment.py
         run_training()
 
         # Move the config and results to a new directory
