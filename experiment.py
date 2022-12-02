@@ -129,7 +129,7 @@ def run_training(
         "state_dict": net.state_dict(),
         "optimizer": optimizer.state_dict(),
     }
-    torch.save(states, os.path.join(checkpoint_path, "final_checkpoint.pth"))
+    torch.save(states, checkpoint_path / "final_checkpoint.pth")
 
     # eval_loader = get_plain_dataset_loader(
     #     target_size, batch_size, Path(dataset_path).parent / "testing"
@@ -149,7 +149,7 @@ if __name__ == "__main__":
     batch_size = config["batch_size"]
 
     dataset_path = config["dataset_path"]
-    checkpoint_path = config["checkpoint_path"]
+    checkpoint_path = Path(config["checkpoint_path"])
     target_type = config["target_type"]
     freeze_pretrained = config["freeze_pretrained"]
     signal_fraction = config["signal_fraction"]
@@ -178,13 +178,14 @@ if __name__ == "__main__":
             config["model_path"] = ""
             model_path = ""
             # make dir for checkpoint
-            os.makedirs(checkpoint_path, exist_ok=True)
             fname = "results/experiment_" + datetime.datetime.now().strftime(
                 "%Y%m%d_%H%M%S"
             )
+            checkpoint_path = Path(fname)
+            checkpoint_path.mkdir(exist_ok=False)
             config["checkpoint_path"] = fname
             # Write the testing config to file
-            with open(checkpoint_path + "/config.toml", "w") as f:
+            with open(checkpoint_path / "config.toml", "w") as f:
                 f.write(toml.dumps(config))
 
             run_training(
@@ -205,5 +206,5 @@ if __name__ == "__main__":
             )
 
             # Move the config and results to a new directory
-            shutil.move(checkpoint_path, fname)
-            break
+            # No necessary as it should have been written in the right place!
+            # shutil.move(checkpoint_path, fname)
