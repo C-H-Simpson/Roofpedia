@@ -10,12 +10,9 @@ import toml
 import torch
 from torch.nn import DataParallel
 from torch.optim import Adam
-from torch.utils.data import DataLoader
-from tqdm import tqdm
 
 from src.augmentations import get_transforms
-from src.losses import (CrossEntropyLoss2d, FocalLoss2d, LovaszLoss2d,
-                        mIoULoss2d)
+from src.losses import CrossEntropyLoss2d, FocalLoss2d, LovaszLoss2d, mIoULoss2d
 from src.train import get_dataset_loaders, train, validate
 from src.unet import UNet
 from src.utils import plot
@@ -29,13 +26,14 @@ def run_training():
 
     # weighted values for loss functions
     # add a helper to return weights seamlessly
-    try:
-        # The weights should actually be based on the proportions in the loader...
-        # This is currently only correct if there is no under/over sampling.
+
+    # The weights should actually be based on the proportions in the loader...
+    # This is currently only correct if there is no under/over sampling.
+    # Lovasz does not use weighting.
+    if loss_func != "Lovasz":
         weight = torch.Tensor([signal_fraction, 1])
-    except KeyError:
-        if model["opt"]["loss"] in ("CrossEntropy", "mIoU", "Focal"):
-            sys.exit("Error: The loss function used, need dataset weights values")
+    else:
+        weight = None
 
     # loading Model
     net = UNet(num_classes, freeze_pretrained=freeze_pretrained)
@@ -163,3 +161,5 @@ if __name__ == "__main__":
             # Move the config and results to a new directory
             fname = "experiment_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
             shutil.move(checkpoint_path, fname)
+            break
+        break

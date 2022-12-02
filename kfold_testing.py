@@ -31,13 +31,13 @@ def run_training():
 
     # weighted values for loss functions
     # add a helper to return weights seamlessly
-    try:
-        # The weights should actually be based on the proportions in the loader...
-        # This is currently only correct if there is no under/over sampling.
+    # The weights should actually be based on the proportions in the loader...
+    # This is currently only correct if there is no under/over sampling.
+    # Lovasz does not use weighting.
+    if loss_func != "Lovasz":
         weight = torch.Tensor([signal_fraction, 1])
-    except KeyError:
-        if model["opt"]["loss"] in ("CrossEntropy", "mIoU", "Focal"):
-            sys.exit("Error: The loss function used, need dataset weights values")
+    else:
+        weight = None
 
     # loading Model
     net = UNet(num_classes, freeze_pretrained=freeze_pretrained)
