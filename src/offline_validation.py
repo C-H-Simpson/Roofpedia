@@ -16,7 +16,6 @@ from src.train import validate
 # from src.train import validate
 from src.unet import UNet
 
-
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -26,7 +25,7 @@ if __name__ == "__main__":
 
     # We will iterate over the "best config" and its kfolds
     original_config = toml.load("config/best-predict-config.toml")
-    kfold_config_paths = list(Path("results").glob("kfold_3*/config.toml"))
+    kfold_config_paths = list(Path("results").glob("kfold_*/config.toml"))
 
     # Check the kfold files match the original config.
     for p in kfold_config_paths:
@@ -92,4 +91,4 @@ if __name__ == "__main__":
     df = pd.DataFrame(results)
     df.to_csv("confusion_matrix.csv")
     print(df)
-    print("wrote to confusion_matrix.csv")
+    print("wrote to confusion_matrix.csv", index=False)
