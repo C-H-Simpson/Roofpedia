@@ -24,8 +24,8 @@ if __name__ == "__main__":
     target_type = config["target_type"]
     freeze_pretrained = config["freeze_pretrained"]
     signal_fraction = config["signal_fraction"]
-    config["weight"] = [signal_fraction, 1]
-    weight = [signal_fraction, 1]
+    weight = [signal_fraction, 1.0]
+    config["weight"] = weight
     transform_name = config["transform"]
     # Training a model from scratch
     config["model_path"] = ""
