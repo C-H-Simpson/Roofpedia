@@ -145,12 +145,12 @@ def kfold_split(file_list, n_splits=5):
 
 #     for name, labels_paths in (
 #         ("training", train_data),
-#         ("evaluation", test_data),
+#         ("testing", test_data),
 #         ("validation", val_data),
 #         ("training_bg", train_bg_data),
-#         # For evaluation and validation, put the signal and background together
+#         # For testing and validation, put the signal and background together
 #         # in a single directory, no need to split.
-#         ("evaluation", test_bg_data),
+#         ("testing", test_bg_data),
 #         ("validation", val_bg_data),
 #     ):
 #         for label_path in labels_paths:

@@ -10,7 +10,7 @@ tiles = {}
 bounds = {}
 boxes = {}
 
-ds = "evaluation"
+ds = "testing"
 files[ds] = list(Path(f"dataset/{ds}/labels/19").glob("*/*.png"))
 tiles[ds] = [
     # Directory structure is z/x/y

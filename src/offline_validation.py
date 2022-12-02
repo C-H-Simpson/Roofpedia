@@ -72,8 +72,8 @@ if __name__ == "__main__":
         net.eval()
 
         # Run on the datasets
-        for ds in ("training_s", "training_b", "validation", "evaluation"):
-            if ds == "evaluation":
+        for ds in ("training_s", "training_b", "validation", "testing"):
+            if ds == "testing":
                 ds_dir = Path(config["dataset_path"]).parent / "testing"
             else:
                 ds_dir = Path(config["dataset_path"]) / ds

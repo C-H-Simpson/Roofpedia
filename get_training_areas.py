@@ -11,7 +11,7 @@ files = {}
 tiles = {}
 bounds = {}
 boxes = {}
-for ds in ("training", "validation", "evaluation", "training_bg"):
+for ds in ("training", "validation", "testing", "training_bg"):
     files[ds] = list(Path(f"dataset/{ds}/labels/19").glob("*/*.png"))
     tiles[ds] = [
         # Directory structure is z/x/y
