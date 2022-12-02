@@ -22,7 +22,22 @@ from src.unet import UNet
 from src.utils import plot
 
 
-def run_training():
+def run_training(
+    *,
+    augs,
+    batch_size,
+    checkpoint_path,
+    dataset_path,
+    freeze_pretrained,
+    loss_func,
+    lr,
+    model_path,
+    num_classes,
+    num_epochs,
+    signal_fraction,
+    target_size,
+    transform_name,
+):
     device = torch.device("cuda")
 
     if not torch.cuda.is_available():
@@ -95,7 +110,7 @@ def run_training():
         for key, value in val_hist.items():
             history["val " + key].append(value)
 
-        with open(checkpoint_path + "/history.json", "w") as f:
+        with open(checkpoint_path / "history.json", "w") as f:
             json.dump(history, f)
 
         if (epoch + 1) % 5 == 0:
@@ -108,15 +123,18 @@ def run_training():
                 break
 
     # Save the model
-    checkpoint = target_type + "-checkpoint-{:03d}-of-{:03d}.pth".format(
-        epoch + 1, num_epochs
-    )
     states = {
         "epoch": epoch + 1,
         "state_dict": net.state_dict(),
         "optimizer": optimizer.state_dict(),
     }
-    torch.save(states, os.path.join(checkpoint_path, checkpoint))
+    torch.save(states, os.path.join(checkpoint_path, "final_checkpoint.pth"))
+
+    # eval_loader = get_plain_dataset_loader(
+    #     target_size, batch_size, Path(dataset_path).parent / "testing"
+    # )
+
+    # eval_hist = validate(eval_loader, num_classes, device, net, criterion)
 
 
 if __name__ == "__main__":
@@ -145,8 +163,8 @@ if __name__ == "__main__":
     Path("results").mkdir(exist_ok=True)
 
     augs = get_transforms(target_size)
-    lr_base = lr
-    for lr_factor in (0.1, 0.01, 0.001):
+    lr_base = 3e-4
+    for lr_factor in (1, 0.1, 0.01):
         lr = lr_base * lr_factor
         config["lr"] = lr
         print("Testing learning rate:", lr)
@@ -166,9 +184,22 @@ if __name__ == "__main__":
             with open(checkpoint_path + "/config.toml", "w") as f:
                 f.write(toml.dumps(config))
 
-            run_training()
+            run_training(
+                augs=augs,
+                batch_size=batch_size,
+                checkpoint_path=checkpoint_path,
+                dataset_path=dataset_path,
+                freeze_pretrained=freeze_pretrained,
+                loss_func=loss_func,
+                lr=lr,
+                model_path=model_path,
+                num_classes=num_classes,
+                num_epochs=num_epochs,
+                signal_fraction=signal_fraction,
+                target_size=target_size,
+                transform_name=transform_name,
+            )
 
             # Move the config and results to a new directory
             shutil.move(checkpoint_path, fname)
             break
-        break
