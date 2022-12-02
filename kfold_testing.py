@@ -3,7 +3,6 @@ Repeat training across multiple folds, and produce performance statistics.
 """
 
 import datetime
-import shutil
 from pathlib import Path
 
 import toml

@@ -1,7 +1,6 @@
 """
 Get the confusion matrix from an already trained model.
 """
-import os
 from pathlib import Path
 
 # import numpy as np
@@ -9,10 +8,6 @@ import pandas as pd
 import toml
 import torch
 import torch.nn as nn
-from tqdm import tqdm
-
-# from src.features.core import denoise, grow
-from src.metrics import Metrics
 
 from src.plain_dataloader import get_plain_dataset_loader
 from src.losses import CrossEntropyLoss2d, FocalLoss2d, LovaszLoss2d, mIoULoss2d
@@ -60,7 +55,7 @@ if __name__ == "__main__":
     elif loss_func == "Lovasz":
         criterion = LovaszLoss2d().to(device)
     else:
-        sys.exit("Error: Unknown Loss Function value !")
+        raise ValueError("Unknown Loss Function value !")
 
     # Iterate through k folds and do offline validation.
     results = []
