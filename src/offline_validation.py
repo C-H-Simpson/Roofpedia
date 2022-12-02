@@ -1,8 +1,9 @@
 """
-Get the confusion matrix from the final trained model.
+Get the confusion matrix from an already trained model.
 """
 import os
 import argparse
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -91,37 +92,55 @@ def validate_offline(loader, num_classes, device, net, use_postprocess=False):
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("config", help="config path")
-    parser.add_argument("checkpoint", help="checkpoint path")
-    args = parser.parse_args()
-    config = toml.load(args.config)
-    # checkpoint_path = "experiment_20220407_151148/Green-checkpoint-100-of-100.pth"
-    chkpt = torch.load(args.checkpoint, map_location=device)
-    num_classes = 2
+    # We will iterate over the "best config" and its kfolds
+    original_config = toml.load("config/best-predict-config.toml")
+    kfold_config_paths = Path("results").glob("kfold*")
 
-    net = UNet(2).to(device)
-    net = nn.DataParallel(net)
-    net.load_state_dict(chkpt["state_dict"])
-    net.eval()
+    # Check the kfold files match the original config.
+    for p in kfold_config_paths:
+        config = toml.load(p / "config.toml")
+        for key in original_config:
+            if key in ("dataset_path", "checkpoint_path", "kfold"):
+                continue
+            if config[key] != original_config[key]:
+                raise ValueError(
+                    f"Non matching kfold config {p} {key} {config[key]} != {original_config[key]}"
+                )
 
-    # Run on the datasets
+        print(f"{config['kfold']=}")
+
     results = []
     results_postprocess = []
-    for ds in ("training", "validation", "evaluation"):
-        ds_dir = os.path.join(config["dataset_path"], ds)
-        loader = get_plain_dataset_loader(config["target_size"], 64, ds_dir)
-        tile_size = config["target_size"]
 
-        val = validate_offline(loader, num_classes, device, net, True)
-        val["raw"]["ds"] = ds
-        val["raw"]["postprocess"] = False
-        val["postprocess"]["ds"] = ds
-        val["postprocess"]["postprocess"] = True
-        results.append(val["raw"])
-        results_postprocess.append(val["postprocess"])
+    # Iterate through k folds and do offline validation.
+    for config in [original_config] + [
+        toml.load(p / "config.toml") for p in kfold_config_paths
+    ]:
+        chkpt_path = Path(config["checkpoint_path"]) / "final_checkpoint.pth"
+        chkpt = torch.load(chkpt_path, map_location=device)
+        num_classes = 2
+
+        net = UNet(2).to(device)
+        net = nn.DataParallel(net)
+        net.load_state_dict(chkpt["state_dict"])
+        net.eval()
+
+        # Run on the datasets
+        for ds in ("training", "validation", "evaluation"):
+            ds_dir = os.path.join(config["dataset_path"], ds)
+            loader = get_plain_dataset_loader(config["target_size"], 64, ds_dir)
+            tile_size = config["target_size"]
+
+            val = validate_offline(loader, num_classes, device, net, True)
+            val["raw"]["ds"] = ds
+            val["raw"]["postprocess"] = False
+            val["postprocess"]["ds"] = ds
+            val["postprocess"]["postprocess"] = True
+            results.append(val["raw"])
+            results_postprocess.append(val["postprocess"])
+        break
 
     df = pd.DataFrame(results + results_postprocess)
-    df.to_csv("confusion_matrix.csv")
+    # df.to_csv("confusion_matrix.csv")
     print(df)
     print("wrote to confusion_matrix.csv")
