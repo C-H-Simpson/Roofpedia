@@ -25,6 +25,8 @@ if __name__ == "__main__":
     target_type = config["target_type"]
     freeze_pretrained = config["freeze_pretrained"]
     signal_fraction = config["signal_fraction"]
+    config["weight"] = [signal_fraction, 1]
+    weight = [signal_fraction, 1]
     transform_name = config["transform"]
     # Training a model from scratch
     config["model_path"] = ""
@@ -32,11 +34,9 @@ if __name__ == "__main__":
     augs = get_transforms(target_size)
     original_k = config["kfold"]
 
-    # "Fold 0" is the test data in this code, so there will be 4 iterations with 5 folds.
-    #
-    # Technically, we should be able to avoid retraining with the fold we used
-    # for original training, saving a bit of computer time.
-    # So there will be 3 extra iterations with 5 folds.
+    # "Fold 0" is the test data in this code,
+    # and fold 1 was used to train the "original" model in experiment.py
+    # so there will only be three iterations with five folds.
 
     k_folds = 5
     for k in range(1, k_folds):
@@ -71,4 +71,5 @@ if __name__ == "__main__":
             signal_fraction=signal_fraction,
             target_size=target_size,
             transform_name=transform_name,
+            weight=weight,
         )
