@@ -132,7 +132,7 @@ def train(loader, num_classes, device, net, optimizer, criterion):
             prediction = output.detach()
             metrics.add(mask, prediction)
 
-    return {
+    results = {
         "loss": running_loss / num_samples,
         "miou": metrics.get_miou(),
         "fg_iou": metrics.get_fg_iou(),
@@ -141,8 +141,15 @@ def train(loader, num_classes, device, net, optimizer, criterion):
         "tp": metrics.tp,
         "fn": metrics.fn,
         "tn": metrics.tn,
-        "f1": metrics.tp / (metrics.tp + 0.5 * (metrics.fp + metrics.fn)),
+        "tp+fn": metrics.tp + metrics.fn,
+        "tp+fn+fp+tn": metrics.tp + metrics.fn + metrics.fp + metrics.tn,
+        "M": metrics.M,
     }
+    try:
+        results["f1"] = metrics.tp / (metrics.tp + 0.5 * (metrics.fp + metrics.fn))
+    except ZeroDivisionError:
+        results["f1"] = float("NAN")
+    return results
 
 
 def validate(loader, num_classes, device, net, criterion):
@@ -172,7 +179,7 @@ def validate(loader, num_classes, device, net, criterion):
             for mask, output in zip(masks, outputs):
                 metrics.add(mask, output)
 
-        return {
+        results = {
             "loss": running_loss / num_samples,
             "miou": metrics.get_miou(),
             "fg_iou": metrics.get_fg_iou(),
@@ -181,5 +188,12 @@ def validate(loader, num_classes, device, net, criterion):
             "tp": metrics.tp,
             "fn": metrics.fn,
             "tn": metrics.tn,
-            "f1": metrics.tp / (metrics.tp + 0.5 * (metrics.fp + metrics.fn)),
+            "tp+fn": metrics.tp + metrics.fn,
+            "tp+fn+fp+tn": metrics.tp + metrics.fn + metrics.fp + metrics.tn,
+            "M": metrics.M,
         }
+        try:
+            results["f1"] = metrics.tp / (metrics.tp + 0.5 * (metrics.fp + metrics.fn))
+        except ZeroDivisionError:
+            results["f1"] = float("NAN")
+        return results
