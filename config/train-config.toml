@@ -1,21 +1,24 @@
 # config file for easy config settings
 # path to training and validation
 
-dataset_path = "dataset"
+dataset_path = "dataset/k1"
+kfold = 1
 target_type = "Green"
 
 
 #model params
 tile_size = 256
-lr = 0.0005 
-loss_func = "Lovasz"
-num_epochs = 100
+lr = 0.0005
+loss_func = "Focal"
+num_epochs = 10
 target_size = 256
-batch_size  = 16
-weights = [1.513212, 10.147043]
+batch_size  = 4
 checkpoint_path = "checkpoint"
 model_path = ''
-transform = "original"
+transform = "flips_and_rotations"
 freeze_pretrained = 0
+# NB pretrained_type is for the sake of records, this toml file does not control it.
 pretrained_type = "resnet50"
 signal_fraction = 0.5
+# kernel_size_denoise=3 - don't use 
+# kernel_size_grow=9 - don't use 
