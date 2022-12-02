@@ -6,9 +6,9 @@ and produce performance statistics.
 import collections
 import datetime
 import json
-import os
 import shutil
 import sys
+from pathlib import Path
 
 import numpy as np
 import toml
@@ -16,7 +16,6 @@ import torch
 from torch.nn import DataParallel
 from torch.optim import Adam
 from torch.utils.data import DataLoader
-from tqdm import tqdm
 
 from src.augmentations import get_transforms
 from src.losses import CrossEntropyLoss2d, FocalLoss2d, LovaszLoss2d, mIoULoss2d
@@ -97,13 +96,13 @@ def run_training():
         for key, value in val_hist.items():
             history["val " + key].append(value)
 
-        with open(checkpoint_path + "/history.json", "w") as f:
+        with open(checkpoint_path / "history.json", "w") as f:
             json.dump(history, f)
 
         if (epoch + 1) % 5 == 0:
             # plotter use history values, no need for log
             visual = "history-{:05d}-of-{:05d}.png".format(epoch + 1, num_epochs)
-            plot(os.path.join(checkpoint_path, visual), history)
+            plot(checkpoint_path / visual, history)
 
         if epoch > 10:
             if np.mean(history["val loss"][-11:-6]) < np.mean(history["val loss"][-6:]):
@@ -118,7 +117,7 @@ def run_training():
         "state_dict": net.state_dict(),
         "optimizer": optimizer.state_dict(),
     }
-    torch.save(states, os.path.join(checkpoint_path, checkpoint))
+    torch.save(states, checkpoint_path / checkpoint)
 
 
 if __name__ == "__main__":
@@ -131,7 +130,7 @@ if __name__ == "__main__":
     target_size = config["target_size"]
     batch_size = config["batch_size"]
     # dataset_path = config["dataset_path"]  # Changes below
-    checkpoint_path = config["checkpoint_path"]
+    checkpoint_path = Path(config["checkpoint_path"])
     target_type = config["target_type"]
     freeze_pretrained = config["freeze_pretrained"]
     signal_fraction = config["signal_fraction"]
@@ -140,7 +139,7 @@ if __name__ == "__main__":
     config["model_path"] = ""
     model_path = ""
     # make dir for checkpoint - will get moved
-    os.makedirs(checkpoint_path, exist_ok=True)
+    checkpoint_path.mkdir(exist_ok=True)
     augs = get_transforms(target_size)
 
     # Fold 0 is the test data in this code, so there will be 4 iterations with 5 folds.
@@ -149,7 +148,7 @@ if __name__ == "__main__":
         print(f"Starting fold {k} of {k_folds}")
         dataset_path = f"dataset/k{k}"
         # Write the testing config to file
-        with open(checkpoint_path + "/config.toml", "w") as f:
+        with open(checkpoint_path / "config.toml", "w") as f:
             f.write(toml.dumps(config))
 
         run_training()

@@ -1,14 +1,7 @@
-import argparse
-import collections
-import os
-import sys
 from pathlib import Path
 
-import toml
 import torch
 from PIL import Image
-from torch.nn import DataParallel
-from torch.optim import Adam
 from torch.utils.data import DataLoader
 from torchvision.transforms import CenterCrop, Normalize, Resize
 from tqdm import tqdm
@@ -148,6 +141,7 @@ def train(loader, num_classes, device, net, optimizer, criterion):
         "tp": metrics.tp,
         "fn": metrics.fn,
         "tn": metrics.tn,
+        "f1": metrics.tp / (metrics.tp + 0.5 * (metrics.fp + metrics.fn)),
     }
 
 
@@ -187,4 +181,5 @@ def validate(loader, num_classes, device, net, criterion):
             "tp": metrics.tp,
             "fn": metrics.fn,
             "tn": metrics.tn,
+            "f1": metrics.tp / (metrics.tp + 0.5 * (metrics.fp + metrics.fn)),
         }

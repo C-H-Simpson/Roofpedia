@@ -1,0 +1,11 @@
+X Make cross validation datasets
+X Make training routine that recognises kfold
+Put make the evaluation script recognise kfold. Evaluation get saved to a json file, so I just need to join the different folds.
+Make dataset_stats.py recognise kfold
+Check the loss function weighting is correct
+Look at the previous results of hyperparam scanning.
+Test cross validation methods on laptop
+Run cross validation
+Make alternative test datasets using alternative data
+Test the background resampling method on the laptop.
+Consider a hard example mining method instead.
