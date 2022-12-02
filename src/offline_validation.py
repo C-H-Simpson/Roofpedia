@@ -13,53 +13,13 @@ from tqdm import tqdm
 
 # from src.features.core import denoise, grow
 from src.metrics import Metrics
+
 from src.plain_dataloader import get_plain_dataset_loader
+from src.losses import CrossEntropyLoss2d, FocalLoss2d, LovaszLoss2d, mIoULoss2d
+from src.train import validate
 
 # from src.train import validate
 from src.unet import UNet
-
-
-def validate_offline(loader, num_classes, device, net):
-    """This version of the validate routine can be used to test postprocess.
-    Also, can take different loaders as input."""
-    num_samples = 0
-
-    metrics = Metrics(range(num_classes))
-
-    with torch.no_grad():
-        net.eval()
-
-        for images, masks, tiles in tqdm(
-            loader, desc="Validate", unit="batch", ascii=True
-        ):
-            images = images.to(device)
-            masks = masks.to(device)
-
-            assert (
-                images.size()[2:] == masks.size()[1:]
-            ), "resolutions for images and masks are in sync"
-
-            num_samples += int(images.size(0))
-            outputs = net(images)
-
-            for mask, output in zip(masks, outputs):
-                metrics.add(mask, output)
-
-        result = {
-            "miou": metrics.get_miou(),
-            "fg_iou": metrics.get_fg_iou(),
-            "mcc": metrics.get_mcc(),
-            "fp": metrics.fp,
-            "tp": metrics.tp,
-            "fn": metrics.fn,
-            "tn": metrics.tn,
-            "tp+fn": metrics.tp + metrics.fn,
-        }
-        try:
-            result["f1"] = metrics.tp / (metrics.tp + 0.5 * (metrics.fp + metrics.fn))
-        except ZeroDivisionError:
-            result["f1"] = float("NAN")
-        return result
 
 
 if __name__ == "__main__":
@@ -71,10 +31,11 @@ if __name__ == "__main__":
 
     # We will iterate over the "best config" and its kfolds
     original_config = toml.load("config/best-predict-config.toml")
-    kfold_config_paths = list(Path("results").glob("kfold*/config.toml"))
+    kfold_config_paths = list(Path("results").glob("kfold_3*/config.toml"))
 
     # Check the kfold files match the original config.
     for p in kfold_config_paths:
+        print(p)
         config = toml.load(p)
         for key in original_config:
             if key in ("dataset_path", "checkpoint_path", "kfold"):
@@ -84,6 +45,22 @@ if __name__ == "__main__":
                     "Non matching kfold config"
                     + f"{p} {key} {config[key]} != {original_config[key]}"
                 )
+
+    loss_func = config["loss_func"]
+    # weight = config["weight"]
+    weight = [config["signal_fraction"], 1]
+    weight = torch.Tensor(weight)
+    # select loss function, just set a default, or try to experiment
+    if loss_func == "CrossEntropy":
+        criterion = CrossEntropyLoss2d(weight=weight).to(device)
+    elif loss_func == "mIoU":
+        criterion = mIoULoss2d(weight=weight).to(device)
+    elif loss_func == "Focal":
+        criterion = FocalLoss2d(weight=weight).to(device)
+    elif loss_func == "Lovasz":
+        criterion = LovaszLoss2d().to(device)
+    else:
+        sys.exit("Error: Unknown Loss Function value !")
 
     # Iterate through k folds and do offline validation.
     results = []
@@ -110,10 +87,12 @@ if __name__ == "__main__":
             loader = get_plain_dataset_loader(config["target_size"], batch_size, ds_dir)
             tile_size = config["target_size"]
 
-            val = validate_offline(loader, num_classes, device, net)
+            val = validate(loader, num_classes, device, net, criterion)
+            # val = validate_offline(loader, num_classes, device, net)
             val["kfold"] = config["kfold"]
             val["ds"] = ds
             results.append(val)
+            print(val)
 
     df = pd.DataFrame(results)
     df.to_csv("confusion_matrix.csv")

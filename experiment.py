@@ -37,6 +37,7 @@ def run_training(
     signal_fraction,
     target_size,
     transform_name,
+    weight,
 ):
     device = torch.device("cuda")
 
@@ -44,13 +45,13 @@ def run_training(
         sys.exit("Error: CUDA requested but not available")
 
     # weighted values for loss functions
-    # add a helper to return weights seamlessly
+    # add a helper to return weight seamlessly
 
-    # The weights should actually be based on the proportions in the loader...
+    # The weight should actually be based on the proportions in the loader...
     # This is currently only correct if there is no under/over sampling.
     # Lovasz does not use weighting.
     if loss_func != "Lovasz":
-        weight = torch.Tensor([signal_fraction, 1])
+        weight = torch.Tensor(weight)
     else:
         weight = None
 
@@ -152,6 +153,8 @@ if __name__ == "__main__":
     target_type = config["target_type"]
     freeze_pretrained = config["freeze_pretrained"]
     signal_fraction = config["signal_fraction"]
+    config["weight"] = [signal_fraction, 1.0]
+    weight = [signal_fraction, 1.0]
 
     # if config["model_path"] != "":
     # model_path = config["model_path"]
@@ -198,6 +201,7 @@ if __name__ == "__main__":
                 signal_fraction=signal_fraction,
                 target_size=target_size,
                 transform_name=transform_name,
+                weight=weight,
             )
 
             # Move the config and results to a new directory
