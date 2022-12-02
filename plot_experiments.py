@@ -1,12 +1,16 @@
 import json
 from pathlib import Path
+import shutil
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import toml
 
-paths = list(Path("/home/ucbqc38/Scratch/experiments").glob("experiment_*"))
+matplotlib.use("TKAgg")
+
+paths = list(Path("results").glob("experiment_*"))
 assert len(paths) > 0
 results = []
 best_f1 = 0
@@ -66,14 +70,12 @@ for p in paths:
         best_f1 = f_score[-1]
         best_config = p
         best_config_spec = config
-# %%
 df = pd.DataFrame(results)
 print(df.head())
 df = df.sort_values("f_score")
 df.to_csv("results.csv")
 print(df)
 
-# %%
 # Get best for a given set of parameters (across learning rates).
 df_best_lr = (
     df.groupby(["loss_func", "transform", "freeze_pretrained"])
@@ -84,25 +86,15 @@ df_best_lr = (
 )
 df_best_lr.to_csv("df_best_lr.csv")
 
-# %%
 print("Best with no augs")
 print(df[df["transform"] == "no_augs"].tail(1).reset_index().to_dict())
 
 print("Best config:", best_config)
 print(best_config_spec)
 
-# %%
-fig, ax = plt.subplots()
-best_config_spec["path"] = str(p)
-with open(p / "history.json", "r") as f:
-    history = json.load(f)
-ax.plot(history["train loss"], label="Training")
-ax.plot(history["val loss"], label="Validation")
-ax.legend()
-ax.set_xlabel("Epoch")
-ax.set_ylabel("Loss")
+shutil.copy(Path(best_config) / "config.toml", "config/best-predict-config.toml")
+print("Config was copied into config/best-predict-config.toml")
 
-# %%
 fig_log, ax_log = plt.subplots()
 ax_log.plot(history["train loss"], label="Training")
 ax_log.plot(history["val loss"], label="Validation")
@@ -113,5 +105,4 @@ ax_log.set_yscale("log")
 plt.tight_layout()
 fig_log.savefig("loss_log.png", dpi=200, bbox_inches="tight")
 
-# %%
 plt.show()
