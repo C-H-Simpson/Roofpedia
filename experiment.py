@@ -5,7 +5,8 @@ import collections
 import datetime
 import json
 import os
-import shutil
+
+# import shutil
 import sys
 from pathlib import Path
 
@@ -16,7 +17,12 @@ from torch.nn import DataParallel
 from torch.optim import Adam
 
 from src.augmentations import get_transforms
-from src.losses import CrossEntropyLoss2d, FocalLoss2d, LovaszLoss2d, mIoULoss2d
+from src.losses import (
+    CrossEntropyLoss2d,
+    LovaszLoss2d,
+    mIoULoss2d,
+    FocalLoss2d,
+)
 from src.train import get_dataset_loaders, train, validate
 from src.unet import UNet
 from src.utils import plot
@@ -38,6 +44,7 @@ def run_training(
     target_size,
     transform_name,
     weight,
+    focal_gamma=None,
 ):
     device = torch.device("cuda")
 
@@ -48,12 +55,7 @@ def run_training(
     # add a helper to return weight seamlessly
 
     # The weight should actually be based on the proportions in the loader...
-    # This is currently only correct if there is no under/over sampling.
-    # Lovasz does not use weighting.
-    if loss_func != "Lovasz":
-        weight = torch.Tensor(weight)
-    else:
-        weight = None
+    weight = torch.Tensor(weight)
 
     # loading Model
     net = UNet(num_classes, freeze_pretrained=freeze_pretrained)
@@ -75,7 +77,7 @@ def run_training(
     elif loss_func == "mIoU":
         criterion = mIoULoss2d(weight=weight).to(device)
     elif loss_func == "Focal":
-        criterion = FocalLoss2d(weight=weight).to(device)
+        criterion = FocalLoss2d(weight=weight, gamma=focal_gamma).to(device)
     elif loss_func == "Lovasz":
         criterion = LovaszLoss2d().to(device)
     else:
@@ -120,7 +122,10 @@ def run_training(
             plot(os.path.join(checkpoint_path, visual), history)
 
         if epoch > 10:
-            if np.mean(history["val loss"][-11:-6]) < np.mean(history["val loss"][-6:]):
+            if np.mean(history["val loss"][-11:-6]) <= np.mean(
+                history["val loss"][-6:]
+            ):
+                print("Early stopping")
                 break
 
     # Save the model
@@ -151,10 +156,18 @@ if __name__ == "__main__":
     dataset_path = config["dataset_path"]
     checkpoint_path = Path(config["checkpoint_path"])
     target_type = config["target_type"]
-    freeze_pretrained = config["freeze_pretrained"]
     signal_fraction = config["signal_fraction"]
-    config["weight"] = [signal_fraction, 1.0]
-    weight = [signal_fraction, 1.0]
+    config["early_stopping"] = "val loss"
+
+    freeze_pretrained = True
+    config["freeze_pretrained"] = freeze_pretrained
+    weight = [
+        9.52e-02,  # negative class is big therefore small weight
+        9.05e-01,  # positive class is small therefore big weight
+    ]
+    config["weight"] = weight
+    focal_gamma = 4
+    config["focal_gamma"] = focal_gamma
 
     # if config["model_path"] != "":
     # model_path = config["model_path"]
@@ -166,45 +179,130 @@ if __name__ == "__main__":
     Path("results").mkdir(exist_ok=True)
 
     augs = get_transforms(target_size)
-    lr_base = 3e-4
+    lr_base = 5e-3
     for lr_factor in (1, 0.1, 0.01):
-        lr = lr_base * lr_factor
-        config["lr"] = lr
-        print("Testing learning rate:", lr)
-        for transform_name in augs:
-            print("Testing augmentation:", transform_name)
-            config["transform"] = transform_name
-            # Training a model from scratch
-            config["model_path"] = ""
-            model_path = ""
-            # make dir for checkpoint
-            fname = "results/experiment_" + datetime.datetime.now().strftime(
-                "%Y%m%d_%H%M%S"
-            )
-            checkpoint_path = Path(fname)
-            checkpoint_path.mkdir(exist_ok=False)
-            config["checkpoint_path"] = fname
-            # Write the testing config to file
-            with open(checkpoint_path / "config.toml", "w") as f:
-                f.write(toml.dumps(config))
+        for loss_func in ("Focal", "Lovasz", "mIoU", "CrossEntropy"):
+            config["loss_func"] = loss_func
+            lr = lr_base * lr_factor
+            config["lr"] = lr
+            print("Testing learning rate:", lr)
+            for transform_name in augs:
+                print("Testing augmentation:", transform_name)
+                config["transform"] = transform_name
+                # Training a model from scratch
+                config["model_path"] = ""
+                model_path = ""
+                # make dir for checkpoint
+                fname = "results/experiment_" + datetime.datetime.now().strftime(
+                    "%Y%m%d_%H%M%S"
+                )
+                checkpoint_path = Path(fname)
+                checkpoint_path.mkdir(exist_ok=False)
+                config["checkpoint_path"] = fname
+                # Write the testing config to file
+                with open(checkpoint_path / "config.toml", "w") as f:
+                    f.write(toml.dumps(config))
 
-            run_training(
-                augs=augs,
-                batch_size=batch_size,
-                checkpoint_path=checkpoint_path,
-                dataset_path=dataset_path,
-                freeze_pretrained=freeze_pretrained,
-                loss_func=loss_func,
-                lr=lr,
-                model_path=model_path,
-                num_classes=num_classes,
-                num_epochs=num_epochs,
-                signal_fraction=signal_fraction,
-                target_size=target_size,
-                transform_name=transform_name,
-                weight=weight,
-            )
+                run_training(
+                    augs=augs,
+                    batch_size=batch_size,
+                    checkpoint_path=checkpoint_path,
+                    dataset_path=dataset_path,
+                    freeze_pretrained=freeze_pretrained,
+                    loss_func=loss_func,
+                    lr=lr,
+                    model_path=model_path,
+                    num_classes=num_classes,
+                    num_epochs=num_epochs,
+                    signal_fraction=signal_fraction,
+                    target_size=target_size,
+                    transform_name=transform_name,
+                    weight=weight,
+                    focal_gamma=focal_gamma,
+                )
 
-            # Move the config and results to a new directory
-            # No necessary as it should have been written in the right place!
-            # shutil.move(checkpoint_path, fname)
+# # %%
+# # Single experiment
+# if __name__ == "__main__":
+#     config = toml.load("config/best-predict-config.toml")
+
+#     num_classes = 2
+#     loss_func = config["loss_func"]
+#     num_epochs = config["num_epochs"]
+#     target_size = config["target_size"]
+#     batch_size = config["batch_size"]
+
+#     dataset_path = config["dataset_path"]
+#     checkpoint_path = Path(config["checkpoint_path"])
+#     target_type = config["target_type"]
+#     signal_fraction = config["signal_fraction"]
+#     # weight = [float(signal_fraction), 1.0]
+#     # config["weight"] = weight
+#     config["early_stopping"] = "val loss"
+
+#     freeze_pretrained = True
+#     config["freeze_pretrained"] = freeze_pretrained
+
+#     loss_func = "CrossEntropy"
+#     config["loss_func"] = loss_func
+
+#     weight = [
+#         9.52e-02,  # negative class is big therefore small weight
+#         9.05e-01,  # positive class is small therefore big weight
+#     ]
+#     config["weight"] = weight
+
+#     focal_gamma = None  # 4
+#     config["focal_gamma"] = focal_gamma
+
+#     lr = config["lr"]
+#     lr = 5e-5
+#     config["lr"] = 5e-4
+
+#     # if config["model_path"] != "":
+#     # model_path = config["model_path"]
+#     # else:
+#     # model_path = None
+
+#     transform_name = "persp"
+#     config["transform"] = transform_name
+#     # transform_name = config["transform"]
+
+#     Path("results").mkdir(exist_ok=True)
+
+#     augs = get_transforms(target_size)
+#     # Training a model from scratch
+#     config["model_path"] = ""
+#     model_path = ""
+#     # make dir for checkpoint
+#     fname = "results/experiment_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+#     checkpoint_path = Path(fname)
+#     checkpoint_path.mkdir(exist_ok=False)
+#     config["checkpoint_path"] = fname
+#     # Write the testing config to file
+#     with open(checkpoint_path / "config.toml", "w") as f:
+#         f.write(toml.dumps(config))
+
+#     run_training(
+#         augs=augs,
+#         batch_size=batch_size,
+#         checkpoint_path=checkpoint_path,
+#         dataset_path=dataset_path,
+#         freeze_pretrained=freeze_pretrained,
+#         loss_func=loss_func,
+#         lr=lr,
+#         model_path=model_path,
+#         num_classes=num_classes,
+#         num_epochs=num_epochs,
+#         signal_fraction=signal_fraction,
+#         target_size=target_size,
+#         transform_name=transform_name,
+#         weight=weight,
+#         focal_gamma=focal_gamma,
+#     )
+
+# # Move the config and results to a new directory
+# # No necessary as it should have been written in the right place!
+# # shutil.move(checkpoint_path, fname)
+
+# # %%
