@@ -47,33 +47,30 @@ def tile_to_raster(input_fname: Path, destination_dir: Path, bands: tuple, dtype
     ) as dst:
         dst.write(data, indexes=bands)
 
-# %%
-# test tile_to_raster
-p = Path(
-    r"C:\Users\ucbqc38\Documents\RoofPedia\Roofpedia_vc\dataset\1s\labels\19\262051\174218.png"
-)
-tile_to_raster(p, Path("./test_rasterops"), (1,), "int8")
+if __name__ == "__main__":
+    # test tile_to_raster
+    p = Path(
+        r"C:\Users\ucbqc38\Documents\RoofPedia\Roofpedia_vc\dataset\1s\labels\19\262051\174218.png"
+    )
+    tile_to_raster(p, Path("./test_rasterops"), (1,), "int8")
 
-# %%
-# Test tile_to_raster on a larger scale
-input = Path(
-    r"C:\Users\ucbqc38\Documents\RoofPedia\Roofpedia_vc\dataset\1s\labels\19").glob("*/*png")
-input = list(input)
-[tile_to_raster(p, Path("./test_rasterops"), (1,), "int16") for p in input]
+    # Test tile_to_raster on a larger scale
+    input = Path(
+        r"C:\Users\ucbqc38\Documents\RoofPedia\Roofpedia_vc\dataset\1s\labels\19").glob("*/*png")
+    input = list(input)
+    [tile_to_raster(p, Path("./test_rasterops"), (1,), "int16") for p in input]
 
 
-# %%
-# How to merge rasters.
-import osgeo_utils.gdal_merge
-output_file_path = r'test_rasterops/merged.tiff'
-input_files_path = [str(p) for p in Path(r'test_rasterops').glob('*/*/*.tiff')]
-parameters = ['', '-o', output_file_path] + input_files_path + [ '-co', 'COMPRESS=LZW', "-n", "0", "-a_nodata", "0", "-v"]
-osgeo_utils.gdal_merge.main(parameters)
+    # How to merge rasters.
+    import osgeo_utils.gdal_merge
+    output_file_path = r'test_rasterops/merged.tiff'
+    input_files_path = [str(p) for p in Path(r'test_rasterops').glob('*/*/*.tiff')]
+    parameters = ['', '-o', output_file_path] + input_files_path + [ '-co', 'COMPRESS=LZW', "-n", "0", "-a_nodata", "0", "-v"]
+    osgeo_utils.gdal_merge.main(parameters)
 
-# %%
-# How to vectorize rasters.
-import osgeo_utils.gdal_polygonize
-parameters = ["",
-    # "-8",
-    "test_rasterops/merged.tiff", "-f", "GeoJSON", "./test_rasterops/merged.geojson"]
-osgeo_utils.gdal_polygonize.main(parameters)
+    # How to vectorize rasters.
+    import osgeo_utils.gdal_polygonize
+    parameters = ["",
+        # "-8",
+        "test_rasterops/merged.tiff", "-f", "GeoJSON", "./test_rasterops/merged.geojson"]
+    osgeo_utils.gdal_polygonize.main(parameters)
