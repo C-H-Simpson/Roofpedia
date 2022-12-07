@@ -1,3 +1,4 @@
+# %%
 import json
 from pathlib import Path
 import shutil
@@ -8,7 +9,7 @@ import numpy as np
 import pandas as pd
 import toml
 
-matplotlib.use("TKAgg")
+# matplotlib.use("TKAgg")
 
 paths = list(Path("results").glob("experiment_*"))
 assert len(paths) > 0
@@ -17,9 +18,17 @@ best_f1 = 0
 best_config = ""
 # %%
 for p in paths:
-    config = toml.load(p / "config.toml")
+    try:
+        config = toml.load(p / "config.toml")
+    except toml.decoder.TomlDecodeError:
+        print("Could not parse", p)
+        continue
     config["path"] = str(p)
-    with open(p / "history.json", "r") as f:
+    history_p = p / "history.json"
+    if not (history_p).is_file():
+        print("Could not find", history_p)
+        continue
+    with open(history_p, "r") as f:
         history = json.load(f)
     # print(config)
     # if config["model_path"]:
@@ -57,11 +66,17 @@ for p in paths:
     config["f_score"] = f_score[-1]
     config["miou"] = history["val miou"][-1]
 
+    config["precision"] = history["val tp"][-1] / (
+        history["val tp"][-1] + history["val fp"][-1]
+    )
+    config["recall"] = history["val tp"][-1] / (
+        history["val tp"][-1] + history["val fn"][-1]
+    )
+
     results.append(config)
-    y = 1 - f_score
-    config["1-f"] = y[-1]
     # y = f_score_train - f_score
     # y = accuracy_n
+    y = f_score
     plt.plot(y, label=label)
 
     plt.text(len(y) - 1, y[-1], label)
@@ -95,6 +110,9 @@ print(best_config_spec)
 shutil.copy(Path(best_config) / "config.toml", "config/best-predict-config.toml")
 print("Config was copied into config/best-predict-config.toml")
 
+# %%
+with open(best_config / "history.json", "r") as f:
+    history = json.load(f)
 fig_log, ax_log = plt.subplots()
 ax_log.plot(history["train loss"], label="Training")
 ax_log.plot(history["val loss"], label="Validation")
@@ -105,4 +123,21 @@ ax_log.set_yscale("log")
 plt.tight_layout()
 fig_log.savefig("loss_log.png", dpi=200, bbox_inches="tight")
 
-plt.show()
+# %%
+fig_log, ax_log = plt.subplots()
+ax_log.plot(1 - np.array(history["train f1"]), label="Training")
+ax_log.plot(1 - np.array(history["val f1"]), label="Validation")
+ax_log.legend()
+ax_log.set_xlabel("Epoch")
+ax_log.set_ylabel("Loss")
+ax_log.set_yscale("log")
+plt.tight_layout()
+
+# plt.show()
+
+# %%
+print(
+    df[["f_score", "precision", "recall"]].fillna(0).sort_values("f_score").to_string()
+)
+
+# %%
