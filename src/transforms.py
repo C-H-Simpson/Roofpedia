@@ -167,7 +167,7 @@ class JointRandomCrop:
                 self.random_crop.padding_mode,
             )
 
-        height, width = F._get_image_size(img)
+        height, width = F._get_image_size(img)  # versioning problem here
         # pad the width if needed
         if self.random_crop.pad_if_needed and width < self.random_crop.size[1]:
             padding = [self.random_crop.size[1] - width, 0]
