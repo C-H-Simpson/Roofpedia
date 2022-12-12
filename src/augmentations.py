@@ -1,12 +1,26 @@
 from PIL import Image
-from torchvision.transforms import (CenterCrop, ColorJitter, Normalize,
-                                    RandomAdjustSharpness, Resize)
+from torchvision.transforms import (
+    CenterCrop,
+    ColorJitter,
+    Normalize,
+    RandomAdjustSharpness,
+    Resize,
+)
 
-from src.transforms import (ConvertImageMode, ImageToTensor, JointCompose,
-                            JointFullyRandomRotation, JointRandomCrop,
-                            JointRandomHorizontalFlip, JointRandomRotation,
-                            JointRandomVerticalFlip, JointTransform,
-                            MaskToTensor)
+from src.transforms import (
+    ConvertImageMode,
+    ImageToTensor,
+    JointCompose,
+    JointFullyRandomRotation,
+    JointRandomCrop,
+    JointRandomHorizontalFlip,
+    JointRandomRotation,
+    JointRandomVerticalFlip,
+    JointTransform,
+    MaskToTensor,
+)
+import albumentations as A
+from albumentations.pytorch import ToTensorV2
 
 
 def get_transforms(target_size):
@@ -39,6 +53,39 @@ def get_transforms(target_size):
                     Resize(target_size, Image.NEAREST),
                 ),
                 JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
+                JointTransform(ImageToTensor(), MaskToTensor()),
+                JointTransform(Normalize(mean=mean, std=std), None),
+            ]
+        ),
+        combine_multi=JointCompose(
+            [
+                JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
+                JointTransform(
+                    Resize(target_size, Image.BILINEAR),
+                    Resize(target_size, Image.NEAREST),
+                ),
+                JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
+                JointRandomRotation(0.5, 90),
+                JointRandomRotation(0.5, 90),
+                JointRandomRotation(0.5, 90),
+                JointRandomHorizontalFlip(0.5),
+                JointRandomVerticalFlip(0.5),
+                JointTransform(
+                    ColorJitter(
+                        brightness=0.5,
+                        hue=0.2,
+                        contrast=0.5
+                    ),
+                    None,
+                ),
+                JointTransform(
+                    RandomAdjustSharpness(0.5),
+                    None,
+                ),
+                JointTransform(
+                    RandomAdjustSharpness(2),
+                    None,
+                ),
                 JointTransform(ImageToTensor(), MaskToTensor()),
                 JointTransform(Normalize(mean=mean, std=std), None),
             ]
@@ -207,6 +254,57 @@ def get_transforms(target_size):
                 JointFullyRandomRotation(360),
                 JointTransform(ImageToTensor(), MaskToTensor()),
                 JointTransform(Normalize(mean=mean, std=std), None),
+            ]
+        ),
+        blurring_complex=JointCompose(
+            [
+                JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
+                JointTransform(
+                    Resize(target_size, Image.BILINEAR),
+                    Resize(target_size, Image.NEAREST),
+                ),
+                JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
+                JointRandomRotation(0.5, 90),
+                JointRandomRotation(0.5, 90),
+                JointRandomRotation(0.5, 90),
+                JointRandomHorizontalFlip(0.5),
+                JointRandomVerticalFlip(0.5),
+                JointTransform(
+                    RandomAdjustSharpness(0.25),
+                    None,
+                ),
+                JointTransform(
+                    RandomAdjustSharpness(0.25),
+                    None,
+                ),
+                JointTransform(ImageToTensor(), MaskToTensor()),
+                JointTransform(Normalize(mean=mean, std=std), None),
+            ]
+        ),
+        albumentations=A.Compose(
+            [
+                A.Resize(256, 256),
+                A.ShiftScaleRotate(shift_limit=0.2, scale_limit=0.2, p=0.5),
+                A.RGBShift(r_shift_limit=25, g_shift_limit=25, b_shift_limit=25, p=0.5),
+                A.RandomBrightnessContrast(
+                    brightness_limit=0.3, contrast_limit=0.3, p=0.5
+                ),
+                A.Normalize(mean=mean, std=std),
+                ToTensorV2(),
+            ]
+        ),
+        blackout=A.Compose(
+            [
+                A.Resize(256, 256),
+                A.ShiftScaleRotate(shift_limit=0.2, scale_limit=0.2, p=0.5),
+                A.RGBShift(r_shift_limit=25, g_shift_limit=25, b_shift_limit=25, p=0.5),
+                A.RandomBrightnessContrast(
+                    brightness_limit=0.3, contrast_limit=0.3, p=0.5
+                ),
+                A.Normalize(mean=mean, std=std),
+                A.MaskDropout((0, 1)),
+                A.augmentations.dropout.coarse_dropout.CoarseDropout(p=1, max_height=16, max_width=16, max_holes=8),
+                ToTensorV2(),
             ]
         ),
     )
