@@ -8,102 +8,34 @@ import osgeo_utils.gdal_merge
 import pygeos
 import rasterio
 import rasterio.mask
+import argparse
 from tqdm import tqdm
 
 tqdm.pandas()
+gpd.options.use_pygeos = True
 from pathlib import Path
 
-# %%
 if __name__ == "__main__":
-    pass
-    # %%
-    # The first technique I tried wasn't really practical.
-    # 
-    # # First the imagery has to be merged to a single large file.
-    # # This takes about 12 minutes for a 10km2 tile, so about 3 hours for all
-    # # of Greater London.
-    # # The file size is about 4GB for 10km2, so about 600GB for the whole of London.
-    # # CF about 40 GB which is the original imagery.
-    # output_path = "./test_imagery_merge.tiff"
-    # input_glob = [
-    #     str(p)
-    #     for p in (
-    #         Path(
-    #             r"C:\Users\ucbqc38\Documents\GIS\getmapping_latest_london_imagery\Download_tq38_1829916\getmapping_rgb_25cm_4194129\tq"
-    #         ).glob("*jpg")
-    #     )
-    # ]
-    # # parameters = ['', '-o', output_path] + input_glob + [ '-co', 'COMPRESS=LZW', "-n", "", "-a_nodata", "0", "-v"]
-    # parameters = (
-    #     ["", "-o", output_path]
-    #     + input_glob
-    #     + [
-    #         "-co",
-    #         "COMPRESS=JPEG",
-    #         "-v",
-    #     ]
-    # )
-    # if Path(output_path).exists():
-    #     raise FileExistsError(output_path)
-    # osgeo_utils.gdal_merge.main(parameters)
-
-    # # %%
-    # # Then it can be tiled.
-    # input = output_path
-    # output = Path("./tiling_test")
-    # parameters = [
-    #     "--profile=mercator",
-    #     "-r",
-    #     "near",
-    #     "-s",
-    #     "EPSG:27700",
-    #     "--xyz",
-    #     "-z",
-    #     "19",
-    #     "--tilesize",
-    #     "256",
-    #     "--processes",
-    #     "8",
-    #     "-v",
-    #     str(input),
-    #     str(output),
-    # ]
-    # print(parameters)
-    # osgeo_utils.gdal2tiles.main(parameters)
-
+    # Parse args
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-o', "--output", help="the directory to which the resulting tiled imagery will be saved")
+    parser.add_argument('-g', '--gref10k', help="the OS 10km grid reference that will be processed")
+    parser.add_argument('-L', '--labels', help="the file containing the labelling polygons for the whole region")
+    args = parser.parse_args()
+    print(args.filename, args.count, args.verbose)
 
     # %%
     # Load the 1km gridsquares.
-    gpd.options.use_pygeos = True
     native_crs = "EPSG:27700"
     osgb_1km = gpd.read_file("../../OSGB_Grids/Shapefile/OSGB_Grid_1km.shp").to_crs(
         native_crs
     )
-    
-    # %%
-    # Get boundaries for London
-    gdf_london = gpd.read_file("../../GIS/statistical-gis-boundaries-london/ESRI/London_Ward.shp").to_crs(native_crs)
-    london = gdf_london.dissolve().geometry.item()
 
     # %%
-    # Specify the properties of the tiling.
-    pitch = 256
-    pixel_size = 0.25
-    window_width = pitch * pixel_size # Ideally a whole number of metres
-    window_height = window_width
-    domain_west = 530_000
-    domain_south = 181_000
-    domain_east = 536_000 + window_width
-    domain_north = 187_000 + window_width
-
-    # %%
-    # OR, specify bounds from London geometry
-    domain_west, domain_south, domain_east, domain_north = gdf_london.total_bounds.round(0)
-    domain_west = domain_west  - window_width
-    domain_south = domain_south  - window_height
-    domain_east = domain_east + window_width
-    domain_north = domain_north + window_height
-    domain_west, domain_south, domain_east, domain_north 
+    # Load the tiling grid created by "batched_tiling.py"
+    gdf_tiles = gpd.read_feather("../data/tiling_256_0.25.feather")
+    # Select only those relevant to the grid reference currently being processed.
+    gdf_tiles = gdf_tiles[gdf_tiles.TILE_NAME==args.gref10k]
 
     # %%
     # Create a dict for the input imagery paths to the 1km grid references.
@@ -113,20 +45,6 @@ if __name__ == "__main__":
         )
     )
     input_tiles_path_dict = {g.stem[0:6].upper(): g for g in input_glob}
-
-    # %%
-    # Use pygeos to construct tiles
-    xy_array = np.mgrid[domain_west:domain_east:window_width, domain_south:domain_north:window_height].T.reshape(-1,2)
-    boxes = pygeos.box(xy_array[:,0], xy_array[:,1], xy_array[:,0]+window_width, xy_array[:,1]+window_height)
-    gdf_tiles = gpd.GeoDataFrame(xy_array, geometry=boxes, crs=native_crs).rename(columns={0: "x", 1: "y"})
-    del boxes, xy_array
-
-    # %%
-    # Make sure the tiles are all in London.
-    # The tile construction routine will initially create some tiles outside London as the bounds are rectangular.
-    print(len(gdf_tiles), "tiles before intersection with london")
-    gdf_tiles = gdf_tiles.iloc[gdf_tiles.sindex.query(london, "intersects")]
-    print(len(gdf_tiles), "tiles after intersection with london")
 
     # %%
     # Buffer the imagery tiles by a pixel width to allow for small overlap errors.
@@ -192,17 +110,7 @@ if __name__ == "__main__":
     # This takes quite a while...
     destination_dir = Path("./test_manual_tiling")
     destination_dir.mkdir(exist_ok=True)
-    # gdf_tiles.assign(inp_tiles_str=gdf_tiles.inp_tiles.astype(str)).groupby("inp_tiles_str").progress_apply(lambda _df: query_tile(_df, destination_dir, input_tiles_path_dict))
-
-    # %%
-    # %%
-    import joblib
-    # %%
-    # This process could technically be chunked to make it faster.
-    # But it's probably disk limited due to the gdal merge.
-    gen = (_df for i, _df in tqdm(gdf_tiles.assign(inp_tiles_str=gdf_tiles.inp_tiles.astype(str)).groupby("inp_tiles_str")))
-    gen = (joblib.delayed(query_tile)(_df, destination_dir, input_tiles_path_dict) for _df in gen)
-    joblib.Parallel(n_jobs=4)(gen)
+    gdf_tiles.assign(inp_tiles_str=gdf_tiles.inp_tiles.astype(str)).groupby("inp_tiles_str").progress_apply(lambda _df: query_tile(_df, destination_dir, input_tiles_path_dict))
 
     # %%
     # Prepare masks from the same tiles.
@@ -250,14 +158,5 @@ if __name__ == "__main__":
     destination_dir.mkdir(exist_ok=True)
 
     #%%
-    # gdf_tiles.progress_apply(lambda _df: write_mask(_df, window_height, window_width, pixel_size, shapefile, destination_dir, maskvalue=1), axis=1)
+    gdf_tiles.progress_apply(lambda _df: write_mask(_df, window_height, window_width, pixel_size, shapefile, destination_dir, maskvalue=1), axis=1)
 
-    # %%
-    # Multithreaded for speed
-    gen = tqdm((_df for i, _df in gdf_tiles.iterrows()), total=len(gdf_tiles))
-    gen = (joblib.delayed(write_mask)(_df, window_height, window_width, pixel_size, shapefile, destination_dir, maskvalue=1) for _df in gen)
-    joblib.Parallel(n_jobs=8)(gen)
-
-# %%
-gdf_tiles.to_dict()
-# %%
