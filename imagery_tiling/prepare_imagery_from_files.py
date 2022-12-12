@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
     # %%
     # Spatially join input and output tiles.
-    gdf_links = gdf_tiles.sjoin(osgb_1km.set_geometry("buff"))[["x", "y", "geometry_left", "PLAN_NO"]]
+    gdf_links = gdf_tiles[["x", "y", "geometry"]].sjoin(osgb_1km.set_geometry("buff"))[["x", "y", "geometry_left", "PLAN_NO"]]
 
     # %%
     # Then need to find the minimal input tilessets so we can load each input raster just once
