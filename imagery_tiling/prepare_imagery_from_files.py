@@ -117,7 +117,7 @@ if __name__ == "__main__":
     # %%
     # Prepare masks from the same tiles.
     from osgeo import ogr, gdal
-    shapefile = r"C:\Users\ucbqc38\Documents\RoofPedia\gr_manual_labels_20220401.geojson"
+    shapefile = args.labels
 
     def write_mask(_df, window_height, window_width, pixel_size, shapefile, destination_dir, maskvalue=1):
         destination = Path(destination_dir) / f"{int(_df.x):d}" / f"{int(_df.y):d}.PNG"

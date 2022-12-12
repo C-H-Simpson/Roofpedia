@@ -40,6 +40,6 @@ conda activate ../env
 pwd
 
 # Run the application
-python -u prepare_imagery_from_files.py -g $gref10k -i $imagery_dir -o $destination -L $labels
+python -u imagery_tiling/prepare_imagery_from_files.py -g $gref10k -i $imagery_dir -o $destination -L $labels
 
 date

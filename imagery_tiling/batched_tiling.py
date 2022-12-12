@@ -85,7 +85,7 @@ gdf_tiles.sjoin(osgb_10km[["geometry", "TILE_NAME"]])
 gdf_tiles.to_feather(f"../data/tiling_{pitch}_{pixel_size}.feather")
 
 # %%
-# Copy the bash script, inserting relevant tile names.
+# Generate a version of the script with the right input, then submit to queue.
 script = Path("imagery_tiling/batched_tiling.sh").read_text()
 for dset in ("getmapping_2021", "getmapping_2019"):
     destination_dir = Path("/home/ucbqc38/Scratch") / f"{dset}_tiled"
