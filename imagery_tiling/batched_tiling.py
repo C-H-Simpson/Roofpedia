@@ -9,8 +9,12 @@ from pathlib import Path
 import geopandas as gpd
 import numpy as np
 import pygeos
+import subprocess
 
 gpd.options.use_pygeos = True
+
+# %%
+# Find the labelling polygons.
 
 # %%
 # Find the raw imagery.
@@ -85,18 +89,28 @@ gdf_tiles.to_feather(f"../data/tiling_{pitch}_{pixel_size}.feather")
 script = Path("imagery_tiling/batched_tiling.sh").read_text()
 for dset in ("getmapping_2021", "getmapping_2019"):
     destination_dir = Path("/home/ucbqc38/Scratch") / f"{dset}_tiled"
+    if destination_dir.is_directory():
+        continue
     destination_dir.mkdir()
 
     for gref10k in tile_names_10km:
         destination = destination_dir / gref10k
+        if destination.is_directory():
+            continue
         destination.mkdir()
 
-        script_local = script.replace("$gref10k", gref10k).replace("$destination", destination.resolve())
+        script_local = script.replace("$gref10k", gref10k).replace("$destination", str(destination.resolve())).replace("$labels", str(Path("../data/gr_manual_labels_221212.geojson").resolve()))
         script_path = destination / "create.sh"
-        script_path.write_txt(script_local)
+        script_path.write_text(script_local)
+
+        # Submit the script
+        print(subprocess.check_output(["qsub", str(script_path.resolve())]))
+
         break
     break
 
 
+# %%
+script_path
 # %%
 # Submit it as a job

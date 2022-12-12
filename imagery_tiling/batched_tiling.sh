@@ -4,13 +4,10 @@
 #$ -l h_rt=24:00:0
 
 # Request RAM (must be an integer followed by M, G, or T)
-#$ -l mem=16G
+#$ -l mem=8G
 
 # Request 15 gigabyte of TMPDIR space (default is 10 GB)
 #$ -l tmpfs=8G
-
-# Setup job array.
-#$ -t 1-30
 
 # Set the working directory to somewhere in your scratch space.
 # Replace "<your_UCL_id>" with your UCL user ID :)

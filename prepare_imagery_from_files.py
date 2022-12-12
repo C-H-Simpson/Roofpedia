@@ -5,7 +5,6 @@ from pathlib import Path
 import geopandas as gpd
 import numpy as np
 import osgeo_utils.gdal_merge
-import pygeos
 import rasterio
 import rasterio.mask
 import argparse
@@ -22,7 +21,10 @@ if __name__ == "__main__":
     parser.add_argument('-g', '--gref10k', help="the OS 10km grid reference that will be processed")
     parser.add_argument('-L', '--labels', help="the file containing the labelling polygons for the whole region")
     args = parser.parse_args()
-    print(args.filename, args.count, args.verbose)
+    print(args)
+    window_height=256
+    window_width=256
+    pixel_size=0.25
 
     # %%
     # Load the 1km gridsquares.
@@ -49,7 +51,6 @@ if __name__ == "__main__":
     # %%
     # Buffer the imagery tiles by a pixel width to allow for small overlap errors.
     osgb_1km = osgb_1km.assign(buff=osgb_1km.geometry.buffer(pixel_size))
-    osgb_1km = osgb_1km[osgb_1km.intersects(london)]
 
     # %%
     # Spatially join input and output tiles.
@@ -116,7 +117,6 @@ if __name__ == "__main__":
     # Prepare masks from the same tiles.
     from osgeo import ogr, gdal
     shapefile = r"C:\Users\ucbqc38\Documents\RoofPedia\gr_manual_labels_20220401.geojson"
-    xmin,ymin,xmax,ymax=domain_west, domain_south, domain_east, domain_north
 
     def write_mask(_df, window_height, window_width, pixel_size, shapefile, destination_dir, maskvalue=1):
         destination = Path(destination_dir) / f"{int(_df.x):d}" / f"{int(_df.y):d}.PNG"
