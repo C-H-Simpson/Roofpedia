@@ -112,7 +112,9 @@ if __name__ == "__main__":
     # This takes quite a while...
     destination_dir = Path(args.output) / "images"
     destination_dir.mkdir(exist_ok=True)
+    print("Splitting imagery")
     gdf_tiles.assign(inp_tiles_str=gdf_tiles.inp_tiles.astype(str)).groupby("inp_tiles_str").progress_apply(lambda _df: query_tile(_df, destination_dir, input_tiles_path_dict))
+
 
     # %%
     # Prepare masks from the same tiles.
@@ -159,5 +161,6 @@ if __name__ == "__main__":
     destination_dir.mkdir(exist_ok=True)
 
     #%%
+    print("Making label tiles")
     gdf_tiles.progress_apply(lambda _df: write_mask(_df, window_height, window_width, pixel_size, shapefile, destination_dir, maskvalue=1), axis=1)
 
