@@ -33,10 +33,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "-i", "--imagery", help="the directory containing the imagery to be tiled"
     )
-    # args = parser.parse_args()
-    args = parser.parse_args(
-        ["-g", "TQ27", "-i", "/home/ucbqc38/Scratch/getmapping_2021", "-o", "/lustre/scratch/scratch/ucbqc38/getmapping_2021_tiled/TQ27", "-L", "/lustre/home/ucbqc38/Roofpedia_clean/data/gr_manual_labels_221212.geojson"]
-    )
+    args = parser.parse_args()
+    # For debugging
+    # args = parser.parse_args(
+    #     ["-g", "TQ27", "-i", "/home/ucbqc38/Scratch/getmapping_2021", "-o", "/lustre/scratch/scratch/ucbqc38/getmapping_2021_tiled/TQ27", "-L", "/lustre/home/ucbqc38/Roofpedia_clean/data/gr_manual_labels_221212.geojson"]
+    # )
     print(args)
     window_height = 256
     window_width = 256
@@ -221,3 +222,5 @@ if __name__ == "__main__":
         ),
         axis=1,
     )
+
+# %%
