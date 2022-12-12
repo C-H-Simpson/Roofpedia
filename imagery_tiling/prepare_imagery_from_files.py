@@ -114,11 +114,15 @@ if __name__ == "__main__":
                 if destination.is_file():
                     continue
 
-                with rasterio.open(input_path) as src:
-                    out_image, out_transform = rasterio.mask.mask(
-                        src, [_row.geometry], crop=True
-                    )
-                    out_meta = src.meta
+                try:
+                    with rasterio.open(input_path) as src:
+                        out_image, out_transform = rasterio.mask.mask(
+                            src, [_row.geometry], crop=True
+                        )
+                        out_meta = src.meta
+                except ValueError:
+                    # If the geometry does not overlap with the raster.
+                    return False
 
                 out_meta.update(
                     {
