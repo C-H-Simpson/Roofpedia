@@ -72,13 +72,15 @@ domain_west, domain_south, domain_east, domain_north
 # Use pygeos to construct tiles
 xy_array = np.mgrid[domain_west:domain_east:window_width, domain_south:domain_north:window_height].T.reshape(-1,2)
 boxes = pygeos.box(xy_array[:,0], xy_array[:,1], xy_array[:,0]+window_width, xy_array[:,1]+window_height)
-gdf_tiles = gpd.GeoDataFrame(xy_array, geometry=boxes, crs=native_crs).rename(columns={0: "x", 1: "y"})
+gdf_tiles = gpd.GeoDataFrame(xy_array, geometry=boxes, crs=native_crs).rename(columns={0: "x", 1: "y"}).set_crs(native_crs)
 gdf_tiles = gdf_tiles.iloc[gdf_tiles.sindex.query(london, "intersects")]
 del boxes, xy_array
 
 # %%
+gdf_tiles["vertex"] = pygeos.points(gdf_tiles.x, gdf_tiles.y)
+# %%
 # Assign each of these small tiles to a 10km gridcell
-gdf_tiles.sjoin(osgb_10km[["geometry", "TILE_NAME"]])
+gdf_tiles = gdf_tiles.set_geometry("vertex").set_crs(native_crs).sjoin(osgb_10km[["geometry", "TILE_NAME"]]).set_geometry("geometry")
 
 # %%
 # Save the grid
