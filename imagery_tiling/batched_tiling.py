@@ -99,7 +99,7 @@ for dset in ("getmapping_2021", "getmapping_2019"):
     for gref10k in tile_names_10km:
         destination = destination_dir / gref10k
         if destination.is_dir():
-            continue
+            raise FileExistsError(str(destination))
         destination.mkdir()
 
         e_path = str((destination / "create.e").resolve())
@@ -113,9 +113,6 @@ for dset in ("getmapping_2021", "getmapping_2019"):
 
         # Submit the script
         print(subprocess.check_output(["qsub", str(script_path.resolve())]))
-
-        break
-    break
 
 
 # %%
