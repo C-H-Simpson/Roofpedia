@@ -122,7 +122,7 @@ if __name__ == "__main__":
     shapefile = args.labels
 
     def write_mask(_df, window_height, window_width, pixel_size, shapefile, destination_dir, maskvalue=1):
-        destination = Path(destination_dir) / f"{int(_df.x):d}" / f"{int(_df.y):d}.PNG"
+        destination = Path(destination_dir) / f"{int(_df.x):d}" / f"{int(_df.y):d}.png"
         if destination.is_file():
             return
 
