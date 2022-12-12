@@ -95,7 +95,7 @@ if __name__ == "__main__":
                 output_path = str(Path(tmpdirname) / "temp.tif")
                 input_list = [str(input_tiles_path_dict[t]) for t in inp_tiles if t in input_tiles_path_dict]
                 if len(input_list) ==0:
-                    print("No imagery tiles")
+                    print("No imagery tiles", inp_tiles)
                     return False
                 parameters = ["", "-o", output_path] + input_list
                 osgeo_utils.gdal_merge.main(parameters)
@@ -103,6 +103,7 @@ if __name__ == "__main__":
                 t = inp_tiles[0]
                 output_path = input_tiles_path_dict[t] if t in input_tiles_path_dict else None
                 if output_path is None:
+                    print("No imagery tiles", inp_tiles)
                     return False
 
             # Clip from the temporary file.
@@ -122,6 +123,7 @@ if __name__ == "__main__":
                         out_meta = src.meta
                 except ValueError:
                     # If the geometry does not overlap with the raster.
+                    print("No imagery", inp_tiles)
                     return False
 
                 out_meta.update(
