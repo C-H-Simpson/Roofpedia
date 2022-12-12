@@ -117,7 +117,7 @@ for dset in ("getmapping_2021", "getmapping_2019"):
     destination_dir = Path("/home/ucbqc38/Scratch") / f"{dset}_tiled"
     imagery_dir = f"/home/ucbqc38/Scratch/{dset}"
     if destination_dir.is_dir():
-        continue
+        raise FileExistsError(str(destination_dir))
     destination_dir.mkdir()
 
     for gref10k in tile_names_10km:
@@ -147,3 +147,5 @@ for dset in ("getmapping_2021", "getmapping_2019"):
 
         # Submit the script
         print(subprocess.check_output(["qsub", str(script_path.resolve())]))
+
+# %%
