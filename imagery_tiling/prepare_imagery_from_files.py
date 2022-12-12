@@ -33,7 +33,10 @@ if __name__ == "__main__":
     parser.add_argument(
         "-i", "--imagery", help="the directory containing the imagery to be tiled"
     )
-    args = parser.parse_args()
+    # args = parser.parse_args()
+    args = parser.parse_args(
+        ["-g", "TQ27", "-i", "/home/ucbqc38/Scratch/getmapping_2021", "-o", "/lustre/scratch/scratch/ucbqc38/getmapping_2021_tiled/TQ27", "-L", "/lustre/home/ucbqc38/Roofpedia_clean/data/gr_manual_labels_221212.geojson"]
+    )
     print(args)
     window_height = 256
     window_width = 256
@@ -54,8 +57,9 @@ if __name__ == "__main__":
 
     # %%
     # Create a dict for the input imagery paths to the 1km grid references.
-    input_glob = list(Path(args.imagery).glob("*/*/*/*jpg"))
+    input_glob = list(Path(args.imagery).glob("*/*/*jpg"))
     input_tiles_path_dict = {g.stem[0:6].upper(): g for g in input_glob}
+    assert input_tiles_path_dict
 
     # %%
     # Buffer the imagery tiles by a pixel width to allow for small overlap errors.
@@ -139,24 +143,17 @@ if __name__ == "__main__":
                 with rasterio.open(destination, "w", **out_meta) as dest:
                     dest.write(out_image)
 
-        return True
-
     # %%
     # Apply the tiling to the whole area.
     # This takes quite a while...
     destination_dir = Path(args.output) / "images"
     destination_dir.mkdir(exist_ok=True)
     print("Splitting imagery")
-    gdf_tiles = gdf_tiles.assign(
-        has_imagery=gdf_tiles.assign(inp_tiles_str=gdf_tiles.inp_tiles.astype(str)).groupby(
+    gdf_tiles.assign(inp_tiles_str=gdf_tiles.inp_tiles.astype(str)).groupby(
             "inp_tiles_str"
         ).progress_apply(
             lambda _df: query_tile(_df, destination_dir, input_tiles_path_dict)
         )
-    )
-    # %%
-    gdf_tiles=gdf_tiles[gdf_tiles["has_imagery"]]
-    assert len(gdf_tiles)
 
     # %%
     # Prepare masks from the same tiles.
