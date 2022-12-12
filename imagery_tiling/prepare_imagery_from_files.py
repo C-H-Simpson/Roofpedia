@@ -123,8 +123,7 @@ if __name__ == "__main__":
                         out_meta = src.meta
                 except ValueError:
                     # If the geometry does not overlap with the raster.
-                    print("No imagery", inp_tiles)
-                    return False
+                    print("No imagery", _row)
 
                 out_meta.update(
                     {
