@@ -1,3 +1,4 @@
+# %%
 from PIL import Image
 from pathlib import Path
 import matplotlib.pyplot as plt
@@ -5,6 +6,10 @@ import numpy as np
 
 import torch
 import torchvision.transforms as T
+
+from src.augmentations import get_transforms
+
+aug = get_transforms()
 
 
 plt.rcParams["savefig.bbox"] = "tight"
@@ -51,4 +56,5 @@ from src.transforms import JointFullyRandomRotation
 jfrr = JointFullyRandomRotation(180)
 images = jfrr([orig_img, img[0]], orig_mask)
 plot(images[0] + [images[1]], with_orig=False)
+# %%
 plt.show()
