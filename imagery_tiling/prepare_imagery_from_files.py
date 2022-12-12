@@ -93,11 +93,17 @@ if __name__ == "__main__":
             if len(inp_tiles) > 1:
                 # Merge the input rasters to a temporary file.
                 output_path = str(Path(tmpdirname) / "temp.tif")
-                input_list = [str(input_tiles_path_dict[t]) for t in inp_tiles]
+                input_list = [str(input_tiles_path_dict[t]) for t in inp_tiles if t in input_tiles_path_dict]
+                if len(input_list) ==0:
+                    print("No imagery tiles")
+                    return False
                 parameters = ["", "-o", output_path] + input_list
                 osgeo_utils.gdal_merge.main(parameters)
             else:
-                output_path = input_tiles_path_dict[inp_tiles[0]]
+                t = inp_tiles[0]
+                output_path = input_tiles_path_dict[t] if t in input_tiles_path_dict else None
+                if output_path is None:
+                    return False
 
             # Clip from the temporary file.
             input_path = output_path
@@ -127,7 +133,7 @@ if __name__ == "__main__":
                 with rasterio.open(destination, "w", **out_meta) as dest:
                     dest.write(out_image)
 
-        return ""
+        return True
 
     # %%
     # Apply the tiling to the whole area.
@@ -135,11 +141,16 @@ if __name__ == "__main__":
     destination_dir = Path(args.output) / "images"
     destination_dir.mkdir(exist_ok=True)
     print("Splitting imagery")
-    gdf_tiles.assign(inp_tiles_str=gdf_tiles.inp_tiles.astype(str)).groupby(
-        "inp_tiles_str"
-    ).progress_apply(
-        lambda _df: query_tile(_df, destination_dir, input_tiles_path_dict)
+    gdf_tiles = gdf_tiles.assign(
+        has_imagery=gdf_tiles.assign(inp_tiles_str=gdf_tiles.inp_tiles.astype(str)).groupby(
+            "inp_tiles_str"
+        ).progress_apply(
+            lambda _df: query_tile(_df, destination_dir, input_tiles_path_dict)
+        )
     )
+    # %%
+    gdf_tiles=gdf_tiles[gdf_tiles["has_imagery"]]
+    assert len(gdf_tiles)
 
     # %%
     # Prepare masks from the same tiles.
