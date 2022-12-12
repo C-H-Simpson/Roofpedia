@@ -1,3 +1,6 @@
+"""
+Make a geojson showing what areas are in each dataset.
+"""
 from pathlib import Path
 
 import geopandas as gpd
@@ -8,7 +11,7 @@ files = {}
 tiles = {}
 bounds = {}
 boxes = {}
-for ds in ("training", "validation", "evaluation", "training_bg"):
+for ds in ("training", "validation", "testing", "training_bg"):
     files[ds] = list(Path(f"dataset/{ds}/labels/19").glob("*/*.png"))
     tiles[ds] = [
         # Directory structure is z/x/y
@@ -19,4 +22,4 @@ for ds in ("training", "validation", "evaluation", "training_bg"):
     boxes[ds] = [shapely.geometry.box(*b) for b in bounds[ds]]
     gdf = gpd.GeoDataFrame(geometry=boxes[ds])
     gdf["ds"] = ds
-    gdf.to_file(f"dataset/{ds}.geojson", driver="GeoJSON")
+    gdf.to_file(f"dataset/{ds}.geojson", driver="GeoJSON", index=False)

@@ -40,7 +40,7 @@ module load python3/recommended
     #python3 -u predict_from_best.py $gref;
 #fi
 # or overwrite
-python3 -u predict_from_best.py $gref
+python3 -u predict_and_extract.py $gref
 # NB python directs to the wrong install of python!
 
 date

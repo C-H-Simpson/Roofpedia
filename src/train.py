@@ -1,14 +1,7 @@
-import argparse
-import collections
-import os
-import sys
 from pathlib import Path
 
-import toml
 import torch
 from PIL import Image
-from torch.nn import DataParallel
-from torch.optim import Adam
 from torch.utils.data import DataLoader
 from torchvision.transforms import CenterCrop, Normalize, Resize
 from tqdm import tqdm
@@ -16,9 +9,15 @@ from tqdm import tqdm
 from src.datasets import SlippyMapTilesConcatenation
 from src.metrics import Metrics
 from src.resampling_dataloader import BackgroundResamplingLoader
-from src.transforms import (ConvertImageMode, ImageToTensor, JointCompose,
-                            JointRandomHorizontalFlip, JointRandomRotation,
-                            JointTransform, MaskToTensor)
+from src.transforms import (
+    ConvertImageMode,
+    ImageToTensor,
+    JointCompose,
+    JointRandomHorizontalFlip,
+    JointRandomRotation,
+    JointTransform,
+    MaskToTensor,
+)
 
 
 def get_dataset_loaders(
@@ -62,14 +61,14 @@ def get_dataset_loaders(
         ]
     )
     train_dataset = SlippyMapTilesConcatenation(
-        [str(dataset_path / "training" / "images")],
-        str(dataset_path / "training" / "labels"),
+        [str(dataset_path / "training_s" / "images")],
+        str(dataset_path / "training_s" / "labels"),
         transform,
     )
 
     train_bg_dataset = SlippyMapTilesConcatenation(
-        [str(dataset_path / "training_bg" / "images")],
-        str(dataset_path / "training_bg" / "labels"),
+        [str(dataset_path / "training_b" / "images")],
+        str(dataset_path / "training_b" / "labels"),
         transform,
     )
 
@@ -83,7 +82,8 @@ def get_dataset_loaders(
     assert len(train_dataset) > 0, "at least one tile in training dataset"
     assert len(val_dataset) > 0, "at least one tile in validation dataset"
     print(
-        f"Dataset sizes: len(train_dataset)={len(train_dataset)}, len(val_dataset)={len(val_dataset)}"
+        f"Dataset sizes: len(train_dataset)={len(train_dataset)}, "
+        + f"len(val_dataset)={len(val_dataset)}"
     )
 
     train_loader = DataLoader(
@@ -133,7 +133,7 @@ def train(loader, num_classes, device, net, optimizer, criterion):
             prediction = output.detach()
             metrics.add(mask, prediction)
 
-    return {
+    results = {
         "loss": running_loss / num_samples,
         "miou": metrics.get_miou(),
         "fg_iou": metrics.get_fg_iou(),
@@ -142,7 +142,15 @@ def train(loader, num_classes, device, net, optimizer, criterion):
         "tp": metrics.tp,
         "fn": metrics.fn,
         "tn": metrics.tn,
+        "tp+fn": metrics.tp + metrics.fn,
+        "tp+fn+fp+tn": metrics.tp + metrics.fn + metrics.fp + metrics.tn,
+        "M": metrics.M,
     }
+    try:
+        results["f1"] = metrics.tp / (metrics.tp + 0.5 * (metrics.fp + metrics.fn))
+    except ZeroDivisionError:
+        results["f1"] = float("NAN")
+    return results
 
 
 def validate(loader, num_classes, device, net, criterion):
@@ -172,7 +180,7 @@ def validate(loader, num_classes, device, net, criterion):
             for mask, output in zip(masks, outputs):
                 metrics.add(mask, output)
 
-        return {
+        results = {
             "loss": running_loss / num_samples,
             "miou": metrics.get_miou(),
             "fg_iou": metrics.get_fg_iou(),
@@ -181,4 +189,12 @@ def validate(loader, num_classes, device, net, criterion):
             "tp": metrics.tp,
             "fn": metrics.fn,
             "tn": metrics.tn,
+            "tp+fn": metrics.tp + metrics.fn,
+            "tp+fn+fp+tn": metrics.tp + metrics.fn + metrics.fp + metrics.tn,
+            "M": metrics.M,
         }
+        try:
+            results["f1"] = metrics.tp / (metrics.tp + 0.5 * (metrics.fp + metrics.fn))
+        except ZeroDivisionError:
+            results["f1"] = float("NAN")
+        return results

@@ -50,7 +50,7 @@ pip3 install --user toml
 # Run the application
 echo "Shell: Running python script"
 #python3 -u train.py
-python3 -u predict_from_best.py GreaterLondon
+python3 -u predict_and_extract.py GreaterLondon
 # NB python directs to the wrong install of python!
 
 # Make sure you have given enough time for the copy to complete!

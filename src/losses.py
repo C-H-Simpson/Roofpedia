@@ -28,7 +28,8 @@ class CrossEntropyLoss2d(nn.Module):
 class FocalLoss2d(nn.Module):
     """Focal Loss.
 
-    Reduces loss for well-classified samples putting focus on hard mis-classified samples.
+    Reduces loss for well-classified samples putting focus on hard
+    mis-classified samples.
 
     See: https://arxiv.org/abs/1708.02002
     """
@@ -37,7 +38,8 @@ class FocalLoss2d(nn.Module):
         """Creates a `FocalLoss2d` instance.
 
         Args:
-          gamma: the focusing parameter; if zero this loss is equivalent with `CrossEntropyLoss2d`.
+          gamma: the focusing parameter; if zero this loss is equivalent with
+          `CrossEntropyLoss2d`.
           weight: rescaling weight for each class.
         """
 
