@@ -23,6 +23,7 @@ from src.losses import (
     mIoULoss2d,
     FocalLoss2d,
 )
+from dataset_stats import get_signal_weight
 from src.train import get_dataset_loaders, train, validate
 from src.unet import UNet
 from src.utils import plot
@@ -161,9 +162,12 @@ if __name__ == "__main__":
 
     freeze_pretrained = True
     config["freeze_pretrained"] = freeze_pretrained
+    pos_weight = get_signal_weight(Path(dataset_path) / "validation")
     weight = [
-        9.52e-02,  # negative class is big therefore small weight
-        9.05e-01,  # positive class is small therefore big weight
+        1 - pos_weight,
+        pos_weight
+        # 9.52e-02,  # negative class is big therefore small weight
+        # 9.05e-01,  # positive class is small therefore big weight
     ]
     config["weight"] = weight
     focal_gamma = 4
