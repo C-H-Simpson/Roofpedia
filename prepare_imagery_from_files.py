@@ -167,6 +167,10 @@ if __name__ == "__main__":
             # Clip from the temporary file.
             input_path = output_path
             for i, _row in _df.iterrows():
+                destination = Path(destination_dir) / f"{int(_row.x):d}" / f"{int(_row.y):d}.png"
+                if destination.is_file():
+                    continue
+
                 with rasterio.open(input_path) as src:
                     out_image, out_transform = rasterio.mask.mask(src, [_row.geometry], crop=True)
                     out_meta = src.meta
@@ -176,7 +180,6 @@ if __name__ == "__main__":
                         "width": out_image.shape[2],
                         "transform": out_transform})
 
-                destination = Path(destination_dir) / f"{int(_row.x):d}" / f"{int(_row.y):d}.png"
                 destination.parent.mkdir(exist_ok=True)
                 with rasterio.open(destination, "w", **out_meta) as dest:
                     dest.write(out_image)
@@ -189,6 +192,72 @@ if __name__ == "__main__":
     # This takes quite a while...
     destination_dir = Path("./test_manual_tiling")
     destination_dir.mkdir(exist_ok=True)
-    gdf_tiles.assign(inp_tiles_str=gdf_tiles.inp_tiles.astype(str)).groupby("inp_tiles_str").progress_apply(lambda _df: query_tile(_df, destination_dir, input_tiles_path_dict))
+    # gdf_tiles.assign(inp_tiles_str=gdf_tiles.inp_tiles.astype(str)).groupby("inp_tiles_str").progress_apply(lambda _df: query_tile(_df, destination_dir, input_tiles_path_dict))
 
+    # %%
+    # %%
+    import joblib
+    # %%
+    # This process could technically be chunked to make it faster.
+    # But it's probably disk limited due to the gdal merge.
+    gen = (_df for i, _df in tqdm(gdf_tiles.assign(inp_tiles_str=gdf_tiles.inp_tiles.astype(str)).groupby("inp_tiles_str")))
+    gen = (joblib.delayed(query_tile)(_df, destination_dir, input_tiles_path_dict) for _df in gen)
+    joblib.Parallel(n_jobs=4)(gen)
+
+    # %%
+    # Prepare masks from the same tiles.
+    from osgeo import ogr, gdal
+    shapefile = r"C:\Users\ucbqc38\Documents\RoofPedia\gr_manual_labels_20220401.geojson"
+    xmin,ymin,xmax,ymax=domain_west, domain_south, domain_east, domain_north
+
+    def write_mask(_df, window_height, window_width, pixel_size, shapefile, destination_dir, maskvalue=1):
+        destination = Path(destination_dir) / f"{int(_df.x):d}" / f"{int(_df.y):d}.PNG"
+        if destination.is_file():
+            return
+
+        src_ds = ogr.Open(shapefile)
+        xmin = _df.x
+        ymin = _df.y
+        xmax = xmin + window_width
+        ymax = ymin + window_height
+        ncols = int(window_width/pixel_size)
+        nrows = int(window_height/pixel_size)
+        xres, yres = pixel_size, pixel_size
+        assert xres==(xmax-xmin)/float(ncols)
+        assert yres==(ymax-ymin)/float(nrows)
+        geotransform=(xmin,xres,0,ymax,0, -yres)
+
+        destination.parent.mkdir(exist_ok=True, parents=True)
+        destination = destination.resolve().as_posix()
+
+        src_lyr=src_ds.GetLayer()
+
+        dst_ds = gdal.GetDriverByName('MEM').Create('', ncols, nrows, 1 ,gdal.GDT_Byte)
+        dst_rb = dst_ds.GetRasterBand(1)
+        dst_rb.Fill(0) #initialise raster with zeros
+        dst_rb.SetNoDataValue(0)
+        dst_ds.SetGeoTransform(geotransform)
+
+        err = gdal.RasterizeLayer(dst_ds, [1], src_lyr, burn_values=[maskvalue])
+
+        dst_ds.FlushCache()
+        ds2 = gdal.GetDriverByName("PNG").CreateCopy(destination, dst_ds, 0)
+
+        # raise ValueError(destination)
+
+
+    destination_dir = Path("./test_masking")
+    destination_dir.mkdir(exist_ok=True)
+
+    #%%
+    # gdf_tiles.progress_apply(lambda _df: write_mask(_df, window_height, window_width, pixel_size, shapefile, destination_dir, maskvalue=1), axis=1)
+
+    # %%
+    # Multithreaded for speed
+    gen = tqdm((_df for i, _df in gdf_tiles.iterrows()), total=len(gdf_tiles))
+    gen = (joblib.delayed(write_mask)(_df, window_height, window_width, pixel_size, shapefile, destination_dir, maskvalue=1) for _df in gen)
+    joblib.Parallel(n_jobs=8)(gen)
+
+# %%
+gdf_tiles.to_dict()
 # %%
