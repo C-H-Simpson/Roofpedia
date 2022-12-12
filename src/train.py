@@ -48,8 +48,7 @@ def get_dataset_loaders(
         [
             JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
             JointTransform(
-                Resize(target_size, Image.BILINEAR),
-                Resize(target_size, Image.NEAREST),
+                Resize(target_size, Image.BILINEAR), Resize(target_size, Image.NEAREST),
             ),
             JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
             JointRandomHorizontalFlip(0.5),

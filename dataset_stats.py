@@ -19,7 +19,7 @@ for p in dataset_parents:
         n = len(masks)
         print(p / s)
         print(f"\t{n=}, {count_not_blank=}, {all_not_blank=}")
-        pos_wt = 1 - count_not_blank / (all_not_blank * 2) / (256**2)
+        pos_wt = 1 - count_not_blank / (all_not_blank * 2) / (256 ** 2)
         print(f"\tpos wt = {pos_wt:0.2e}, neg_wt = {1-pos_wt:0.2e}")
 
         # img = cv2.imread(str(masks[0]))

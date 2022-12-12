@@ -272,8 +272,9 @@ class JointRandomVerticalFlip:
         """
 
         if random.random() < self.p:
-            return [v.transpose(Image.FLIP_TOP_BOTTOM) for v in images], mask.transpose(
-                Image.FLIP_TOP_BOTTOM
+            return (
+                [v.transpose(Image.FLIP_TOP_BOTTOM) for v in images],
+                mask.transpose(Image.FLIP_TOP_BOTTOM),
             )
         else:
             return images, mask
@@ -303,8 +304,9 @@ class JointRandomHorizontalFlip:
         """
 
         if random.random() < self.p:
-            return [v.transpose(Image.FLIP_LEFT_RIGHT) for v in images], mask.transpose(
-                Image.FLIP_LEFT_RIGHT
+            return (
+                [v.transpose(Image.FLIP_LEFT_RIGHT) for v in images],
+                mask.transpose(Image.FLIP_LEFT_RIGHT),
             )
         else:
             return images, mask
@@ -343,8 +345,9 @@ class JointRandomRotation:
         """
 
         if random.random() < self.p:
-            return [v.transpose(self.method) for v in images], mask.transpose(
-                self.method
+            return (
+                [v.transpose(self.method) for v in images],
+                mask.transpose(self.method),
             )
         else:
             return images, mask

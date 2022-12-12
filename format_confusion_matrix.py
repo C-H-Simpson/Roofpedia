@@ -26,11 +26,7 @@ df["precision"] = df.tp / (df.tp + df.fp)
 df["recall"] = df.tp / (df.tp + df.fn)
 df["fpr"] = df.fp / (df.fp + df.tn)
 df["miou"] = np.nanmean(
-    [
-        df.tn / (df.tn + df.fn + df.fp),
-        df.tp / (df.tp + df.fn + df.fp),
-    ],
-    axis=0,
+    [df.tn / (df.tn + df.fn + df.fp), df.tp / (df.tp + df.fn + df.fp),], axis=0,
 )
 
 

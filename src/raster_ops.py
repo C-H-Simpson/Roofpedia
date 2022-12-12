@@ -56,13 +56,7 @@ def merge_rasters(input_glob: list, output_path: Path, nodata=0):
     input_glob = [str(p) for p in input_glob]
     # parameters = ['', '-o', output_path] + input_glob + [ '-co', 'COMPRESS=LZW', "-n", "", "-a_nodata", "0", "-v"]
     parameters = (
-        ["", "-o", output_path]
-        + input_glob
-        + [
-            "-co",
-            "COMPRESS=LZW",
-            "-v",
-        ]
+        ["", "-o", output_path] + input_glob + ["-co", "COMPRESS=LZW", "-v",]
     )
     if nodata is not None:
         parameters = parameters + ["-n", str(nodata), "-a_nodata", str(nodata)]
@@ -106,4 +100,3 @@ if __name__ == "__main__":
         "./test_rasterops/merged.geojson",
     ]
     osgeo_utils.gdal_polygonize.main(parameters)
-

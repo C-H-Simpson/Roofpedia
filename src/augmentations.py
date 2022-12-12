@@ -123,17 +123,10 @@ def get_transforms(target_size):
                 JointRandomHorizontalFlip(0.5),
                 JointRandomVerticalFlip(0.5),
                 JointTransform(
-                    ColorJitter(contrast=0.3, brightness=0.2, hue=0.1),
-                    None,
+                    ColorJitter(contrast=0.3, brightness=0.2, hue=0.1), None,
                 ),
-                JointTransform(
-                    RandomAdjustSharpness(2, 0.5),
-                    None,
-                ),
-                JointTransform(
-                    RandomAdjustSharpness(2, 0.5),
-                    None,
-                ),
+                JointTransform(RandomAdjustSharpness(2, 0.5), None,),
+                JointTransform(RandomAdjustSharpness(2, 0.5), None,),
                 JointTransform(ImageToTensor(), MaskToTensor()),
                 JointTransform(Normalize(mean=mean, std=std), None),
             ]
@@ -172,10 +165,7 @@ def get_transforms(target_size):
                 JointRandomRotation(0.5, 90),
                 JointRandomHorizontalFlip(0.5),
                 JointRandomVerticalFlip(0.5),
-                JointTransform(
-                    RandomAdjustSharpness(2),
-                    None,
-                ),
+                JointTransform(RandomAdjustSharpness(2), None,),
                 JointTransform(ImageToTensor(), MaskToTensor()),
                 JointTransform(Normalize(mean=mean, std=std), None),
             ]
@@ -304,14 +294,8 @@ def get_transforms(target_size):
                 JointRandomRotation(0.5, 90),
                 JointRandomHorizontalFlip(0.5),
                 JointRandomVerticalFlip(0.5),
-                JointTransform(
-                    RandomAdjustSharpness(0.25),
-                    None,
-                ),
-                JointTransform(
-                    RandomAdjustSharpness(0.25),
-                    None,
-                ),
+                JointTransform(RandomAdjustSharpness(0.25), None,),
+                JointTransform(RandomAdjustSharpness(0.25), None,),
                 JointTransform(ImageToTensor(), MaskToTensor()),
                 JointTransform(Normalize(mean=mean, std=std), None),
             ]
@@ -338,7 +322,9 @@ def get_transforms(target_size):
                 ),
                 A.Normalize(mean=mean, std=std),
                 A.MaskDropout((0, 1)),
-                A.augmentations.dropout.coarse_dropout.CoarseDropout(p=1, max_height=16, max_width=16, max_holes=8),
+                A.augmentations.dropout.coarse_dropout.CoarseDropout(
+                    p=1, max_height=16, max_width=16, max_holes=8
+                ),
                 ToTensorV2(),
             ]
         ),
