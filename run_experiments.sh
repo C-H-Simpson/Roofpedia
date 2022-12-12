@@ -31,8 +31,10 @@ date
 # load the cuda module (in case you are running a CUDA program)
 echo "Shell: Loading CUDA modules"
 module unload compilers mpi
+module load gcc-libs/4.9.2
 module load compilers/gnu/4.9.2
 module load cuda/10.1.243/gnu-4.9.2
+module unload openblas
 module load torch-deps
 #do-torch-install # fails
 
