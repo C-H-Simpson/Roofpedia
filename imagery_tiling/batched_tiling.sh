@@ -13,6 +13,9 @@
 # Replace "<your_UCL_id>" with your UCL user ID :)
 #$ -wd /home/ucbqc38/Roofpedia_clean/Roofpedia_resample/
 
+#$ -e $ERRFILE
+#$ -o $OUTFILE
+
 date
 
 module load gcc-libs/4.9.2
@@ -34,7 +37,9 @@ unset __conda_setup
 
 conda activate ../env
 
+pwd
+
 # Run the application
-python -u prepare_imagery_from_files.py -g $gref10k -o $destination -L $labels
+python -u prepare_imagery_from_files.py -g $gref10k -i $imagery_dir -o $destination -L $labels
 
 date

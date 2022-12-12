@@ -89,19 +89,25 @@ gdf_tiles.to_feather(f"../data/tiling_{pitch}_{pixel_size}.feather")
 script = Path("imagery_tiling/batched_tiling.sh").read_text()
 for dset in ("getmapping_2021", "getmapping_2019"):
     destination_dir = Path("/home/ucbqc38/Scratch") / f"{dset}_tiled"
-    if destination_dir.is_directory():
+    imagery_dir = f"/home/ucbqc38/Scratch/{dset}"
+    if destination_dir.is_dir():
         continue
     destination_dir.mkdir()
 
     for gref10k in tile_names_10km:
         destination = destination_dir / gref10k
-        if destination.is_directory():
+        if destination.is_dir():
             continue
         destination.mkdir()
 
-        script_local = script.replace("$gref10k", gref10k).replace("$destination", str(destination.resolve())).replace("$labels", str(Path("../data/gr_manual_labels_221212.geojson").resolve()))
+        e_path = str((destination / "create.e").resolve())
+        o_path = str((destination / "create.o").resolve())
+
+        script_local = script.replace("$gref10k", gref10k).replace("$destination", str(destination.resolve())).replace("$labels", str(Path("../data/gr_manual_labels_221212.geojson").resolve())).replace("$ERRFILE", e_path).replace("$OUTFILE", o_path).replace("$imagery_dir", imagery_dir)
         script_path = destination / "create.sh"
         script_path.write_text(script_local)
+
+        print(script_path, o_path)
 
         # Submit the script
         print(subprocess.check_output(["qsub", str(script_path.resolve())]))

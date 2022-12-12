@@ -20,6 +20,7 @@ if __name__ == "__main__":
     parser.add_argument('-o', "--output", help="the directory to which the resulting tiled imagery will be saved")
     parser.add_argument('-g', '--gref10k', help="the OS 10km grid reference that will be processed")
     parser.add_argument('-L', '--labels', help="the file containing the labelling polygons for the whole region")
+    parser.add_argument('-i', '--imagery', help="the directory containing the imagery to be tiled")
     args = parser.parse_args()
     print(args)
     window_height=256
@@ -29,7 +30,7 @@ if __name__ == "__main__":
     # %%
     # Load the 1km gridsquares.
     native_crs = "EPSG:27700"
-    osgb_1km = gpd.read_file("../../OSGB_Grids/Shapefile/OSGB_Grid_1km.shp").to_crs(
+    osgb_1km = gpd.read_file("/home/ucbqc38/Scratch/OSGB_grids/OSGB_Grid_1km.shp").to_crs(
         native_crs
     )
 
@@ -42,7 +43,7 @@ if __name__ == "__main__":
     # %%
     # Create a dict for the input imagery paths to the 1km grid references.
     input_glob = list(
-        Path(r"C:\Users\ucbqc38\Documents\GIS\getmapping_latest_london_imagery").glob(
+        Path(args.imagery).glob(
             "*/*/*/*jpg"
         )
     )
@@ -109,7 +110,7 @@ if __name__ == "__main__":
     # %%
     # Apply the tiling to the whole area.
     # This takes quite a while...
-    destination_dir = Path("./test_manual_tiling")
+    destination_dir = Path(args.output) / "images"
     destination_dir.mkdir(exist_ok=True)
     gdf_tiles.assign(inp_tiles_str=gdf_tiles.inp_tiles.astype(str)).groupby("inp_tiles_str").progress_apply(lambda _df: query_tile(_df, destination_dir, input_tiles_path_dict))
 
@@ -154,7 +155,7 @@ if __name__ == "__main__":
         # raise ValueError(destination)
 
 
-    destination_dir = Path("./test_masking")
+    destination_dir = Path(args.output/"labels")
     destination_dir.mkdir(exist_ok=True)
 
     #%%
