@@ -157,7 +157,7 @@ if __name__ == "__main__":
         # raise ValueError(destination)
 
 
-    destination_dir = Path(args.output/"labels")
+    destination_dir = Path(args.output)/"labels"
     destination_dir.mkdir(exist_ok=True)
 
     #%%
