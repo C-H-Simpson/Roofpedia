@@ -8,7 +8,8 @@ from PIL import Image
 import numpy as np
 
 def get_signal_weight(dir: Path):
-    masks = list((dir / "labels").glob("*/*/*png"))
+    masks = list((dir).glob("*/labels/*/*"))
+    assert len(masks), dir
     not_blank = [np.count_nonzero(Image.open(str(p))) for p in (masks)]
     count_not_blank = np.sum(not_blank)  # number of non-blank pixels
     all_not_blank = np.count_nonzero(not_blank)  # number of non blank tiles
@@ -20,7 +21,8 @@ def get_signal_weight(dir: Path):
 
 
 if __name__ == "__main__":
-    dataset_parents = Path("dataset").glob("*")
+    dataset_parents = list(Path("dataset").glob("*"))
+    assert dataset_parents
     for p in dataset_parents:
         for s in ("training_s", "training_b", "validation"):
             if not (p / s).is_dir():

@@ -20,6 +20,8 @@ from src.transforms import (
     MaskToTensor,
 )
 
+# import albumentations as A
+
 import torchvision.transforms as T
 
 
@@ -300,33 +302,33 @@ def get_transforms(target_size):
                 JointTransform(Normalize(mean=mean, std=std), None),
             ]
         ),
-        albumentations=A.Compose(
-            [
-                A.Resize(256, 256),
-                A.ShiftScaleRotate(shift_limit=0.2, scale_limit=0.2, p=0.5),
-                A.RGBShift(r_shift_limit=25, g_shift_limit=25, b_shift_limit=25, p=0.5),
-                A.RandomBrightnessContrast(
-                    brightness_limit=0.3, contrast_limit=0.3, p=0.5
-                ),
-                A.Normalize(mean=mean, std=std),
-                ToTensorV2(),
-            ]
-        ),
-        blackout=A.Compose(
-            [
-                A.Resize(256, 256),
-                A.ShiftScaleRotate(shift_limit=0.2, scale_limit=0.2, p=0.5),
-                A.RGBShift(r_shift_limit=25, g_shift_limit=25, b_shift_limit=25, p=0.5),
-                A.RandomBrightnessContrast(
-                    brightness_limit=0.3, contrast_limit=0.3, p=0.5
-                ),
-                A.Normalize(mean=mean, std=std),
-                A.MaskDropout((0, 1)),
-                A.augmentations.dropout.coarse_dropout.CoarseDropout(
-                    p=1, max_height=16, max_width=16, max_holes=8
-                ),
-                ToTensorV2(),
-            ]
-        ),
+        # albumentations=A.Compose(
+        #     [
+        #         A.Resize(256, 256),
+        #         A.ShiftScaleRotate(shift_limit=0.2, scale_limit=0.2, p=0.5),
+        #         A.RGBShift(r_shift_limit=25, g_shift_limit=25, b_shift_limit=25, p=0.5),
+        #         A.RandomBrightnessContrast(
+        #             brightness_limit=0.3, contrast_limit=0.3, p=0.5
+        #         ),
+        #         A.Normalize(mean=mean, std=std),
+        #         ToTensorV2(),
+        #     ]
+        # ),
+        # blackout=A.Compose(
+        #     [
+        #         A.Resize(256, 256),
+        #         A.ShiftScaleRotate(shift_limit=0.2, scale_limit=0.2, p=0.5),
+        #         A.RGBShift(r_shift_limit=25, g_shift_limit=25, b_shift_limit=25, p=0.5),
+        #         A.RandomBrightnessContrast(
+        #             brightness_limit=0.3, contrast_limit=0.3, p=0.5
+        #         ),
+        #         A.Normalize(mean=mean, std=std),
+        #         A.MaskDropout((0, 1)),
+        #         A.augmentations.dropout.coarse_dropout.CoarseDropout(
+        #             p=1, max_height=16, max_width=16, max_holes=8
+        #         ),
+        #         ToTensorV2(),
+        #     ]
+        # ),
     )
     return augs

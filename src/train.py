@@ -6,9 +6,9 @@ from torch.utils.data import DataLoader
 from torchvision.transforms import CenterCrop, Normalize, Resize
 from tqdm import tqdm
 
-from src.datasets import SlippyMapTilesConcatenation
 from src.metrics import Metrics
 from src.resampling_dataloader import BackgroundResamplingLoader
+from src.plain_dataloader import LabelledDataset
 from src.transforms import (
     ConvertImageMode,
     ImageToTensor,
@@ -51,43 +51,30 @@ def get_dataset_loaders(
                 Resize(target_size, Image.BILINEAR), Resize(target_size, Image.NEAREST),
             ),
             JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
-            JointRandomHorizontalFlip(0.5),
-            JointRandomRotation(0.5, 90),
-            JointRandomRotation(0.5, 90),
-            JointRandomRotation(0.5, 90),
             JointTransform(ImageToTensor(), MaskToTensor()),
             JointTransform(Normalize(mean=mean, std=std), None),
         ]
     )
-    train_dataset = SlippyMapTilesConcatenation(
-        [str(dataset_path / "training_s" / "images")],
-        str(dataset_path / "training_s" / "labels"),
-        transform,
-    )
+    train_s_image_paths = list(dataset_path.glob("training_s/*/images/*/*.png"))
+    train_s_dataset = LabelledDataset(image_paths=train_s_image_paths, joint_transform=transform)
 
-    train_bg_dataset = SlippyMapTilesConcatenation(
-        [str(dataset_path / "training_b" / "images")],
-        str(dataset_path / "training_b" / "labels"),
-        transform,
-    )
+    train_b_image_paths = list(dataset_path.glob("training_b/*/images/*/*.png"))
+    train_b_dataset = LabelledDataset(image_paths=train_b_image_paths, joint_transform=transform)
 
-    val_dataset = SlippyMapTilesConcatenation(
-        [str(dataset_path / "validation" / "images")],
-        str(dataset_path / "validation" / "labels"),
-        val_transform,
-    )
+    val_image_paths = list(dataset_path.glob("validation/*/images/*/*.png"))
+    val_dataset = LabelledDataset(image_paths=val_image_paths, joint_transform=val_transform)
 
-    assert len(train_bg_dataset) > 0, "at least one tile in training background dataset"
-    assert len(train_dataset) > 0, "at least one tile in training dataset"
+    assert len(train_b_dataset) > 0, "at least one tile in training background dataset"
+    assert len(train_s_dataset) > 0, "at least one tile in training dataset"
     assert len(val_dataset) > 0, "at least one tile in validation dataset"
     print(
-        f"Dataset sizes: len(train_dataset)={len(train_dataset)}, "
+        f"Dataset sizes: len(train_s_dataset)={len(train_s_dataset)}, "
         + f"len(val_dataset)={len(val_dataset)}"
     )
 
     train_loader = DataLoader(
         BackgroundResamplingLoader(
-            train_dataset, train_bg_dataset, training_signal_fraction
+            train_s_dataset, train_b_dataset, training_signal_fraction
         ),
         batch_size=batch_size,
         shuffle=True,
@@ -110,7 +97,7 @@ def train(loader, num_classes, device, net, optimizer, criterion):
     net.train()
 
     # training loop
-    for images, masks, tiles in tqdm(loader, desc="Train", unit="batch", ascii=True):
+    for images, masks in tqdm(loader, desc="Train", unit="batch", ascii=True):
         num_samples += int(images.size(0))
 
         images = images.to(device)
@@ -161,7 +148,7 @@ def validate(loader, num_classes, device, net, criterion):
     with torch.no_grad():
         net.eval()
 
-        for images, masks, tiles in tqdm(
+        for images, masks in tqdm(
             loader, desc="Validate", unit="batch", ascii=True
         ):
             images = images.to(device)

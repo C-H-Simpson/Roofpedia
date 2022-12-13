@@ -1,6 +1,7 @@
 """
 Run experiments to find a good training configuration.
 """
+# %%
 import collections
 import datetime
 import json
@@ -187,13 +188,15 @@ if __name__ == "__main__":
 
     freeze_pretrained = True
     config["freeze_pretrained"] = freeze_pretrained
-    pos_weight = get_signal_weight(Path(dataset_path) / "validation")
+    pos_weight, neg_weight = get_signal_weight(Path(dataset_path) / "validation")
     weight = [
-        1 - pos_weight,
+        neg_weight,
         pos_weight
         # 9.52e-02,  # negative class is big therefore small weight
         # 9.05e-01,  # positive class is small therefore big weight
     ]
+    print(weight)
+    assert pos_weight > neg_weight
     config["weight"] = weight
     focal_gamma = 4
     config["focal_gamma"] = focal_gamma

@@ -6,6 +6,7 @@ See: http://pytorch.org/docs/0.3.1/data.html
 """
 
 from torch.utils.data import Dataset
+import torch
 from PIL import Image
 
 class LabelledDataset(Dataset):
@@ -20,11 +21,11 @@ class LabelledDataset(Dataset):
     def __getitem__(self, idx):
         img_path = self.img_paths[idx]
         label_path = str(img_path).replace("images", "labels")
-        image = Image.open(img_path)
+        image = [Image.open(img_path),] # transform expects and iterable
         label = Image.open(label_path)
         if self.joint_transform:
-            image = self.joint_transform(image, label)
-        return image, label
+            image, label = self.joint_transform(image, label)
+        return torch.cat(image, dim=0), label
 
 class NamedDataset(Dataset):
     """Return images and their filenames"""
@@ -38,8 +39,8 @@ class NamedDataset(Dataset):
     def __getitem__(self, idx):
         img_path = self.img_paths[idx]
         label_path = str(img_path).replace("images", "labels")
-        image = Image.open(img_path)
-        label = Image.opne(label_path)
+        image = [Image.open(img_path),] # transform expects and iterable
+        label = Image.open(label_path)
         if self.joint_transform:
             image = self.joint_transform(image, label)
-        return image, label, img_path
+        return torch.cat(image, dim=0), label, img_path
