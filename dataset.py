@@ -47,8 +47,7 @@ def load_img(label_path, source_path):
 
 def convert_mask(file):
     img = Image.open(file)
-    thresh = 1
-    out = img.convert("P").point(lambda x: 255 if x < thresh else 0, mode="1")
+    out = img.convert("P").point(lambda x: 255 if x > 0 else 0, mode="1")
     out = out.convert("P")
     palette = make_palette("dark", "light")
     out.putpalette(palette)
@@ -170,13 +169,25 @@ if __name__ == "__main__":
     print("background label e.g.", b_labels[1])
 
     # %%
-    i_path.name
+    # Delete the folders if they already exist
+    # Otherwise the datasets will "pile up"
+    for k in range(k_folds):
+        for name, labels_paths in ((f"{k}s", s), (f"{k}b", b)):
+            location = output_folder / name 
+            if location.exists():
+                shutil.rmtree(location)
 
     # %%
     s_splits = kfold_split(s_labels)
     b_splits = kfold_split(b_labels)
 
+    # Check the folders we are writing to do not exist.
     output_folder = Path("dataset")
+    for k in range(k_folds):
+        for name, labels_paths in ((f"{k}s", s), (f"{k}b", b)):
+            location = output_folder / name 
+            print(location)
+            assert not location.exists()
 
     for k in range(k_folds):
         s = s_splits[k]
@@ -195,43 +206,28 @@ if __name__ == "__main__":
             print(name, "e.g.", dest)
 
     # %%
-    Image.open("dataset/0s/images/532304/180043.png")
-
-    # %%
-    Image.open("dataset/0s/labels/532304/180043.png")
-
-    # %%
-    i_path
-    # %%
-    np.array(Image.open("/home/ucbqc38/Scratch/getmapping_2021_tiled/TQ38/labels/532304/180043.png")).shape
-
-    # %%
-    Path("/home/ucbqc38/Scratch/getmapping_2021_tiled/TQ38/labels/532304/180043.png.aux.xml").read_text()
-    # %%
-    Path("/home/ucbqc38/Scratch/getmapping_2021_tiled/TQ38/images/532304/180043.png.aux.xml").read_text()
-
-    # %%
-    np.array(Image.open(str(i_path).replace("images", "labels"))).shape
+    # Remove the "testing" folder if it exists.
+    if (output_folder/"testing").exists():
+        shutil.rmtree(str(output_folder / "testing"))
 
     # %%
     # Identify fold 0 as the test data
-    shutil.move(output_folder / "0s", output_folder / "testing")
-    shutil.move(output_folder / "0b", output_folder / "testing")
+    shutil.move(str(output_folder / "0s"), str(output_folder / "testing"))
+    shutil.move(str(output_folder / "0b"), str(output_folder / "testing"))
 
     # %%
     # Use softlinks to assemble training / validation sets from the other folds.
     # needs to have a structure like k1/(training|training_bg)/images/19/....
     training_s_labels_paths = {
-        k: list((output_folder / f"{k}s" / "labels").glob("*/*/*png"))
+        k: list((output_folder / f"{k}s" / "labels").glob("*/*png"))
         for k in range(k_folds)
     }
     training_b_labels_paths = {
-        k: list((output_folder / f"{k}b" / "labels").glob("*/*/*png"))
+        k: list((output_folder / f"{k}b" / "labels").glob("*/*png"))
         for k in range(k_folds)
     }
     for k in range(1, k_folds):
         sel = list(range(1, k)) + list(range(k + 1, k_folds))
-        # print(k, sel)
         for i in range(1, k_folds):
             for name, labels_paths in (
                 ("training_s", training_s_labels_paths[i]),
@@ -239,8 +235,8 @@ if __name__ == "__main__":
             ):
                 if i == k:
                     name = "validation"
-                print(name)
                 dest_folder = output_folder / f"k{k}" / name
+                assert len(labels_paths)
                 for p in labels_paths:
                     dest_file = (
                         dest_folder
@@ -262,4 +258,4 @@ if __name__ == "__main__":
                     print(p, dest_file)
                     symlink(p.resolve(), dest_file)
 
-    print("Successfully split dataset according to kfold split")
+    print("Split dataset according to kfold split")
