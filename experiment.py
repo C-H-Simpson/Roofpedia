@@ -97,8 +97,11 @@ def run_training(
             target_size, batch_size, alt_validation_path
         )
     else:
-        print("Alternative validation data not available", alt_validation_path)
+        # print("Alternative validation data not available", alt_validation_path)
         alt_val_loader = None
+        # Comment this error out to make alternative validation data non-compulsory.
+        raise FileNotFoundError(f"Alternative validation data not available {alt_validation_path}")
+
 
     history = collections.defaultdict(list)
 
@@ -110,7 +113,7 @@ def run_training(
 
         val_hist = validate(val_loader, num_classes, device, net, criterion)
 
-        if alt_val_loader:
+        if alt_val_loader is not None:
             alt_val_hist = validate(alt_val_loader, num_classes, device, net, criterion)
 
         print(
@@ -122,7 +125,7 @@ def run_training(
             "Validation stats:",
             ", ".join([f"{key}: {val_hist[key]:.3e}" for key in val_hist]),
         )
-        if alt_val_loader:
+        if alt_val_loader is not None:
             print(
                 "Alt validation stats:",
                 ", ".join([f"{key}: {alt_val_hist[key]:.3e}" for key in alt_val_hist]),
@@ -134,7 +137,7 @@ def run_training(
         for key, value in val_hist.items():
             history["val " + key].append(value)
 
-        if alt_val_loader:
+        if alt_val_loader is not None:
             for key, value in alt_val_hist.items():
                 history["alt val " + key].append(value)
 
@@ -179,7 +182,7 @@ if __name__ == "__main__":
     batch_size = config["batch_size"]
 
     dataset_path = config["dataset_path"]
-    alt_validation_path = str((Path(dataset_path) / "alt_validation").resolve())
+    alt_validation_path = str((Path(dataset_path) / "validation_alt").resolve())
     config["alt_validation"] = alt_validation_path
     checkpoint_path = Path(config["checkpoint_path"])
     target_type = config["target_type"]

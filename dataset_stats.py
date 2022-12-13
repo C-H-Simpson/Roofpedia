@@ -8,7 +8,7 @@ from PIL import Image
 import numpy as np
 
 def get_signal_weight(dir: Path):
-    masks = list((dir).glob("*/labels/*/*"))
+    masks = list((dir).glob("labels/*/*.png"))
     assert len(masks), dir
     not_blank = [np.count_nonzero(Image.open(str(p))) for p in (masks)]
     count_not_blank = np.sum(not_blank)  # number of non-blank pixels

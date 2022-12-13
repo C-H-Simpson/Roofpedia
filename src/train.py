@@ -55,13 +55,13 @@ def get_dataset_loaders(
             JointTransform(Normalize(mean=mean, std=std), None),
         ]
     )
-    train_s_image_paths = list(dataset_path.glob("training_s/*/images/*/*.png"))
+    train_s_image_paths = list(dataset_path.glob("training_s/images/*/*.png"))
     train_s_dataset = LabelledDataset(image_paths=train_s_image_paths, joint_transform=transform)
 
-    train_b_image_paths = list(dataset_path.glob("training_b/*/images/*/*.png"))
+    train_b_image_paths = list(dataset_path.glob("training_b/images/*/*.png"))
     train_b_dataset = LabelledDataset(image_paths=train_b_image_paths, joint_transform=transform)
 
-    val_image_paths = list(dataset_path.glob("validation/*/images/*/*.png"))
+    val_image_paths = list(dataset_path.glob("validation/images/*/*.png"))
     val_dataset = LabelledDataset(image_paths=val_image_paths, joint_transform=val_transform)
 
     assert len(train_b_dataset) > 0, "at least one tile in training background dataset"
