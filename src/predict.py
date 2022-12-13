@@ -1,7 +1,8 @@
 import os
+import shutil
+from pathlib import Path
 
 import numpy as np
-from pathlib import Path
 import toml
 import torch
 import torch.backends.cudnn
@@ -10,8 +11,8 @@ from PIL import Image
 from tqdm import tqdm
 
 from src.colors import make_palette
-from src.unet import UNet
 from src.plain_dataloader import get_plain_dataset_loader
+from src.unet import UNet
 
 
 def predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=1):
@@ -47,6 +48,10 @@ def predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=1):
                 path.parent.mkdir(exist_ok=True)
 
                 out.save(path, optimize=True)
+
+                # Copy the image metadata to keep it as a valid georeferenced raster.
+                metadata_path = str(img_path) + ".aux.xml"
+                shutil.copy(metadata_path, path.parent)
 
     print("Prediction Done, saved masks to " + mask_dir)
 
