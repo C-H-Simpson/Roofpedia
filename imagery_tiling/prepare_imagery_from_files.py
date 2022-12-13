@@ -220,7 +220,6 @@ if __name__ == "__main__":
             _df,
             window_height,
             window_width,
-            pixel_size,
             shapefile,
             destination_dir,
             maskvalue=1,
