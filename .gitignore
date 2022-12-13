@@ -18,7 +18,10 @@ New Cities.qgz
 *.qmd
 dataset/images
 dataset/labels
-*.toml
 *.json
 dataset/training_area
 *.zip
+results/*/config.toml
+*.tiff
+*.xml
+.vscode/settings.json
