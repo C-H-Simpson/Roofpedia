@@ -156,23 +156,6 @@ if __name__ == "__main__":
     b_splits = kfold_split(b_labels)
 
     # %%
-    # Delete the folders if they already exist
-    # Otherwise the datasets will "pile up"
-    # for k in range(k_folds):
-    #     s = s_splits[k]
-    #     b = b_splits[k]
-    #     location = dataset_folder / f"k{k}"
-    #     if location.exists():
-    #         shutil.rmtree(location)
-    #     assert not location.exists()
-
-    #     for name, labels_paths in ((f"{k}s", s), (f"{k}b", b)):
-    #         location = dataset_folder / name 
-    #         if location.exists():
-    #             shutil.rmtree(location)
-    #         assert not location.exists()
-
-    # %%
     # Split the files into directories.
     for k in range(k_folds):
         s = s_splits[k]
@@ -246,15 +229,19 @@ if __name__ == "__main__":
         print(f"{k=}")
         for i in range(1, k_folds):
             print(f"{i=}")
-            for s_or_b in ("s", "b"):
+            for s_or_b in ("s", "b", "s_alt", "b_alt"):
                 print(f"{s_or_b=}")
                 # For i=k, the folders {i}b/{i}s contain the validation data
                 # and others are training data
                 if i == k:
                     name = "validation"
+                    if "alt" in s_or_b:
+                        name = "validation_alt"
                     destination = dataset_folder / f"k{k}" / name
                 else:
                     name = "training"
+                    if "alt" in s_or_b:
+                        continue
                     destination = dataset_folder / f"k{k}" / f"training_{s_or_b}"
 
                 labels_paths = list(dataset_folder.glob(f"{i}{s_or_b}/labels/*/*.png"))
@@ -262,40 +249,12 @@ if __name__ == "__main__":
 
                     dest_file = destination / "labels" / p.parent.stem / p.name
                     dest_file.parent.mkdir(exist_ok=True, parents=True)
-                    symlink(p.resolve(), dest_file)
+                    symlink(p.resolve(), dest_file.resolve())
                     # Now repeat for the image
                     p = Path(str(p).replace("labels", "images"))
                     dest_file = destination / "images" / p.parent.stem / p.name
                     dest_file.parent.mkdir(exist_ok=True, parents=True)
-                    symlink(p.resolve(), dest_file)
+                    symlink(p.resolve(), dest_file.resolve())
 
                 print("example", (p.resolve(), dest_file))
-
-    # %%
-    # Use softlinks to assemble alternative validation data.
-    for k in range(1, k_folds):
-        print(f"{k=}")
-        i = k
-        # For i=k, the folders {i}b/{i}s contain the validation data
-        # and others are training data
-        name = "validation_alt"
-        destination = dataset_folder / f"k{k}" / name
-
-        labels_paths = list(dataset_folder.glob(f"k{k}/validation/labels/*/*.png"))
-        labels_paths = [str(p).replace("getmapping_2021", "getmapping_2019") for p in labels_paths]
-        labels_paths = [Path(p) for p in labels_paths]
-        labels_paths = [p for p in labels_paths if p.is_file()]
-        for p in labels_paths:
-
-            dest_file = destination / "labels" / p.parent.stem / p.name
-            dest_file.parent.mkdir(exist_ok=True, parents=True)
-            symlink(p.resolve(), dest_file)
-            # Now repeat for the image
-            p = Path(str(p).replace("labels", "images"))
-            dest_file = destination / "images" / p.parent.stem / p.name
-            dest_file.parent.mkdir(exist_ok=True, parents=True)
-            symlink(p.resolve(), dest_file)
-
-        print("example", (p.resolve(), dest_file))
-
-
+# %%

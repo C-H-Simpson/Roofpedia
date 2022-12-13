@@ -31,7 +31,7 @@ def get_plain_dataset_loader(target_size, batch_size, dataset_path):
             JointTransform(Normalize(mean=mean, std=std), None),
         ]
     )
-    image_paths = list(Path(dataset_path).glob("*/*.png"))
+    image_paths = list(Path(dataset_path).glob("images/*/*.png"))
     dataset = LabelledDataset(image_paths=image_paths, joint_transform=transform)
     loader = DataLoader(dataset, batch_size=batch_size, drop_last=True)
 
