@@ -248,13 +248,13 @@ if __name__ == "__main__":
                     print(p, dest_file)
                     if not p.is_file():
                         raise ValueError()
-                    dest_file.parent.mkdir(exist_ok=True, parents=True)
+                    dest_file.parent.mkdir(exist_ok=False, parents=True)
                     symlink(p.resolve(), dest_file)
                     p = Path(str(p).replace("labels", "images"))
                     if not p.is_file():
                         raise ValueError()
                     dest_file = Path(str(dest_file).replace("labels", "images"))
-                    dest_file.parent.mkdir(exist_ok=True, parents=True)
+                    dest_file.parent.mkdir(exist_ok=False, parents=True)
                     print(p, dest_file)
                     symlink(p.resolve(), dest_file)
 
