@@ -63,7 +63,7 @@ def kfold_split(file_list, n_splits=5):
 # Kfold
 if __name__ == "__main__":
     # Delete the old dataset, otherwise it piles up.
-    assert not dataset_folder.exists()
+    assert not dataset_folder.exists(), "recommend deleting the folder first"
 
     # Load the file that encodes the geometry of the tiling.
     gdf_tiles = gpd.read_feather(tiling_path)
@@ -299,5 +299,3 @@ if __name__ == "__main__":
         print("example", (p.resolve(), dest_file))
 
 
-
-# %%
