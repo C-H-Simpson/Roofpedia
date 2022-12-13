@@ -35,14 +35,7 @@ training_area_path = "../data/selected_area_220404.gpkg"
 keep_background_proportion = 0.01
 keep_signal_proportion = 1.0
 
-# %%
-def load_img(label_path, source_path):
-    print(label_path, source_path)
-    signal_labels = [str(p) for p in Path(label_path).glob("*/*/*.png")]
-    signal_images = [str(p) for p in Path(source_path).glob("*/*/*.png")]
-    print(str(len(signal_labels)) + " label files found")
-    print(str(len(signal_images)) + " source files found")
-    return signal_labels, signal_images
+dataset_folder = Path("dataset")
 
 
 def convert_mask(file):
@@ -52,19 +45,6 @@ def convert_mask(file):
     palette = make_palette("dark", "light")
     out.putpalette(palette)
     out.save(file)
-
-
-# train test val split
-def train_test_split(file_list, test_size=0.1, val_size=0.1):
-    random_obj.shuffle(file_list)
-    train_size = 1 - test_size - val_size
-    assert train_size > 0
-    train_stop = int(len(file_list) * train_size)
-    test_stop = int((len(file_list) * (train_size + test_size)))
-    train_data = file_list[:train_stop]
-    test_data = file_list[train_stop:test_stop]
-    val_data = file_list[test_stop:]
-    return train_data, test_data, val_data
 
 
 def kfold_split(file_list, n_splits=5):
@@ -82,6 +62,9 @@ def kfold_split(file_list, n_splits=5):
 # %%
 # Kfold
 if __name__ == "__main__":
+    # Delete the old dataset, otherwise it piles up.
+    assert not dataset_folder.exists()
+
     # Load the file that encodes the geometry of the tiling.
     gdf_tiles = gpd.read_feather(tiling_path)
 
@@ -112,7 +95,7 @@ if __name__ == "__main__":
     # Drop tiles with no labels
     image_tiles = [p for p in intersect.p if p.is_file()]
     label_tiles = [Path(str(p).replace("images", "labels")) for p in image_tiles]
-    image_tiles = [p for p, pi in zip(image_tiles, label_tiles) if pi.is_file()]
+    # image_tiles = [p for p, pi in zip(image_tiles, label_tiles) if pi.is_file()] # There should be none of these
     label_tiles = [p for p in label_tiles if p.is_file()]
 
     assert len(image_tiles)
@@ -169,26 +152,28 @@ if __name__ == "__main__":
     print("background label e.g.", b_labels[1])
 
     # %%
-    # Delete the folders if they already exist
-    # Otherwise the datasets will "pile up"
-    for k in range(k_folds):
-        for name, labels_paths in ((f"{k}s", s), (f"{k}b", b)):
-            location = output_folder / name 
-            if location.exists():
-                shutil.rmtree(location)
-
-    # %%
     s_splits = kfold_split(s_labels)
     b_splits = kfold_split(b_labels)
 
-    # Check the folders we are writing to do not exist.
-    output_folder = Path("dataset")
-    for k in range(k_folds):
-        for name, labels_paths in ((f"{k}s", s), (f"{k}b", b)):
-            location = output_folder / name 
-            print(location)
-            assert not location.exists()
+    # %%
+    # Delete the folders if they already exist
+    # Otherwise the datasets will "pile up"
+    # for k in range(k_folds):
+    #     s = s_splits[k]
+    #     b = b_splits[k]
+    #     location = dataset_folder / f"k{k}"
+    #     if location.exists():
+    #         shutil.rmtree(location)
+    #     assert not location.exists()
 
+    #     for name, labels_paths in ((f"{k}s", s), (f"{k}b", b)):
+    #         location = dataset_folder / name 
+    #         if location.exists():
+    #             shutil.rmtree(location)
+    #         assert not location.exists()
+
+    # %%
+    # Split the files into directories.
     for k in range(k_folds):
         s = s_splits[k]
         b = b_splits[k]
@@ -197,7 +182,29 @@ if __name__ == "__main__":
                 img_path = str(label_path).replace("labels", "images")
                 for i_name, i_path in (("labels", label_path), ("images", img_path)):
                     i_path = Path(i_path)
-                    location = output_folder / name / i_name
+                    location = dataset_folder / name / i_name
+                    dest = location / i_path.parent.stem / i_path.name
+                    dest.parent.mkdir(exist_ok=True, parents=True)
+                    shutil.copy(i_path, dest)
+                    if i_name == "labels":
+                        convert_mask(dest)
+            print(name, "e.g.", dest)
+
+    # %%
+    # Add in alternative imagery set.
+    for k in range(k_folds):
+        s = s_splits[k]
+        b = b_splits[k]
+        for name, labels_paths in ((f"{k}s_alt", s), (f"{k}b_alt", b)):
+            for label_path in labels_paths:
+                # Use 2019 imagery as the alternative
+                label_path = Path(str(label_path).replace("getmapping_2021", "getmapping_2019"))
+                img_path = Path(str(label_path).replace("labels", "images"))
+                if not (img_path.is_file() and label_path.is_file()):
+                    continue
+                for i_name, i_path in (("labels", label_path), ("images", img_path)):
+                    i_path = Path(i_path)
+                    location = dataset_folder / name / i_name
                     dest = location / i_path.parent.stem / i_path.name
                     dest.parent.mkdir(exist_ok=True, parents=True)
                     shutil.copy(i_path, dest)
@@ -207,55 +214,90 @@ if __name__ == "__main__":
 
     # %%
     # Remove the "testing" folder if it exists.
-    if (output_folder/"testing").exists():
-        shutil.rmtree(str(output_folder / "testing"))
+    # if (dataset_folder/"testing").exists():
+        # shutil.rmtree(str(dataset_folder / "testing"))
 
     # %%
-    # Identify fold 0 as the test data
-    shutil.move(str(output_folder / "0s"), str(output_folder / "testing"))
-    shutil.move(str(output_folder / "0b"), str(output_folder / "testing"))
+    # Identify fold i=0 as the test data
+    testing_folders = list((dataset_folder/"0s").glob("*/*/*png")) + list((dataset_folder/"0b").glob("*/*/*png"))
+    dest = (dataset_folder/"testing")
+    for f in testing_folders:
+        dest_file = dest / f.parent.parent.stem / f.parent.stem / f.name
+        dest_file.parent.mkdir(exist_ok=True, parents=True)
+        shutil.move(str(f), str(dest_file))
+
+    testing_folders = list((dataset_folder/"0s_alt").glob("*/*/*png")) + list((dataset_folder/"0b_alt").glob("*/*/*png"))
+    dest = (dataset_folder/"testing_alt")
+    for f in testing_folders:
+        dest_file = dest / f.parent.parent.stem / f.parent.stem / f.name
+        dest_file.parent.mkdir(exist_ok=True, parents=True)
+        shutil.move(str(f), str(dest_file))
+
+
+    # %%
+    # At this point we have folders that look like
+    # 1b, 1s, 1b_alt, 1s_alt, 2b etc.
+    # We need to link these into one folder for each fold - one for training_s, training_b, validation, validation_alt
 
     # %%
     # Use softlinks to assemble training / validation sets from the other folds.
     # needs to have a structure like k1/(training|training_bg)/images/19/....
-    training_s_labels_paths = {
-        k: list((output_folder / f"{k}s" / "labels").glob("*/*png"))
-        for k in range(k_folds)
-    }
-    training_b_labels_paths = {
-        k: list((output_folder / f"{k}b" / "labels").glob("*/*png"))
-        for k in range(k_folds)
-    }
     for k in range(1, k_folds):
-        sel = list(range(1, k)) + list(range(k + 1, k_folds))
+        print(f"{k=}")
         for i in range(1, k_folds):
-            for name, labels_paths in (
-                ("training_s", training_s_labels_paths[i]),
-                ("training_b", training_b_labels_paths[i]),
-            ):
+            print(f"{i=}")
+            for s_or_b in ("s", "b"):
+                print(f"{s_or_b=}")
+                # For i=k, the folders {i}b/{i}s contain the validation data
+                # and others are training data
                 if i == k:
                     name = "validation"
-                dest_folder = output_folder / f"k{k}" / name
-                assert len(labels_paths)
+                    destination = dataset_folder / f"k{k}" / name
+                else:
+                    name = "training"
+                    destination = dataset_folder / f"k{k}" / f"training_{s_or_b}"
+
+                labels_paths = list(dataset_folder.glob(f"{i}{s_or_b}/labels/*/*.png"))
                 for p in labels_paths:
-                    dest_file = (
-                        dest_folder
-                        / p.parent.parent.parent.stem
-                        / p.parent.parent.stem
-                        / p.parent.stem
-                        / p.name
-                    )
-                    print(p, dest_file)
-                    if not p.is_file():
-                        raise ValueError()
-                    dest_file.parent.mkdir(exist_ok=False, parents=True)
+
+                    dest_file = destination / "labels" / p.parent.stem / p.name
+                    dest_file.parent.mkdir(exist_ok=True, parents=True)
                     symlink(p.resolve(), dest_file)
+                    # Now repeat for the image
                     p = Path(str(p).replace("labels", "images"))
-                    if not p.is_file():
-                        raise ValueError()
-                    dest_file = Path(str(dest_file).replace("labels", "images"))
-                    dest_file.parent.mkdir(exist_ok=False, parents=True)
-                    print(p, dest_file)
+                    dest_file = destination / "images" / p.parent.stem / p.name
+                    dest_file.parent.mkdir(exist_ok=True, parents=True)
                     symlink(p.resolve(), dest_file)
 
-    print("Split dataset according to kfold split")
+                print("example", (p.resolve(), dest_file))
+
+    # %%
+    # Use softlinks to assemble alternative validation data.
+    for k in range(1, k_folds):
+        print(f"{k=}")
+        i = k
+        # For i=k, the folders {i}b/{i}s contain the validation data
+        # and others are training data
+        name = "validation_alt"
+        destination = dataset_folder / f"k{k}" / name
+
+        labels_paths = list(dataset_folder.glob(f"k{k}/validation/labels/*/*.png"))
+        labels_paths = [str(p).replace("getmapping_2021", "getmapping_2019") for p in labels_paths]
+        labels_paths = [Path(p) for p in labels_paths]
+        labels_paths = [p for p in labels_paths if p.is_file()]
+        for p in labels_paths:
+
+            dest_file = destination / "labels" / p.parent.stem / p.name
+            dest_file.parent.mkdir(exist_ok=True, parents=True)
+            symlink(p.resolve(), dest_file)
+            # Now repeat for the image
+            p = Path(str(p).replace("labels", "images"))
+            dest_file = destination / "images" / p.parent.stem / p.name
+            dest_file.parent.mkdir(exist_ok=True, parents=True)
+            symlink(p.resolve(), dest_file)
+
+        print("example", (p.resolve(), dest_file))
+
+
+
+# %%
