@@ -33,6 +33,9 @@ domain_east = domain_east + window_width
 domain_north = domain_north + window_height
 domain_west, domain_south, domain_east, domain_north
 
+# A geodataframe will be created in this location which identifies the tiles.
+tiling_path = f"../data/tiling_{pitch}_{pixel_size}.feather"
+
 # %%
 if __name__=="__main__":
     # %%
@@ -106,7 +109,7 @@ if __name__=="__main__":
 
     # %%
     # Save the grid
-    gdf_tiles.to_feather(f"../data/tiling_{pitch}_{pixel_size}.feather")
+    gdf_tiles.to_feather(tiling_path)
 
     # %%
     # Generate a version of the script with the right input, then submit to queue.

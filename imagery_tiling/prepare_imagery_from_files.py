@@ -1,5 +1,7 @@
 # %%
+import argparse
 import tempfile
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import geopandas as gpd
@@ -7,14 +9,13 @@ import numpy as np
 import osgeo_utils.gdal_merge
 import rasterio
 import rasterio.mask
-import argparse
 from tqdm import tqdm
-import xml.etree.ElementTree as ET
 
 tqdm.pandas()
 gpd.options.use_pygeos = True
 from pathlib import Path
 
+from imagery_tiling.batched_tiling import tiling_path
 
 if __name__ == "__main__":
     # Parse args
@@ -54,7 +55,7 @@ if __name__ == "__main__":
 
     # %%
     # Load the tiling grid created by "batched_tiling.py"
-    gdf_tiles = gpd.read_feather("../data/tiling_256_0.25.feather")
+    gdf_tiles = gpd.read_feather(tiling_path)
     # Select only those relevant to the grid reference currently being processed.
     gdf_tiles = gdf_tiles[gdf_tiles.TILE_NAME == args.gref10k]
 
@@ -166,7 +167,7 @@ if __name__ == "__main__":
 
     # %%
     # Prepare masks from the same tiles.
-    from osgeo import ogr, gdal
+    from osgeo import gdal, ogr
 
     shapefile = args.labels
 
