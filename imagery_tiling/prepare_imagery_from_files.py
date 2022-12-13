@@ -9,10 +9,12 @@ import rasterio
 import rasterio.mask
 import argparse
 from tqdm import tqdm
+import xml.etree.ElementTree as ET
 
 tqdm.pandas()
 gpd.options.use_pygeos = True
 from pathlib import Path
+
 
 if __name__ == "__main__":
     # Parse args
@@ -170,9 +172,8 @@ if __name__ == "__main__":
 
     def write_mask(
         _df,
-        window_height,
-        window_width,
-        pixel_size,
+        nrows,
+        ncols,
         shapefile,
         destination_dir,
         maskvalue=1,
@@ -182,16 +183,13 @@ if __name__ == "__main__":
             return
 
         src_ds = ogr.Open(shapefile)
-        xmin = _df.x
-        ymin = _df.y
-        xmax = xmin + window_width
-        ymax = ymin + window_height
-        ncols = int(window_width / pixel_size)
-        nrows = int(window_height / pixel_size)
-        xres, yres = pixel_size, pixel_size
-        assert xres == (xmax - xmin) / float(ncols)
-        assert yres == (ymax - ymin) / float(nrows)
-        geotransform = (xmin, xres, 0, ymax, 0, -yres)
+
+        # Get the transform from the metadata of the corresponding image file
+        metadata_path = str(destination).replace("labels", "images")+".aux.xml"
+        assert Path(metadata_path).is_file()
+        tree = ET.parse(metadata_path)
+        root = tree.getroot()
+        geotransform = tuple([float(s) for s in root[0].text.strip().split(",")])
 
         destination.parent.mkdir(exist_ok=True, parents=True)
         destination = destination.resolve().as_posix()
