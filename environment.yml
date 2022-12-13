@@ -4,13 +4,9 @@ dependencies:
   - geopandas
   - matplotlib
   - pillow
-  - libwebp
-  - toml
+  - tomli
   - tqdm
   - pytorch
   - torchvision
   - cudatoolkit=10.2
-  - pip:
-    - webp
-    - mercantile==1.0.4
-    - opencv-python
+  - gdal
