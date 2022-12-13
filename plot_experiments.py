@@ -1,7 +1,7 @@
 # %%
 import json
-from pathlib import Path
 import shutil
+from pathlib import Path
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -122,6 +122,7 @@ ax_log.set_ylabel("Loss")
 ax_log.set_yscale("log")
 plt.tight_layout()
 fig_log.savefig("loss_log.png", dpi=200, bbox_inches="tight")
+plt.show()
 
 # %%
 fig_log, ax_log = plt.subplots()
@@ -129,9 +130,10 @@ ax_log.plot(1 - np.array(history["train f1"]), label="Training")
 ax_log.plot(1 - np.array(history["val f1"]), label="Validation")
 ax_log.legend()
 ax_log.set_xlabel("Epoch")
-ax_log.set_ylabel("Loss")
+ax_log.set_ylabel("1-F1")
 ax_log.set_yscale("log")
 plt.tight_layout()
+plt.show()
 
 # plt.show()
 
