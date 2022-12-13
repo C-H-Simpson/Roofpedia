@@ -7,8 +7,8 @@ from torchvision.transforms import CenterCrop, Normalize, Resize
 from tqdm import tqdm
 
 from src.metrics import Metrics
-from src.resampling_dataloader import BackgroundResamplingLoader
 from src.plain_dataloader import LabelledDataset
+from src.resampling_dataloader import BackgroundResamplingLoader
 from src.transforms import (
     ConvertImageMode,
     ImageToTensor,

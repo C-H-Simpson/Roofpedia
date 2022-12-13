@@ -5,8 +5,8 @@ from pathlib import Path
 import toml
 import torch
 
-from src.predict import predict
 from src.extract import extract
+from src.predict import predict
 
 parser = argparse.ArgumentParser()
 parser.add_argument(

@@ -1,12 +1,11 @@
 # %%
-from PIL import Image
 from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
-
 import torch
 import torchvision.transforms as T
-
+from PIL import Image
 
 plt.rcParams["savefig.bbox"] = "tight"
 orig_img = Image.open(

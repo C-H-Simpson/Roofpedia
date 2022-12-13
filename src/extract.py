@@ -1,10 +1,9 @@
 import argparse
 import os
-
 from pathlib import Path
 
-import osgeo_utils.gdal_polygonize
 import osgeo_utils.gdal_merge
+import osgeo_utils.gdal_polygonize
 
 
 def extract(

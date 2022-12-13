@@ -4,8 +4,8 @@ Check the amount of positive and negative pixels / examples in each dataset.
 # %%
 from pathlib import Path
 
-from PIL import Image
 import numpy as np
+from PIL import Image
 
 
 def get_signal_weight(dir: Path):

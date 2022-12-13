@@ -5,11 +5,12 @@ Write bash scripts that slice up each 10km grid reference into 256 pixel imagery
 Submit the bash scripts to the myriad queue
 """
 # %%
+import subprocess
 from pathlib import Path
+
 import geopandas as gpd
 import numpy as np
 import pygeos
-import subprocess
 
 gpd.options.use_pygeos = True
 

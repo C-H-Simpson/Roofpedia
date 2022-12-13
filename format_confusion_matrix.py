@@ -2,8 +2,8 @@
 From already calculated confusion matrix results, make a nicely formatted table.
 """
 # %%
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 df = pd.read_csv("confusion_matrix.csv")
 # Join the different training sets together.

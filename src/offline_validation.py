@@ -9,8 +9,8 @@ import toml
 import torch
 import torch.nn as nn
 
-from src.plain_dataloader import get_plain_dataset_loader
 from src.losses import CrossEntropyLoss2d, FocalLoss2d, LovaszLoss2d, mIoULoss2d
+from src.plain_dataloader import get_plain_dataset_loader
 from src.train import validate
 
 # from src.train import validate

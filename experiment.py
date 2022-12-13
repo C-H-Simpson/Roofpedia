@@ -17,18 +17,13 @@ import torch
 from torch.nn import DataParallel
 from torch.optim import Adam
 
-from src.augmentations import get_transforms
-from src.losses import (
-    CrossEntropyLoss2d,
-    LovaszLoss2d,
-    mIoULoss2d,
-    FocalLoss2d,
-)
 from dataset_stats import get_signal_weight
+from src.augmentations import get_transforms
+from src.losses import CrossEntropyLoss2d, FocalLoss2d, LovaszLoss2d, mIoULoss2d
+from src.plain_dataloader import get_plain_dataset_loader
 from src.train import get_dataset_loaders, train, validate
 from src.unet import UNet
 from src.utils import plot
-from src.plain_dataloader import get_plain_dataset_loader
 
 
 def run_training(

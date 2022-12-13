@@ -7,8 +7,8 @@ from pathlib import Path
 
 import toml
 
-from src.augmentations import get_transforms
 from experiment import run_training
+from src.augmentations import get_transforms
 
 if __name__ == "__main__":
     config = toml.load("config/best-predict-config.toml")

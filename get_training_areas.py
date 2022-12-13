@@ -5,8 +5,8 @@ from pathlib import Path
 
 import geopandas as gpd
 
-from imagery_tiling.batched_tiling import tiling_path
 from dataset import k_folds
+from imagery_tiling.batched_tiling import tiling_path
 
 gdf = gpd.read_feather(tiling_path).set_index(["x", "y"])
 

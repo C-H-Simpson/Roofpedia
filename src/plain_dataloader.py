@@ -1,8 +1,10 @@
+from pathlib import Path
+
 from PIL import Image
 from torch.utils.data import DataLoader
 from torchvision.transforms import CenterCrop, Normalize, Resize
-from pathlib import Path
 
+from src.datasets import LabelledDataset, NamedDataset
 from src.transforms import (
     ConvertImageMode,
     ImageToTensor,
@@ -10,8 +12,6 @@ from src.transforms import (
     JointTransform,
     MaskToTensor,
 )
-
-from src.datasets import NamedDataset, LabelledDataset
 
 
 def get_plain_dataset_loader(target_size, batch_size, dataset_path):

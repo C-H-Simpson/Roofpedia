@@ -1,3 +1,4 @@
+import torchvision.transforms as T
 from PIL import Image
 from torchvision.transforms import (
     CenterCrop,
@@ -7,11 +8,10 @@ from torchvision.transforms import (
     Resize,
 )
 
-from src.transforms import (
+from src.transforms import (  # JointFullyRandomRotation, # doesn't work
     ConvertImageMode,
     ImageToTensor,
     JointCompose,
-    # JointFullyRandomRotation, # doesn't work
     JointRandomCrop,
     JointRandomHorizontalFlip,
     JointRandomRotation,
@@ -21,8 +21,6 @@ from src.transforms import (
 )
 
 # import albumentations as A
-
-import torchvision.transforms as T
 
 
 def get_transforms(target_size):

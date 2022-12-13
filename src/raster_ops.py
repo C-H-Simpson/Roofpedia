@@ -1,18 +1,17 @@
 """
 Routines to convert prediction images to valid rasters and vectorize.
 """
-
 # %%
-import rasterio
 from pathlib import Path
 
-# import mercantile
 import osgeo_utils.gdal_merge
+import rasterio
+
 from imagery_tiling.batched_tiling import (
     native_crs,
+    pixel_size,
     window_height,
     window_width,
-    pixel_size,
 )
 
 # %%

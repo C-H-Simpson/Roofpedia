@@ -5,9 +5,9 @@ Guaranteed to implement `__len__`, and `__getitem__`.
 See: http://pytorch.org/docs/0.3.1/data.html
 """
 
-from torch.utils.data import Dataset
 import torch
 from PIL import Image
+from torch.utils.data import Dataset
 
 
 class LabelledDataset(Dataset):
