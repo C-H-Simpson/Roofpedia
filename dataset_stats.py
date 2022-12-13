@@ -7,6 +7,7 @@ from pathlib import Path
 from PIL import Image
 import numpy as np
 
+
 def get_signal_weight(dir: Path):
     masks = list((dir).glob("labels/*/*.png"))
     assert len(masks), dir
@@ -17,7 +18,7 @@ def get_signal_weight(dir: Path):
     print(f"\t{n=}, {count_not_blank=}, {all_not_blank=}")
     pos_wt = 1 - count_not_blank / (all_not_blank * 2) / (256 ** 2)
     print(f"\tpos wt = {pos_wt:0.2e}, neg_wt = {1-pos_wt:0.2e}")
-    return pos_wt, 1-pos_wt
+    return pos_wt, 1 - pos_wt
 
 
 if __name__ == "__main__":
@@ -28,5 +29,5 @@ if __name__ == "__main__":
             if not (p / s).is_dir():
                 # print(p / s, "not a dir")
                 continue
-            get_signal_weight(p/s)
+            get_signal_weight(p / s)
 # %%

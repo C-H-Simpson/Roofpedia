@@ -13,6 +13,7 @@ from src.transforms import (
 
 from src.datasets import NamedDataset, LabelledDataset
 
+
 def get_plain_dataset_loader(target_size, batch_size, dataset_path):
     """
     A dataset loader for validation.
@@ -24,7 +25,8 @@ def get_plain_dataset_loader(target_size, batch_size, dataset_path):
         [
             JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
             JointTransform(
-                Resize(target_size, Image.BILINEAR), Resize(target_size, Image.NEAREST),
+                Resize(target_size, Image.BILINEAR),
+                Resize(target_size, Image.NEAREST),
             ),
             JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
             JointTransform(ImageToTensor(), MaskToTensor()),
@@ -37,6 +39,7 @@ def get_plain_dataset_loader(target_size, batch_size, dataset_path):
 
     return loader
 
+
 def get_named_dataset_loader(target_size, batch_size, dataset_path):
     """
     A dataset loader for prediction. Returns filenames.
@@ -48,7 +51,8 @@ def get_named_dataset_loader(target_size, batch_size, dataset_path):
         [
             JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
             JointTransform(
-                Resize(target_size, Image.BILINEAR), Resize(target_size, Image.NEAREST),
+                Resize(target_size, Image.BILINEAR),
+                Resize(target_size, Image.NEAREST),
             ),
             JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
             JointTransform(ImageToTensor(), MaskToTensor()),

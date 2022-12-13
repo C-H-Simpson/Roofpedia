@@ -27,7 +27,9 @@ def predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=1):
 
     # don't track tensors with autograd during prediction
     with torch.no_grad():
-        for images, tiles, img_paths in tqdm(loader, desc="Eval", unit="batch", ascii=True):
+        for images, tiles, img_paths in tqdm(
+            loader, desc="Eval", unit="batch", ascii=True
+        ):
             images = images.to(device)
             outputs = net(images)
 
@@ -69,8 +71,6 @@ if __name__ == "__main__":
 
     # load checkpoints
     device = torch.device("cuda")
-    chkpt = torch.load(
-        checkpoint_path, map_location=device
-    )
+    chkpt = torch.load(checkpoint_path, map_location=device)
 
     predict(tiles_dir, mask_dir, tile_size, device, chkpt)

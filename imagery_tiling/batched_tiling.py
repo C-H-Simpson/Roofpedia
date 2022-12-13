@@ -37,7 +37,7 @@ domain_west, domain_south, domain_east, domain_north
 tiling_path = f"../data/tiling_{pitch}_{pixel_size}.feather"
 
 # %%
-if __name__=="__main__":
+if __name__ == "__main__":
     # %%
     # Find the raw imagery.
     imagery_2019_glob = list(
@@ -58,9 +58,9 @@ if __name__=="__main__":
 
     # %%
     # Get 10km grid references.
-    osgb_10km = gpd.read_file("/home/ucbqc38/Scratch/OSGB_grids/OSGB_Grid_10km.shp").to_crs(
-        native_crs
-    )
+    osgb_10km = gpd.read_file(
+        "/home/ucbqc38/Scratch/OSGB_grids/OSGB_Grid_10km.shp"
+    ).to_crs(native_crs)
     london = gdf_london.dissolve().geometry.item()
     gdf = gpd.overlay(osgb_10km, gdf_london.dissolve())
     tile_names_10km = gdf.TILE_NAME.to_list()

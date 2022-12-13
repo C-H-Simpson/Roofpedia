@@ -186,7 +186,7 @@ if __name__ == "__main__":
         src_ds = ogr.Open(shapefile)
 
         # Get the transform from the metadata of the corresponding image file
-        metadata_path = str(destination).replace("labels", "images")+".aux.xml"
+        metadata_path = str(destination).replace("labels", "images") + ".aux.xml"
         assert Path(metadata_path).is_file()
         tree = ET.parse(metadata_path)
         root = tree.getroot()

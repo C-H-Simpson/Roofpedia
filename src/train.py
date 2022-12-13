@@ -48,7 +48,8 @@ def get_dataset_loaders(
         [
             JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
             JointTransform(
-                Resize(target_size, Image.BILINEAR), Resize(target_size, Image.NEAREST),
+                Resize(target_size, Image.BILINEAR),
+                Resize(target_size, Image.NEAREST),
             ),
             JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
             JointTransform(ImageToTensor(), MaskToTensor()),
@@ -56,13 +57,19 @@ def get_dataset_loaders(
         ]
     )
     train_s_image_paths = list(dataset_path.glob("training_s/images/*/*.png"))
-    train_s_dataset = LabelledDataset(image_paths=train_s_image_paths, joint_transform=transform)
+    train_s_dataset = LabelledDataset(
+        image_paths=train_s_image_paths, joint_transform=transform
+    )
 
     train_b_image_paths = list(dataset_path.glob("training_b/images/*/*.png"))
-    train_b_dataset = LabelledDataset(image_paths=train_b_image_paths, joint_transform=transform)
+    train_b_dataset = LabelledDataset(
+        image_paths=train_b_image_paths, joint_transform=transform
+    )
 
     val_image_paths = list(dataset_path.glob("validation/images/*/*.png"))
-    val_dataset = LabelledDataset(image_paths=val_image_paths, joint_transform=val_transform)
+    val_dataset = LabelledDataset(
+        image_paths=val_image_paths, joint_transform=val_transform
+    )
 
     assert len(train_b_dataset) > 0, "at least one tile in training background dataset"
     assert len(train_s_dataset) > 0, "at least one tile in training dataset"
@@ -148,9 +155,7 @@ def validate(loader, num_classes, device, net, criterion):
     with torch.no_grad():
         net.eval()
 
-        for images, masks in tqdm(
-            loader, desc="Validate", unit="batch", ascii=True
-        ):
+        for images, masks in tqdm(loader, desc="Validate", unit="batch", ascii=True):
             images = images.to(device)
             masks = masks.to(device)
 

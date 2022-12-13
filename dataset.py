@@ -181,7 +181,9 @@ if __name__ == "__main__":
         for name, labels_paths in ((f"{k}s_alt", s), (f"{k}b_alt", b)):
             for label_path in labels_paths:
                 # Use 2019 imagery as the alternative
-                label_path = Path(str(label_path).replace("getmapping_2021", "getmapping_2019"))
+                label_path = Path(
+                    str(label_path).replace("getmapping_2021", "getmapping_2019")
+                )
                 img_path = Path(str(label_path).replace("labels", "images"))
                 if not (img_path.is_file() and label_path.is_file()):
                     continue
@@ -198,24 +200,27 @@ if __name__ == "__main__":
     # %%
     # Remove the "testing" folder if it exists.
     # if (dataset_folder/"testing").exists():
-        # shutil.rmtree(str(dataset_folder / "testing"))
+    # shutil.rmtree(str(dataset_folder / "testing"))
 
     # %%
     # Identify fold i=0 as the test data
-    testing_folders = list((dataset_folder/"0s").glob("*/*/*png")) + list((dataset_folder/"0b").glob("*/*/*png"))
-    dest = (dataset_folder/"testing")
+    testing_folders = list((dataset_folder / "0s").glob("*/*/*png")) + list(
+        (dataset_folder / "0b").glob("*/*/*png")
+    )
+    dest = dataset_folder / "testing"
     for f in testing_folders:
         dest_file = dest / f.parent.parent.stem / f.parent.stem / f.name
         dest_file.parent.mkdir(exist_ok=True, parents=True)
         shutil.move(str(f), str(dest_file))
 
-    testing_folders = list((dataset_folder/"0s_alt").glob("*/*/*png")) + list((dataset_folder/"0b_alt").glob("*/*/*png"))
-    dest = (dataset_folder/"testing_alt")
+    testing_folders = list((dataset_folder / "0s_alt").glob("*/*/*png")) + list(
+        (dataset_folder / "0b_alt").glob("*/*/*png")
+    )
+    dest = dataset_folder / "testing_alt"
     for f in testing_folders:
         dest_file = dest / f.parent.parent.stem / f.parent.stem / f.name
         dest_file.parent.mkdir(exist_ok=True, parents=True)
         shutil.move(str(f), str(dest_file))
-
 
     # %%
     # At this point we have folders that look like

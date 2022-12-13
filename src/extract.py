@@ -7,12 +7,20 @@ import osgeo_utils.gdal_polygonize
 import osgeo_utils.gdal_merge
 
 
-def extract(input_glob, polygon_output_path, merged_raster_path, nodata=0, format="GeoJSON"):
+def extract(
+    input_glob, polygon_output_path, merged_raster_path, nodata=0, format="GeoJSON"
+):
     # Merge the predictions
     assert type(input_glob) == list
     input_glob = [str(p) for p in input_glob]
     parameters = (
-        ["", "-o", merged_raster_path] + input_glob + ["-co", "COMPRESS=LZW", "-v",]
+        ["", "-o", merged_raster_path]
+        + input_glob
+        + [
+            "-co",
+            "COMPRESS=LZW",
+            "-v",
+        ]
     )
     if nodata is not None:
         parameters = parameters + ["-n", str(nodata), "-a_nodata", str(nodata)]
@@ -25,7 +33,7 @@ def extract(input_glob, polygon_output_path, merged_raster_path, nodata=0, forma
         str(merged_raster_path),
         "-f",
         format,
-        str(polygon_output_path)
+        str(polygon_output_path),
     ]
     osgeo_utils.gdal_polygonize.main(parameters)
 
@@ -45,11 +53,15 @@ if __name__ == "__main__":
     target_type = args.type
     mask_dir = os.path.join("results", "03Masks", target_type, city_name)
 
-
     format = "GeoJSON"
     polygon_output_path = Path("results") / args.city_name / "polygons.geojson"
     merged_raster_path = Path("results") / args.city_name / "merged.tif"
 
     mask_glob = list((Path("results") / args.city_name / "predictions").glob("*/*png"))
 
-    extract(mask_glob=mask_glob, polygon_output_path=polygon_output_path, merged_raster_path=merged_raster_path, format=format)
+    extract(
+        mask_glob=mask_glob,
+        polygon_output_path=polygon_output_path,
+        merged_raster_path=merged_raster_path,
+        format=format,
+    )

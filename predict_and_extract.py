@@ -38,4 +38,9 @@ merged_raster_path = Path("results") / args.city / "merged.tif"
 
 mask_glob = list((Path("results") / args.city / "predictions").glob("*/*png"))
 
-extract(mask_glob=mask_glob, polygon_output_path=polygon_output_path, merged_raster_path=merged_raster_path, format=format)
+extract(
+    mask_glob=mask_glob,
+    polygon_output_path=polygon_output_path,
+    merged_raster_path=merged_raster_path,
+    format=format,
+)

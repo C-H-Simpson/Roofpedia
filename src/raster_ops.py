@@ -5,9 +5,15 @@ Routines to convert prediction images to valid rasters and vectorize.
 # %%
 import rasterio
 from pathlib import Path
+
 # import mercantile
 import osgeo_utils.gdal_merge
-from imagery_tiling.batched_tiling import native_crs, window_height, window_width, pixel_size
+from imagery_tiling.batched_tiling import (
+    native_crs,
+    window_height,
+    window_width,
+    pixel_size,
+)
 
 # %%
 # def tile_to_raster(
@@ -49,15 +55,19 @@ from imagery_tiling.batched_tiling import native_crs, window_height, window_widt
 #     ) as dst:
 #         dst.write(data, indexes=bands)
 
+
 def tile_to_raster(
-    input_fname: Path, destination_dir: Path, bands: tuple, dtype: str = None,
+    input_fname: Path,
+    destination_dir: Path,
+    bands: tuple,
+    dtype: str = None,
 ):
     """
     Turn a non-mercantile-coded png into a valid geotiff.
     """
     dataset = rasterio.open(input_fname, "r")
     data = dataset.read(bands)
-    crs = {"init": native_crs} # CRS I assumed in imagery_tiling/batched_tiling.py
+    crs = {"init": native_crs}  # CRS I assumed in imagery_tiling/batched_tiling.py
     tile = (
         int(input_fname.parent.stem),
         int(input_fname.stem),
@@ -65,7 +75,12 @@ def tile_to_raster(
     )
     # bounds = mercantile.bounds(*tile)
     # The bounds assumption I've used in imagery_tiling/batched_tiling.py
-    bounds = (tile[0], tile[1], tile[0]+(window_width*pixel_size), tile[1]+(window_height*pixel_size))
+    bounds = (
+        tile[0],
+        tile[1],
+        tile[0] + (window_width * pixel_size),
+        tile[1] + (window_height * pixel_size),
+    )
     transform = rasterio.transform.from_bounds(*bounds, data.shape[1], data.shape[2])
     dest_p = (
         Path(destination_dir)
@@ -98,7 +113,13 @@ def merge_rasters(input_glob: list, output_path: Path, nodata=0):
     input_glob = [str(p) for p in input_glob]
     # parameters = ['', '-o', output_path] + input_glob + [ '-co', 'COMPRESS=LZW', "-n", "", "-a_nodata", "0", "-v"]
     parameters = (
-        ["", "-o", output_path] + input_glob + ["-co", "COMPRESS=LZW", "-v",]
+        ["", "-o", output_path]
+        + input_glob
+        + [
+            "-co",
+            "COMPRESS=LZW",
+            "-v",
+        ]
     )
     if nodata is not None:
         parameters = parameters + ["-n", str(nodata), "-a_nodata", str(nodata)]

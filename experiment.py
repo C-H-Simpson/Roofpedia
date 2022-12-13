@@ -100,8 +100,9 @@ def run_training(
         # print("Alternative validation data not available", alt_validation_path)
         alt_val_loader = None
         # Comment this error out to make alternative validation data non-compulsory.
-        raise FileNotFoundError(f"Alternative validation data not available {alt_validation_path}")
-
+        raise FileNotFoundError(
+            f"Alternative validation data not available {alt_validation_path}"
+        )
 
     history = collections.defaultdict(list)
 

@@ -51,6 +51,7 @@ class ConvertImageMode:
 
         return image.convert(self.mode)
 
+
 class JointCompose:
     """Callable to transform an image and it's mask at the same time."""
 
