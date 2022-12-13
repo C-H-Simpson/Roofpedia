@@ -191,7 +191,7 @@ if __name__ == "__main__":
     pos_weight, neg_weight = get_signal_weight(Path(dataset_path) / "validation")
     weight = [
         neg_weight,
-        pos_weight
+        pos_weight,
         # 9.52e-02,  # negative class is big therefore small weight
         # 9.05e-01,  # positive class is small therefore big weight
     ]
@@ -212,14 +212,12 @@ if __name__ == "__main__":
 
     augs = get_transforms(target_size)
     lr_base = 5e-3
-    for lr_factor in (1, 0.1, 0.01):
-        for loss_func in ("Focal", "Lovasz", "mIoU", "CrossEntropy"):
-            config["loss_func"] = loss_func
-            lr = lr_base * lr_factor
-            config["lr"] = lr
-            print("Testing learning rate:", lr)
-            for transform_name in augs:
-                print("Testing augmentation:", transform_name)
+    for loss_func in ("Lovasz", "Focal", "mIoU", "CrossEntropy"):
+        for transform_name in augs:
+            for lr_factor in (1, 0.1, 0.01):
+                config["loss_func"] = loss_func
+                lr = lr_base * lr_factor
+                config["lr"] = lr
                 config["transform"] = transform_name
                 # Training a model from scratch
                 config["model_path"] = ""
@@ -235,6 +233,7 @@ if __name__ == "__main__":
                 with open(checkpoint_path / "config.toml", "w") as f:
                     f.write(toml.dumps(config))
 
+                print(f"{loss_func=}, {lr=}, {transform_name=}")
                 run_training(
                     alt_validation_path=alt_validation_path,
                     augs=augs,
