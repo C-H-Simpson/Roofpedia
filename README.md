@@ -12,6 +12,7 @@ If you aren't familiar with Roofpedia, we recommend looking at the [main repo](h
 * Experimentation with augmentation methods. We found that adding in random augmentations to the sharpness of the imagery improved performance slightly.
 * We have a method of parallel prediction using a large number of CPUs rather than a GPU. Currently this relies on UK grid references, but can be modified for another CRS. (GPU still required for training)
 * K-fold cross validation of the confusion matrix.
+* We do not use the OpenStreetMap SlippyMap convention for tiling within the segmentation pipeline. Instead we use the native CRS of the input raster (OSGB36/EPSG27700) which we slice into 256x256 pixel images.
 
 ## Data preparation
 This version of the repo has additional requirements for data.
