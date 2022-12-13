@@ -47,7 +47,7 @@ def load_img(label_path, source_path):
 
 def convert_mask(file):
     img = Image.open(file)
-    thresh = 255
+    thresh = 1
     out = img.convert("P").point(lambda x: 255 if x < thresh else 0, mode="1")
     out = out.convert("P")
     palette = make_palette("dark", "light")

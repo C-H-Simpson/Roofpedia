@@ -1,19 +1,17 @@
 import os
 
 import numpy as np
+from pathlib import Path
 import toml
 import torch
 import torch.backends.cudnn
 import torch.nn as nn
 from PIL import Image
-from torch.utils.data import DataLoader
-from torchvision.transforms import Compose, Normalize
 from tqdm import tqdm
 
 from src.colors import make_palette
-from src.datasets import BufferedSlippyMapDirectory
-from src.transforms import ConvertImageMode, ImageToTensor
 from src.unet import UNet
+from src.plain_dataloader import get_plain_dataset_loader
 
 
 def predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=1):
@@ -23,33 +21,20 @@ def predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=1):
     net.load_state_dict(chkpt["state_dict"])
     net.eval()
 
-    # preprocess and load
-    mean, std = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
-    transform = Compose(
-        [ConvertImageMode(mode="RGB"), ImageToTensor(), Normalize(mean=mean, std=std)]
-    )
-
-    directory = BufferedSlippyMapDirectory(
-        tiles_dir, transform=transform, size=tile_size
-    )
-    assert len(directory) > 0, "at least one tile in dataset"
-
-    # loading data
-    loader = DataLoader(directory, batch_size=batch_size)
+    loader = get_plain_dataset_loader(tile_size, batch_size, tiles_dir)
+    assert len(loader)
 
     # don't track tensors with autograd during prediction
     with torch.no_grad():
-        for images, tiles in tqdm(loader, desc="Eval", unit="batch", ascii=True):
+        for images, tiles, img_paths in tqdm(loader, desc="Eval", unit="batch", ascii=True):
             images = images.to(device)
             outputs = net(images)
 
             # manually compute segmentation mask class probabilities per pixel
             probs = nn.functional.softmax(outputs, dim=1).data.cpu().numpy()
 
-            for tile, prob in zip(tiles, probs):
-                x, y, z = list(map(int, tile))
-
-                prob = directory.unbuffer(prob)
+            # Write the tiles to raster files.
+            for prob, img_path in zip(probs, img_paths):
                 mask = np.argmax(prob, axis=0)
                 mask = mask * 200
                 mask = mask.astype(np.uint8)
@@ -58,8 +43,9 @@ def predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=1):
                 out = Image.fromarray(mask, mode="P")
                 out.putpalette(palette)
 
-                os.makedirs(os.path.join(mask_dir, str(z), str(x)), exist_ok=True)
-                path = os.path.join(mask_dir, str(z), str(x), str(y) + ".png")
+                path = Path(mask_dir) / img_path.parent.stem / img_path.name
+                path.parent.mkdir(exist_ok=True)
+
                 out.save(path, optimize=True)
 
     print("Prediction Done, saved masks to " + mask_dir)
@@ -72,23 +58,14 @@ if __name__ == "__main__":
     target_type = config["target_type"]
     tiles_dir = os.path.join("results", "02Images", city_name)
     mask_dir = os.path.join("results", "03Masks", target_type, city_name)
+    checkpoint_path = Path(config["checkpoint_path"]) / "final_checkpoint.pth"
 
     tile_size = config["img_size"]
 
     # load checkpoints
     device = torch.device("cuda")
-    if target_type == "Solar":
-        checkpoint_path = config["checkpoint_path"]
-        checkpoint_name = config["solar_checkpoint"]
-        chkpt = torch.load(
-            os.path.join(checkpoint_path, checkpoint_name), map_location=device
-        )
-
-    elif target_type == "Green":
-        checkpoint_path = config["checkpoint_path"]
-        checkpoint_name = config["green_checkpoint"]
-        chkpt = torch.load(
-            os.path.join(checkpoint_path, checkpoint_name), map_location=device
-        )
+    chkpt = torch.load(
+        checkpoint_path, map_location=device
+    )
 
     predict(tiles_dir, mask_dir, tile_size, device, chkpt)

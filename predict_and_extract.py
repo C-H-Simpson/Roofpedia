@@ -1,11 +1,12 @@
 import argparse
 import os
+from pathlib import Path
 
 import toml
 import torch
 
-from src.extract import intersection
 from src.predict import predict
+from src.extract import extract
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -15,11 +16,11 @@ args = parser.parse_args()
 
 config = toml.load("config/best-predict-config.toml")
 
-city_name = args.city
+city = args.city
 target_type = "green"
 
-tiles_dir = os.path.join("results", "02Images", city_name)
-mask_dir = os.path.join("results", "03Masks", target_type, city_name)
+tiles_dir = os.path.join("results", "02Images", city)
+mask_dir = os.path.join("results", "03Masks", target_type, city)
 tile_size = config["img_size"]
 
 # load checkpoints
@@ -31,15 +32,10 @@ chkpt = torch.load(os.path.join(checkpoint_path, checkpoint_name), map_location=
 
 predict(tiles_dir, mask_dir, tile_size, device, chkpt)
 
-kernel_size_denoise = (
-    config["kernel_size_denoise"] if "kernel_size_denoise" in config else 0
-)
-kernel_size_grow = config["kernel_size_grow"] if "kernel_size_grow" in config else 0
+format = "GeoJSON"
+polygon_output_path = Path("results") / args.city / "polygons.geojson"
+merged_raster_path = Path("results") / args.city / "merged.tif"
 
-intersection(
-    target_type,
-    city_name,
-    mask_dir,
-    kernel_size_denoise=kernel_size_denoise,
-    kernel_size_grow=kernel_size_grow,
-)
+mask_glob = list((Path("results") / args.city / "predictions").glob("*/*png"))
+
+extract(mask_glob=mask_glob, polygon_output_path=polygon_output_path, merged_raster_path=merged_raster_path, format=format)

@@ -5,25 +5,67 @@ Routines to convert prediction images to valid rasters and vectorize.
 # %%
 import rasterio
 from pathlib import Path
-import mercantile
+# import mercantile
 import osgeo_utils.gdal_merge
+from imagery_tiling.batched_tiling import native_crs, window_height, window_width, pixel_size
 
 # %%
+# def tile_to_raster(
+#     input_fname: Path, destination_dir: Path, bands: tuple, dtype: str = None
+# ):
+#     """
+#     Turn a mercantile-coded png into a valid geotiff.
+#     """
+#     dataset = rasterio.open(input_fname, "r")
+#     data = dataset.read(bands)
+#     crs = {"init": "epsg:4326"}
+#     tile = (
+#         int(input_fname.parent.stem),
+#         int(input_fname.stem),
+#         int(input_fname.parent.parent.stem),
+#     )
+#     bounds = mercantile.bounds(*tile)
+#     transform = rasterio.transform.from_bounds(*bounds, data.shape[1], data.shape[2])
+#     dest_p = (
+#         Path(destination_dir)
+#         / input_fname.parent.parent.stem
+#         / input_fname.parent.stem
+#         / f"{input_fname.stem}.tiff"
+#     )
+#     dest_p.parent.mkdir(exist_ok=True, parents=True)
+#     if dtype is None:
+#         dtype = data.dtype
+#     with rasterio.open(
+#         dest_p,
+#         "w",
+#         driver="GTiff",
+#         width=data.shape[1],
+#         height=data.shape[2],
+#         count=len(bands),
+#         dtype=data.dtype,
+#         nodata=0,
+#         transform=transform,
+#         crs=crs,
+#     ) as dst:
+#         dst.write(data, indexes=bands)
+
 def tile_to_raster(
-    input_fname: Path, destination_dir: Path, bands: tuple, dtype: str = None
+    input_fname: Path, destination_dir: Path, bands: tuple, dtype: str = None,
 ):
     """
-    Turn a mercantile-coded png into a valid geotiff.
+    Turn a non-mercantile-coded png into a valid geotiff.
     """
     dataset = rasterio.open(input_fname, "r")
     data = dataset.read(bands)
-    crs = {"init": "epsg:4326"}
+    crs = {"init": native_crs} # CRS I assumed in imagery_tiling/batched_tiling.py
     tile = (
         int(input_fname.parent.stem),
         int(input_fname.stem),
-        int(input_fname.parent.parent.stem),
+        # int(input_fname.parent.parent.stem),
     )
-    bounds = mercantile.bounds(*tile)
+    # bounds = mercantile.bounds(*tile)
+    # The bounds assumption I've used in imagery_tiling/batched_tiling.py
+    bounds = (tile[0], tile[1], tile[0]+(window_width*pixel_size), tile[1]+(window_height*pixel_size))
     transform = rasterio.transform.from_bounds(*bounds, data.shape[1], data.shape[2])
     dest_p = (
         Path(destination_dir)
