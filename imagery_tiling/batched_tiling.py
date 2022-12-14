@@ -1,7 +1,8 @@
 """
 Find the raw imagery
 Slice up this area into 10km grid references
-Write bash scripts that slice up each 10km grid reference into 256 pixel imagery tiles using prepare_imagery_from_files.py
+Write bash scripts that slice up each 10km grid reference into 256 pixel imagery
+tiles using prepare_imagery_from_files.py
 Submit the bash scripts to the myriad queue
 """
 # %%
@@ -33,6 +34,8 @@ domain_south = domain_south - window_height
 domain_east = domain_east + window_width
 domain_north = domain_north + window_height
 domain_west, domain_south, domain_east, domain_north
+
+label_polygon_path  = Path("../data/gr_manual_labels_221212.geojson").resolve()
 
 # A geodataframe will be created in this location which identifies the tiles.
 tiling_path = f"../data/tiling_{pitch}_{pixel_size}.feather"
@@ -136,7 +139,7 @@ if __name__ == "__main__":
                 .replace("$destination", str(destination.resolve()))
                 .replace(
                     "$labels",
-                    str(Path("../data/gr_manual_labels_221212.geojson").resolve()),
+                    str(label_polygon_path),
                 )
                 .replace("$ERRFILE", e_path)
                 .replace("$OUTFILE", o_path)
