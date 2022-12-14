@@ -11,3 +11,4 @@ dependencies:
   - cudatoolkit=10.2
   - gdal
   - pyarrow
+  - albumentations
