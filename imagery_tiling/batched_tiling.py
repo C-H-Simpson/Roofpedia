@@ -35,7 +35,7 @@ domain_east = domain_east + window_width
 domain_north = domain_north + window_height
 domain_west, domain_south, domain_east, domain_north
 
-label_polygon_path  = Path("../data/gr_manual_labels_221212.geojson").resolve()
+label_polygon_path = Path("../data/gr_manual_labels_221212.geojson").resolve()
 
 # A geodataframe will be created in this location which identifies the tiles.
 tiling_path = f"../data/tiling_{pitch}_{pixel_size}.feather"
@@ -79,7 +79,8 @@ if __name__ == "__main__":
     tile_names_1km = gdf.PLAN_NO.to_list()
 
     # %%
-    # We need to construct the "grid" of small tiles into which we will slice our imagery.
+    # We need to construct the "grid" of small tiles into which we will slice
+    # our imagery.
 
     # %%
     # Use pygeos to construct tiles

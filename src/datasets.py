@@ -52,4 +52,4 @@ class NamedDataset(Dataset):
         if self.joint_transform:
             image, label = self.joint_transform(image, label)
         x, y = int(img_path.parent.stem), int(img_path.stem)
-        return torch.cat(image, dim=0), label, (x,y)
+        return torch.cat(image, dim=0), label, (x, y)

@@ -5,7 +5,7 @@ from pathlib import Path
 
 import toml
 import torch
-import geopandas as gpd 
+import geopandas as gpd
 import pandas as pd
 
 from src.extract import extract
@@ -25,11 +25,12 @@ config = toml.load(args.config)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 chkpt = torch.load(
-    Path(config["checkpoint_path"]) / "final_checkpoint.pth",
-    map_location=device
+    Path(config["checkpoint_path"]) / "final_checkpoint.pth", map_location=device
 )
 
-truth_path = Path(r"C:\Users\ucbqc38\Documents\RoofPedia\gr_manual_labels_221212.geojson")
+truth_path = Path(
+    r"C:\Users\ucbqc38\Documents\RoofPedia\gr_manual_labels_221212.geojson"
+)
 
 # for name in ("validation", "training_s", "training_b",):
 for name in ("training_b",):
@@ -49,12 +50,25 @@ for name in ("training_b",):
     with tempfile.TemporaryDirectory() as t:
         merged_raster_path = str(Path(t) / "merged.tif")
         extract(
-            input_glob, polygon_output_path, merged_raster_path=merged_raster_path, nodata=0, format="GeoJSON"
+            input_glob,
+            polygon_output_path,
+            merged_raster_path=merged_raster_path,
+            nodata=0,
+            format="GeoJSON",
         )
 
     xy = [(float(p.parent.stem), float(p.stem)) for p in input_glob]
-    predictions = gpd.read_file(polygon_output_path).set_crs(native_crs, allow_override=True) # CRS not set correctly by gdal_polygonize
-    gdf_tiles = gpd.read_feather(tiling_path).set_index(["x", "y"]).loc[xy][["geometry"]].set_geometry("geometry").to_crs(native_crs).reset_index()
+    predictions = gpd.read_file(polygon_output_path).set_crs(
+        native_crs, allow_override=True
+    )  # CRS not set correctly by gdal_polygonize
+    gdf_tiles = (
+        gpd.read_feather(tiling_path)
+        .set_index(["x", "y"])
+        .loc[xy][["geometry"]]
+        .set_geometry("geometry")
+        .to_crs(native_crs)
+        .reset_index()
+    )
     truth = gpd.read_file(truth_path).to_crs(native_crs)
     print(predictions.crs, truth.crs, gdf_tiles.crs)
 
@@ -76,6 +90,9 @@ for name in ("training_b",):
     else:
         print("No false negatives?")
 
-pd.concat((gpd.read_file(p) for p in Path("results").glob("*/fp.geojson"))).to_file("merged_fp.geojson")
-pd.concat((gpd.read_file(p) for p in Path("results").glob("*/fn.geojson"))).to_file("merged_fn.geojson")
-
+pd.concat((gpd.read_file(p) for p in Path("results").glob("*/fp.geojson"))).to_file(
+    "merged_fp.geojson"
+)
+pd.concat((gpd.read_file(p) for p in Path("results").glob("*/fn.geojson"))).to_file(
+    "merged_fn.geojson"
+)
