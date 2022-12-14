@@ -143,6 +143,14 @@ def train(loader, num_classes, device, net, optimizer, criterion):
         results["f1"] = metrics.tp / (metrics.tp + 0.5 * (metrics.fp + metrics.fn))
     except ZeroDivisionError:
         results["f1"] = float("NAN")
+    try:
+        results["precision"] = metrics.tp / (metrics.tp + metrics.fp)
+    except ZeroDivisionError:
+        results["precision"] = float("NAN")
+    try:
+        results["recall"] = metrics.tp / (metrics.tp + metrics.fn)
+    except ZeroDivisionError:
+        results["recall"] = float("NAN")
     return results
 
 
@@ -188,4 +196,12 @@ def validate(loader, num_classes, device, net, criterion):
             results["f1"] = metrics.tp / (metrics.tp + 0.5 * (metrics.fp + metrics.fn))
         except ZeroDivisionError:
             results["f1"] = float("NAN")
+        try:
+            results["precision"] = metrics.tp / (metrics.tp + metrics.fp)
+        except ZeroDivisionError:
+            results["precision"] = float("NAN")
+        try:
+            results["recall"] = metrics.tp / (metrics.tp + metrics.fn)
+        except ZeroDivisionError:
+            results["recall"] = float("NAN")
         return results
