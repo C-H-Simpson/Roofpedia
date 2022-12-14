@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 import toml
 
-# matplotlib.use("TKAgg")
+matplotlib.use("TKAgg")
 
 paths = list(Path("results").glob("experiment_*"))
 assert len(paths) > 0
@@ -139,7 +139,9 @@ plt.show()
 
 # %%
 print(
-    df[["f_score", "precision", "recall"]].fillna(0).sort_values("f_score").to_string()
+    df[[
+        "transform", "loss_func", "lr", "focal_gamma", "f_score", "precision", "recall"
+    ]].fillna(0).sort_values("f_score").to_string()
 )
 
 # %%
