@@ -25,3 +25,4 @@ results/*/config.toml
 *.tiff
 *.xml
 *.feather
+*.toml
