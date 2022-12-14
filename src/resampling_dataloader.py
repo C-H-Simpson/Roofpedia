@@ -35,8 +35,7 @@ class BackgroundResamplingLoader(Dataset):
 
     def __getitem__(self, i):
         if i < self.n_background:
-            random.shuffle(self.background_tiles)
-            return self.background_tiles[i]
+            return random.choice(self.background_tiles)
         else:
             idx = (i - self.n_background) % self.n_signal
             return self.signal_tiles[idx]
