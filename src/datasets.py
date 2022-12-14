@@ -47,8 +47,9 @@ class NamedDataset(Dataset):
         label_path = str(img_path).replace("images", "labels")
         image = [
             Image.open(img_path),
-        ]  # transform expects and iterable
+        ]  # transform expects an iterable
         label = Image.open(label_path)
         if self.joint_transform:
-            image = self.joint_transform(image, label)
-        return torch.cat(image, dim=0), label, img_path
+            image, label = self.joint_transform(image, label)
+        x, y = int(img_path.parent.stem), int(img_path.stem)
+        return torch.cat(image, dim=0), label, (x,y)

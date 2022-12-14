@@ -10,7 +10,6 @@ def extract(
     input_glob, polygon_output_path, merged_raster_path, nodata=0, format="GeoJSON"
 ):
     # Merge the predictions
-    assert type(input_glob) == list
     input_glob = [str(p) for p in input_glob]
     parameters = (
         ["", "-o", merged_raster_path]

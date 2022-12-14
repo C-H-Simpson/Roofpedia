@@ -24,3 +24,4 @@ dataset/training_area
 results/*/config.toml
 *.tiff
 *.xml
+*.feather
