@@ -26,6 +26,8 @@ if __name__ == "__main__":
     # We will iterate over the "best config" and its kfolds
     original_config = toml.load("config/best-predict-config.toml")
     kfold_config_paths = list(Path("results").glob("kfold_*/config.toml"))
+    assert kfold_config_paths, "did kfold already get run?"
+    print(f"{len(kfold_config_paths)=}")
 
     # Check the kfold files match the original config.
     for p in kfold_config_paths:
@@ -40,9 +42,9 @@ if __name__ == "__main__":
                     + f"{p} {key} {config[key]} != {original_config[key]}"
                 )
 
-    loss_func = config["loss_func"]
+    loss_func = original_config["loss_func"]
     # weight = config["weight"]
-    weight = [config["signal_fraction"], 1]
+    weight = [original_config["signal_fraction"], 1]
     weight = torch.Tensor(weight)
     # select loss function, just set a default, or try to experiment
     if loss_func == "CrossEntropy":
