@@ -52,6 +52,8 @@ if __name__ == "__main__":
         checkpoint_path.mkdir(exist_ok=True)
         dataset_path = f"dataset/k{k}"
         config["dataset_path"] = dataset_path
+        alt_validation_path = f"dataset/k{k}/validation_alt"
+        config["alt_validation_path"] = alt_validation_path
         # Write the testing config to file
         with open(checkpoint_path / "config.toml", "w") as f:
             toml.dump(config, f)
@@ -71,4 +73,5 @@ if __name__ == "__main__":
             target_size=target_size,
             transform_name=transform_name,
             weight=weight,
+            alt_validation_path=alt_validation_path,
         )
