@@ -47,15 +47,11 @@ for name in ("training_b",):
     input_glob = list(mask_dir.glob("*/*png"))
     polygon_output_path = mask_dir.parent / f"{name}.geojson"
 
-    with tempfile.TemporaryDirectory() as t:
-        merged_raster_path = str(Path(t) / "merged.tif")
-        extract(
-            input_glob,
-            polygon_output_path,
-            merged_raster_path=merged_raster_path,
-            nodata=0,
-            format="GeoJSON",
-        )
+    extract(
+        input_glob,
+        polygon_output_path,
+        format="GeoJSON",
+    )
 
     xy = [(float(p.parent.stem), float(p.stem)) for p in input_glob]
     predictions = gpd.read_file(polygon_output_path).set_crs(

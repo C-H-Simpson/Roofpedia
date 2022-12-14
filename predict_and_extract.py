@@ -46,12 +46,8 @@ for name in ("getmapping_2019_tiled", "getmapping_2021_tiled"):
     input_glob = list(mask_dir.glob("*/*png"))
     polygon_output_path = mask_dir.parent / f"{name}.geojson"
 
-    with tempfile.TemporaryDirectory() as t:
-        merged_raster_path = str(Path(t) / "merged.tif")
-        extract(
-            input_glob,
-            polygon_output_path,
-            merged_raster_path=merged_raster_path,
-            nodata=0,
-            format="GeoJSON",
-        )
+    extract(
+        input_glob,
+        polygon_output_path,
+        format="GeoJSON",
+    )
