@@ -34,32 +34,3 @@ def extract(
         str(polygon_output_path),
     ]
     osgeo_utils.gdal_polygonize.main(parameters)
-
-
-if __name__ == "__main__":
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "city", help="City to be predicted, must be the same as the name of the dataset"
-    )
-    parser.add_argument(
-        "type", help="Roof Typology, Green for Greenroof, Solar for PV Roof"
-    )
-    args = parser.parse_args()
-
-    city_name = args.city
-    target_type = args.type
-    mask_dir = os.path.join("results", "03Masks", target_type, city_name)
-
-    format = "GeoJSON"
-    polygon_output_path = Path("results") / args.city_name / "polygons.geojson"
-    merged_raster_path = Path("results") / args.city_name / "merged.tif"
-
-    mask_glob = list((Path("results") / args.city_name / "predictions").glob("*/*png"))
-
-    extract(
-        mask_glob=mask_glob,
-        polygon_output_path=polygon_output_path,
-        merged_raster_path=merged_raster_path,
-        format=format,
-    )

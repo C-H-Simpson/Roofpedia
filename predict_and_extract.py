@@ -1,5 +1,6 @@
 import argparse
-import os
+import shutil
+import tempfile
 from pathlib import Path
 
 import toml
@@ -8,39 +9,49 @@ import torch
 from src.extract import extract
 from src.predict import predict
 
+native_crs = "EPSG:27700"
+
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    "city", help="City to be predicted, must be the same as the name of the dataset"
+    "gref", help="Grid reference to be extracted"
 )
+parser.add_argument("config", help="config path", default="config/best-predict-config.toml")
 args = parser.parse_args()
 
-config = toml.load("config/best-predict-config.toml")
+config = toml.load(args.config)
 
-city = args.city
-target_type = "green"
-
-tiles_dir = os.path.join("results", "02Images", city)
-mask_dir = os.path.join("results", "03Masks", target_type, city)
-tile_size = config["img_size"]
+# This will work with either CPU or GPU, allowing for parallelisation.
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+batch_size = config["batch_size"] if torch.cuda.is_available() else 1
 
 # load checkpoints
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-checkpoint_path = config["checkpoint_path"]
-checkpoint_name = config["checkpoint"]
-chkpt = torch.load(os.path.join(checkpoint_path, checkpoint_name), map_location=device)
-
-predict(tiles_dir, mask_dir, tile_size, device, chkpt)
-
-format = "GeoJSON"
-polygon_output_path = Path("results") / args.city / "polygons.geojson"
-merged_raster_path = Path("results") / args.city / "merged.tif"
-
-mask_glob = list((Path("results") / args.city / "predictions").glob("*/*png"))
-
-extract(
-    mask_glob=mask_glob,
-    polygon_output_path=polygon_output_path,
-    merged_raster_path=merged_raster_path,
-    format=format,
+chkpt = torch.load(
+    Path(config["checkpoint_path"]) / "final_checkpoint.pth", map_location=device
 )
+
+tiles_parent_dir = Path("/home/ucbqc38/Scratch")
+for name in ("getmapping_2019_tiled", "getmapping_2021_tiled"):
+    ds_path = tiles_parent_dir / name
+
+    tiles_dir = tiles_parent_dir / name
+    mask_dir = tiles_parent_dir / "results" / name / "masks"
+    if mask_dir.parent.exists():
+        shutil.rmtree(str(mask_dir.parent))
+    mask_dir.mkdir(parents=True)
+
+    tile_size = config["target_size"]
+
+    predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=batch_size)
+
+    input_glob = list(mask_dir.glob("*/*png"))
+    polygon_output_path = mask_dir.parent / f"{name}.geojson"
+
+    with tempfile.TemporaryDirectory() as t:
+        merged_raster_path = str(Path(t) / "merged.tif")
+        extract(
+            input_glob,
+            polygon_output_path,
+            merged_raster_path=merged_raster_path,
+            nodata=0,
+            format="GeoJSON",
+        )

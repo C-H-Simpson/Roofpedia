@@ -57,21 +57,3 @@ def predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=1):
                 shutil.copy(metadata_path, path.parent)
 
     print("Prediction Done, saved masks to ", mask_dir)
-
-
-if __name__ == "__main__":
-    config = toml.load("config/predict-config.toml")
-
-    city_name = config["city_name"]
-    target_type = config["target_type"]
-    tiles_dir = os.path.join("results", "02Images", city_name)
-    mask_dir = os.path.join("results", "03Masks", target_type, city_name)
-    checkpoint_path = Path(config["checkpoint_path"]) / "final_checkpoint.pth"
-
-    tile_size = config["img_size"]
-
-    # load checkpoints
-    device = torch.device("cuda")
-    chkpt = torch.load(checkpoint_path, map_location=device)
-
-    predict(tiles_dir, mask_dir, tile_size, device, chkpt)
