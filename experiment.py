@@ -192,20 +192,7 @@ if __name__ == "__main__":
     pixel_weights = count_signal_pixels(
         (Path(dataset_path).glob("training_s/labels/*/*png"))
     )
-    n_samples = (
-        pixel_weights["n_signal_tiles"] * (config["tile_size"]**2) / signal_fraction
-    )
-    n_samplesj = pixel_weights["n_signal_pixels"]
-    pos_weight = n_samples / (num_classes * n_samplesj)  # Inverse frequency weighting.
-    neg_weight = n_samples / (num_classes * (n_samples - n_samplesj))
-    weight = [
-        neg_weight,
-        pos_weight,
-    ]
-    print(weight)
-    assert pos_weight > neg_weight
 
-    config["weight"] = weight
     focal_gamma = 2
     config["focal_gamma"] = focal_gamma
 
@@ -214,47 +201,72 @@ if __name__ == "__main__":
     Path("results").mkdir(exist_ok=True)
 
     augs = get_transforms(target_size)
-    lr_base = 5e-4
+    lr_base = 5e-3
     for loss_func in ("Lovasz", "Focal", "mIoU", "CrossEntropy"):
         focal_gamma_loop = (2, 3, 4) if loss_func == "Focal" else (None,)
         for focal_gamma in focal_gamma_loop:
-            for transform_name in augs:
-                for lr_factor in (1, 0.1):
-                    config["focal_gamma"] = focal_gamma
-                    config["loss_func"] = loss_func
-                    lr = lr_base * lr_factor
-                    config["lr"] = lr
-                    config["transform"] = transform_name
-                    # Training a model from scratch
-                    config["model_path"] = ""
-                    model_path = ""
-                    # make dir for checkpoint
-                    fname = "results/experiment_" + datetime.datetime.now().strftime(
-                        "%Y%m%d_%H%M%S"
-                    )
-                    checkpoint_path = Path(fname)
-                    checkpoint_path.mkdir(exist_ok=False)
-                    config["checkpoint_path"] = fname
-                    # Write the testing config to file
-                    with open(checkpoint_path / "config.toml", "w") as f:
-                        f.write(toml.dumps(config))
+            for signal_fraction in (1.0, 0.75, 0.25):
+                for transform_name in augs:
+                    for lr_factor in (1, 0.1, 0.01):
 
-                    print(f"{loss_func=}, {lr=}, {transform_name=}, {focal_gamma=}")
-                    run_training(
-                        alt_validation_path=alt_validation_path,
-                        augs=augs,
-                        batch_size=batch_size,
-                        checkpoint_path=checkpoint_path,
-                        dataset_path=dataset_path,
-                        freeze_pretrained=freeze_pretrained,
-                        loss_func=loss_func,
-                        lr=lr,
-                        model_path=model_path,
-                        num_classes=num_classes,
-                        num_epochs=num_epochs,
-                        signal_fraction=signal_fraction,
-                        target_size=target_size,
-                        transform_name=transform_name,
-                        weight=weight,
-                        focal_gamma=focal_gamma,
-                    )
+                        # calculate weighting
+                        n_samples = (
+                            pixel_weights["n_signal_tiles"] 
+                            * (config["tile_size"]**2) / signal_fraction
+                        )
+                        n_samplesj = pixel_weights["n_signal_pixels"]
+                        pos_weight = n_samples / (num_classes * n_samplesj)  # Inverse frequency weighting.
+                        neg_weight = n_samples / (num_classes * (n_samples - n_samplesj))
+                        weight = [
+                            neg_weight,
+                            pos_weight,
+                        ]
+                        print(weight)
+                        assert pos_weight > neg_weight
+                        
+                        # Edit config
+                        config["weight"] = weight
+                        config["signal_fraction"] = signal_fraction
+                        config["focal_gamma"] = focal_gamma
+                        config["loss_func"] = loss_func
+                        lr = lr_base * lr_factor
+                        config["lr"] = lr
+                        config["transform"] = transform_name
+                        # Training a model from scratch
+                        config["model_path"] = ""
+                        model_path = ""
+                        # make dir for checkpoint
+                        fname = (
+                            "results/experiment_" + datetime.datetime.now().strftime(
+                                "%Y%m%d_%H%M%S"
+                            )
+                        )
+                        config["checkpoint_path"] = fname
+
+                        # Make output directory
+                        checkpoint_path = Path(fname)
+                        checkpoint_path.mkdir(exist_ok=False)
+
+                        # Write the testing config to file
+                        with open(checkpoint_path / "config.toml", "w") as f:
+                            f.write(toml.dumps(config))
+
+                        print(f"{loss_func=}, {lr=}, {transform_name=}, {focal_gamma=}")
+                        run_training(
+                            alt_validation_path=alt_validation_path,
+                            augs=augs,
+                            batch_size=batch_size,
+                            checkpoint_path=checkpoint_path,
+                            dataset_path=dataset_path,
+                            freeze_pretrained=freeze_pretrained,
+                            loss_func=loss_func,
+                            lr=lr,
+                            model_path=model_path,
+                            num_classes=num_classes,
+                            num_epochs=num_epochs,
+                            signal_fraction=signal_fraction,
+                            target_size=target_size,
+                            transform_name=transform_name,
+                            weight=weight,
+                            focal_gamma=focal_gamma,
+                        )
