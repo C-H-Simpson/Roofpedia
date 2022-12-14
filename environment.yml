@@ -10,3 +10,4 @@ dependencies:
   - torchvision
   - cudatoolkit=10.2
   - gdal
+  - pyarrow
