@@ -1,6 +1,5 @@
 import argparse
 import shutil
-import tempfile
 from pathlib import Path
 
 import toml
@@ -12,10 +11,10 @@ from src.predict import predict
 native_crs = "EPSG:27700"
 
 parser = argparse.ArgumentParser()
+parser.add_argument("gref", help="Grid reference to be extracted")
 parser.add_argument(
-    "gref", help="Grid reference to be extracted"
+    "config", help="config path", default="config/best-predict-config.toml"
 )
-parser.add_argument("config", help="config path", default="config/best-predict-config.toml")
 args = parser.parse_args()
 
 config = toml.load(args.config)
