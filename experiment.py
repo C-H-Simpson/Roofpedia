@@ -5,7 +5,6 @@ Run experiments to find a good training configuration.
 import collections
 import datetime
 import json
-import os
 
 # import shutil
 import sys
@@ -137,13 +136,13 @@ def run_training(
             for key, value in alt_val_hist.items():
                 history["alt val " + key].append(value)
 
-        with open(checkpoint_path / "history.json", "w") as f:
+        with open(Path(checkpoint_path) / "history.json", "w") as f:
             json.dump(history, f)
 
         if (epoch + 1) % 5 == 0:
             # plotter use history values, no need for log
             visual = "history-{:05d}-of-{:05d}.png".format(epoch + 1, num_epochs)
-            plot(os.path.join(checkpoint_path, visual), history)
+            plot(Path(checkpoint_path) / visual, history)
 
         if epoch > 10:
             if np.mean(history["val loss"][-11:-6]) <= np.mean(
@@ -163,110 +162,137 @@ def run_training(
     # eval_loader = get_plain_dataset_loader(
     #     target_size, batch_size, Path(dataset_path).parent / "testing"
     # )
+    return history["val f1"][-1]
 
     # eval_hist = validate(eval_loader, num_classes, device, net, criterion)
+
+
+def experiment(config):
+    # Work out weighting for loss functions
+    pixel_weights = count_signal_pixels(
+        (Path(config["dataset_path"]).glob("training_s/labels/*/*png"))
+    )
+    n_samples = (
+        pixel_weights["n_signal_tiles"]
+        * (config["tile_size"]**2) / config["signal_fraction"]
+    )
+    n_samplesj = pixel_weights["n_signal_pixels"]
+    pos_weight = (
+        n_samples / (config["num_classes"] * n_samplesj)
+    )  # Inverse frequency weighting.
+    neg_weight = n_samples / (
+        config["num_classes"] * (n_samples - n_samplesj)
+    )
+    weight = [
+        neg_weight,
+        pos_weight,
+    ]
+    print(weight)
+    config["weight"] = weight
+    assert pos_weight > neg_weight
+
+    # Training a model from scratch
+    config["model_path"] = ""
+    # make dir for checkpoint
+    fname = (
+        "results/experiment_" + datetime.datetime.now().strftime(
+            "%Y%m%d_%H%M%S"
+        )
+    )
+    config["checkpoint_path"] = fname
+
+    # Make output directory
+    checkpoint_path = Path(fname)
+    checkpoint_path.mkdir(exist_ok=False)
+
+    # Read from config
+    augs = get_transforms(config["target_size"])
+
+    # Write the testing config to file
+    with open(checkpoint_path / "config.toml", "w") as f:
+        f.write(toml.dumps(config))
+
+    run_training(
+        alt_validation_path=config["alt_validation_path"],
+        augs=augs,
+        batch_size=config["batch_size"],
+        checkpoint_path=config["checkpoint_path"],
+        dataset_path=config["dataset_path"],
+        freeze_pretrained=config["freeze_pretrained"],
+        loss_func=config["loss_func"],
+        lr=config["lr"],
+        model_path=config["model_path"],
+        num_classes=config["num_classes"],
+        num_epochs=config["num_epochs"],
+        signal_fraction=config["signal_fraction"],
+        target_size=config["target_size"],
+        transform_name=config["transform_name"],
+        weight=config["weight"],
+        focal_gamma=config["focal_gamma"],
+    )
 
 
 if __name__ == "__main__":
     config = toml.load("config/train-config.toml")
 
-    num_classes = 2
-    lr = config["lr"]
-    loss_func = config["loss_func"]
-    num_epochs = config["num_epochs"]
-    target_size = config["target_size"]
-    batch_size = config["batch_size"]
+    config["num_classes"] = 2
 
-    dataset_path = config["dataset_path"]
-    alt_validation_path = str((Path(dataset_path) / "validation_alt").resolve())
-    config["alt_validation"] = alt_validation_path
-    checkpoint_path = Path(config["checkpoint_path"])
-    target_type = config["target_type"]
-    signal_fraction = config["signal_fraction"]  # used for resampling
+    config["alt_validation_path"] = str(
+        (Path(config["dataset_path"]) / "validation_alt").resolve()
+    )
     config["early_stopping"] = "val loss"
 
-    freeze_pretrained = True
-    config["freeze_pretrained"] = freeze_pretrained
-
-    # Work out weighting for loss functions
-    pixel_weights = count_signal_pixels(
-        (Path(dataset_path).glob("training_s/labels/*/*png"))
-    )
-
-    focal_gamma = 2
-    config["focal_gamma"] = focal_gamma
-
-    transform_name = config["transform"]
+    config["freeze_pretrained"] = True
 
     Path("results").mkdir(exist_ok=True)
 
-    augs = get_transforms(target_size)
+    augs = get_transforms(config["target_size"])
+
     lr_base = 5e-3
+    config["focal_gamma"] = 1
+
+    best_config = config
+    best_f1 = 0
+
+    print("Experiment set 1: Do the augmentations help?")
+    config = best_config
+    config["loss_func"] = "mIoU"
+    for transform_name in augs:
+        config["transform_name"] = transform_name
+        for lr_factor in (1, 0.1, 0.01):
+            config["lr"] = lr_base * lr_factor
+            print(f"{transform_name=}, {lr_factor=}")
+            f1 = experiment(config)
+            if f1 > best_f1:
+                best_f1 = f1
+                best_config = config
+    print(f"{best_config['transform_name']=}")
+
+    print("Experiment set 2: Is there a difference between the loss functions?")
+    config = best_config
     for loss_func in ("Lovasz", "Focal", "mIoU", "CrossEntropy"):
+        config["loss_func"] = loss_func
         focal_gamma_loop = (2, 3, 4) if loss_func == "Focal" else (None,)
         for focal_gamma in focal_gamma_loop:
-            for signal_fraction in (1.0, 0.75, 0.25):
-                for transform_name in augs:
-                    for lr_factor in (1, 0.1, 0.01):
+            config["focal_gamma"] = focal_gamma
+            for lr_factor in (1, 0.1, 0.01):
+                config["lr"] = lr_base * lr_factor
+                print(f"{loss_func=}, {focal_gamma=}, {lr_factor=}")
+                f1 = experiment(config)
+                if f1 > best_f1:
+                    best_f1 = f1
+                    best_config = config
+    print(f"{best_config['loss_func']=}")
 
-                        # calculate weighting
-                        n_samples = (
-                            pixel_weights["n_signal_tiles"] 
-                            * (config["tile_size"]**2) / signal_fraction
-                        )
-                        n_samplesj = pixel_weights["n_signal_pixels"]
-                        pos_weight = n_samples / (num_classes * n_samplesj)  # Inverse frequency weighting.
-                        neg_weight = n_samples / (num_classes * (n_samples - n_samplesj))
-                        weight = [
-                            neg_weight,
-                            pos_weight,
-                        ]
-                        print(weight)
-                        assert pos_weight > neg_weight
-                        
-                        # Edit config
-                        config["weight"] = weight
-                        config["signal_fraction"] = signal_fraction
-                        config["focal_gamma"] = focal_gamma
-                        config["loss_func"] = loss_func
-                        lr = lr_base * lr_factor
-                        config["lr"] = lr
-                        config["transform"] = transform_name
-                        # Training a model from scratch
-                        config["model_path"] = ""
-                        model_path = ""
-                        # make dir for checkpoint
-                        fname = (
-                            "results/experiment_" + datetime.datetime.now().strftime(
-                                "%Y%m%d_%H%M%S"
-                            )
-                        )
-                        config["checkpoint_path"] = fname
-
-                        # Make output directory
-                        checkpoint_path = Path(fname)
-                        checkpoint_path.mkdir(exist_ok=False)
-
-                        # Write the testing config to file
-                        with open(checkpoint_path / "config.toml", "w") as f:
-                            f.write(toml.dumps(config))
-
-                        print(f"{loss_func=}, {lr=}, {transform_name=}, {focal_gamma=}")
-                        run_training(
-                            alt_validation_path=alt_validation_path,
-                            augs=augs,
-                            batch_size=batch_size,
-                            checkpoint_path=checkpoint_path,
-                            dataset_path=dataset_path,
-                            freeze_pretrained=freeze_pretrained,
-                            loss_func=loss_func,
-                            lr=lr,
-                            model_path=model_path,
-                            num_classes=num_classes,
-                            num_epochs=num_epochs,
-                            signal_fraction=signal_fraction,
-                            target_size=target_size,
-                            transform_name=transform_name,
-                            weight=weight,
-                            focal_gamma=focal_gamma,
-                        )
+    print("Experiment set 3: Does the resampling the background help?")
+    config = best_config
+    for signal_fraction in (1.0, 0.75, 0.25):
+        config["signal_fraction"] = signal_fraction
+        for lr_factor in (1, 0.1, 0.01):
+            print(f"{signal_fraction=}, {lr_factor=}")
+            config["lr"] = lr_base * lr_factor
+            f1 = experiment(config)
+            if f1 > best_f1:
+                best_f1 = f1
+                best_config = config
+    print(f"{best_config['signal_fraction']=}")
