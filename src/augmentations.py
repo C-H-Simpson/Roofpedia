@@ -22,79 +22,79 @@ import albumentations as A
 from albumentations.pytorch.transforms import ToTensorV2
 
 
-def get_transforms(target_size):
+def get_transforms(target_size=256):
     # using imagenet mean and std for Normalization
     mean, std = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
 
     augs = dict(
-        no_augs=JointCompose(
-            [
-                JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
-                JointTransform(
-                    Resize(target_size, Image.BILINEAR),
-                    Resize(target_size, Image.NEAREST),
-                ),
-                JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
-                JointTransform(ImageToTensor(), MaskToTensor()),
-                JointTransform(Normalize(mean=mean, std=std), None),
-            ]
-        ),
-        flips_and_rotations=JointCompose(
-            [
-                JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
-                JointTransform(
-                    Resize(target_size, Image.BILINEAR),
-                    Resize(target_size, Image.NEAREST),
-                ),
-                JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
-                JointRandomHorizontalFlip(0.5),
-                JointRandomVerticalFlip(0.5),
-                JointRandomRotation(0.5, 90),
-                JointRandomRotation(0.5, 90),
-                JointRandomRotation(0.5, 90),
-                JointTransform(ImageToTensor(), MaskToTensor()),
-                JointTransform(Normalize(mean=mean, std=std), None),
-            ]
-        ),
-        colorjitter=JointCompose(
-            [
-                JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
-                JointTransform(
-                    Resize(target_size, Image.BILINEAR),
-                    Resize(target_size, Image.NEAREST),
-                ),
-                JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
-                JointRandomRotation(0.5, 90),
-                JointRandomRotation(0.5, 90),
-                JointRandomRotation(0.5, 90),
-                JointRandomHorizontalFlip(0.5),
-                JointRandomVerticalFlip(0.5),
-                JointTransform(
-                    ColorJitter(contrast=0.3, brightness=0.2, hue=0.1), None,
-                ),
-                JointTransform(ImageToTensor(), MaskToTensor()),
-                JointTransform(Normalize(mean=mean, std=std), None),
-            ]
-        ),
-        sharpening2=JointCompose(
-            [
-                JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
-                JointTransform(
-                    Resize(target_size, Image.BILINEAR),
-                    Resize(target_size, Image.NEAREST),
-                ),
-                JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
-                JointRandomRotation(0.5, 90),
-                JointRandomRotation(0.5, 90),
-                JointRandomRotation(0.5, 90),
-                JointRandomHorizontalFlip(0.5),
-                JointRandomVerticalFlip(0.5),
-                JointTransform(RandomAdjustSharpness(2, 0.5), None,),
-                JointTransform(RandomAdjustSharpness(2, 0.5), None,),
-                JointTransform(ImageToTensor(), MaskToTensor()),
-                JointTransform(Normalize(mean=mean, std=std), None),
-            ]
-        ),
+        # no_augs=JointCompose(
+        #     [
+        #         JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
+        #         JointTransform(
+        #             Resize(target_size, Image.BILINEAR),
+        #             Resize(target_size, Image.NEAREST),
+        #         ),
+        #         JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
+        #         JointTransform(ImageToTensor(), MaskToTensor()),
+        #         JointTransform(Normalize(mean=mean, std=std), None),
+        #     ]
+        # ),
+        # flips_and_rotations=JointCompose(
+        #     [
+        #         JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
+        #         JointTransform(
+        #             Resize(target_size, Image.BILINEAR),
+        #             Resize(target_size, Image.NEAREST),
+        #         ),
+        #         JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
+        #         JointRandomHorizontalFlip(0.5),
+        #         JointRandomVerticalFlip(0.5),
+        #         JointRandomRotation(0.5, 90),
+        #         JointRandomRotation(0.5, 90),
+        #         JointRandomRotation(0.5, 90),
+        #         JointTransform(ImageToTensor(), MaskToTensor()),
+        #         JointTransform(Normalize(mean=mean, std=std), None),
+        #     ]
+        # ),
+        # colorjitter=JointCompose(
+        #     [
+        #         JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
+        #         JointTransform(
+        #             Resize(target_size, Image.BILINEAR),
+        #             Resize(target_size, Image.NEAREST),
+        #         ),
+        #         JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
+        #         JointRandomRotation(0.5, 90),
+        #         JointRandomRotation(0.5, 90),
+        #         JointRandomRotation(0.5, 90),
+        #         JointRandomHorizontalFlip(0.5),
+        #         JointRandomVerticalFlip(0.5),
+        #         JointTransform(
+        #             ColorJitter(contrast=0.3, brightness=0.2, hue=0.1), None,
+        #         ),
+        #         JointTransform(ImageToTensor(), MaskToTensor()),
+        #         JointTransform(Normalize(mean=mean, std=std), None),
+        #     ]
+        # ),
+        # sharpening2=JointCompose(
+        #     [
+        #         JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
+        #         JointTransform(
+        #             Resize(target_size, Image.BILINEAR),
+        #             Resize(target_size, Image.NEAREST),
+        #         ),
+        #         JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
+        #         JointRandomRotation(0.5, 90),
+        #         JointRandomRotation(0.5, 90),
+        #         JointRandomRotation(0.5, 90),
+        #         JointRandomHorizontalFlip(0.5),
+        #         JointRandomVerticalFlip(0.5),
+        #         JointTransform(RandomAdjustSharpness(2, 0.5), None,),
+        #         JointTransform(RandomAdjustSharpness(2, 0.5), None,),
+        #         JointTransform(ImageToTensor(), MaskToTensor()),
+        #         JointTransform(Normalize(mean=mean, std=std), None),
+        #     ]
+        # ),
         albumentations=A.Compose(
             [
                 A.Resize(256, 256),
@@ -105,6 +105,79 @@ def get_transforms(target_size):
                 ),
                 A.Normalize(mean=mean, std=std),
                 ToTensorV2(),
+            ]
+        ),
+        flip_rotate_A=A.Compose(
+            [
+                A.VerticalFlip(p=0.5),
+                A.RandomRotate90(p=0.5),
+                A.Normalize(mean=mean, std=std),
+                ToTensorV2(),
+            ]
+        ),
+        medium_augs_A=A.Compose(
+            [
+                # based on https://albumentations.ai/docs/examples/example_kaggle_salt/
+                A.OneOf(
+                    [
+                        A.RandomSizedCrop(
+                            min_max_height=(50, 101),
+                            height=target_size,
+                            width=target_size,
+                            p=0.5,
+                        ),
+                        A.PadIfNeeded(
+                            min_height=target_size, min_width=target_size, p=0.5
+                        ),
+                    ],
+                    p=1,
+                ),
+                A.VerticalFlip(p=0.5),
+                A.RandomRotate90(p=0.5),
+                A.OneOf(
+                    [
+                        A.ElasticTransform(
+                            p=0.5, alpha=120, sigma=120 * 0.05, alpha_affine=120 * 0.03
+                        ),
+                        A.GridDistortion(p=0.5),
+                        A.OpticalDistortion(distort_limit=1, shift_limit=0.5, p=1),
+                    ],
+                    p=0.8,
+                ),
+            ]
+        ),
+        non_spatial_A=A.Compose(
+            [
+                # based on https://albumentations.ai/docs/examples/example_kaggle_salt/
+                A.OneOf(
+                    [
+                        A.RandomSizedCrop(
+                            min_max_height=(50, 101),
+                            height=target_size,
+                            width=target_size,
+                            p=0.5,
+                        ),
+                        A.PadIfNeeded(
+                            min_height=target_size, min_width=target_size, p=0.5
+                        ),
+                    ],
+                    p=1,
+                ),
+                A.VerticalFlip(p=0.5),
+                A.RandomRotate90(p=0.5),
+                A.OneOf(
+                    [
+                        A.ElasticTransform(
+                            alpha=120, sigma=120 * 0.05, alpha_affine=120 * 0.03, p=0.5
+                        ),
+                        A.GridDistortion(p=0.5),
+                        A.OpticalDistortion(distort_limit=2, shift_limit=0.5, p=1),
+                    ],
+                    p=0.8,
+                ),
+                A.CLAHE(p=0.8),
+                A.RandomBrightnessContrast(p=0.8),
+                A.RandomGamma(p=0.8),
             ]
         ),
         blackout=A.Compose(
@@ -120,6 +193,12 @@ def get_transforms(target_size):
                 A.augmentations.dropout.coarse_dropout.CoarseDropout(
                     p=1, max_height=16, max_width=16, max_holes=8
                 ),
+                ToTensorV2(),
+            ]
+        ),
+        no_augs_A=A.Compose(
+            [
+                A.Normalize(mean=mean, std=std),
                 ToTensorV2(),
             ]
         ),

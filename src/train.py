@@ -27,35 +27,6 @@ def get_dataset_loaders(
     dataset_path = Path(dataset_path)
     # using imagenet mean and std for Normalization
     mean, std = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
-    if transform is None:
-        transform = JointCompose(
-            [
-                JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
-                JointTransform(
-                    Resize(target_size, Image.BILINEAR),
-                    Resize(target_size, Image.NEAREST),
-                ),
-                JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
-                JointRandomHorizontalFlip(0.5),
-                JointRandomRotation(0.5, 90),
-                JointRandomRotation(0.5, 90),
-                JointRandomRotation(0.5, 90),
-                JointTransform(ImageToTensor(), MaskToTensor()),
-                JointTransform(Normalize(mean=mean, std=std), None),
-            ]
-        )
-    val_transform = JointCompose(
-        [
-            JointTransform(ConvertImageMode("RGB"), ConvertImageMode("P")),
-            JointTransform(
-                Resize(target_size, Image.BILINEAR),
-                Resize(target_size, Image.NEAREST),
-            ),
-            JointTransform(CenterCrop(target_size), CenterCrop(target_size)),
-            JointTransform(ImageToTensor(), MaskToTensor()),
-            JointTransform(Normalize(mean=mean, std=std), None),
-        ]
-    )
     train_s_image_paths = list(dataset_path.glob("training_s/images/*/*.png"))
     train_s_dataset = LabelledDataset(
         image_paths=train_s_image_paths, joint_transform=transform
@@ -68,7 +39,7 @@ def get_dataset_loaders(
 
     val_image_paths = list(dataset_path.glob("validation/images/*/*.png"))
     val_dataset = LabelledDataset(
-        image_paths=val_image_paths, joint_transform=val_transform
+        image_paths=val_image_paths, joint_transform=None
     )
 
     assert len(train_b_dataset) > 0, "at least one tile in training background dataset"
@@ -110,6 +81,7 @@ def train(loader, num_classes, device, net, optimizer, criterion):
         images = images.to(device)
         masks = masks.to(device)
 
+        # breakpoint()
         assert (
             images.size()[2:] == masks.size()[1:]
         ), "resolutions for images and masks are in sync"

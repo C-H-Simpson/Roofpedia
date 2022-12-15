@@ -47,7 +47,7 @@ def run_training(
     device = torch.device("cuda")
 
     if not torch.cuda.is_available():
-        sys.exit("Error: CUDA requested but not available")
+        raise ValueError("Error: CUDA requested but not available")
 
     # weighted values for loss functions
     # add a helper to return weight seamlessly
@@ -79,7 +79,7 @@ def run_training(
     elif loss_func == "Lovasz":
         criterion = LovaszLoss2d().to(device)
     else:
-        sys.exit("Error: Unknown Loss Function value !")
+        raise ValueError("Error: Unknown Loss Function value !")
 
     # loading data
     train_loader, val_loader = get_dataset_loaders(
@@ -94,9 +94,11 @@ def run_training(
         # print("Alternative validation data not available", alt_validation_path)
         alt_val_loader = None
         # Comment this error out to make alternative validation data non-compulsory.
-        raise FileNotFoundError(
-            f"Alternative validation data not available {alt_validation_path}"
-        )
+        # raise FileNotFoundError(
+        #     f"Alternative validation data not available {alt_validation_path}"
+        # )
+    if not len(alt_val_loader):
+        alt_val_loader = None
 
     history = collections.defaultdict(list)
 
@@ -157,7 +159,7 @@ def run_training(
         "state_dict": net.state_dict(),
         "optimizer": optimizer.state_dict(),
     }
-    torch.save(states, checkpoint_path / "final_checkpoint.pth")
+    torch.save(states, Path(checkpoint_path) / "final_checkpoint.pth")
 
     # eval_loader = get_plain_dataset_loader(
     #     target_size, batch_size, Path(dataset_path).parent / "testing"
@@ -209,10 +211,10 @@ def experiment(config):
     augs = get_transforms(config["target_size"])
 
     # Write the testing config to file
-    with open(checkpoint_path / "config.toml", "w") as f:
+    with open(Path(checkpoint_path) / "config.toml", "w") as f:
         f.write(toml.dumps(config))
 
-    run_training(
+    return run_training(
         alt_validation_path=config["alt_validation_path"],
         augs=augs,
         batch_size=config["batch_size"],
@@ -237,9 +239,10 @@ if __name__ == "__main__":
 
     config["num_classes"] = 2
 
-    config["alt_validation_path"] = str(
-        (Path(config["dataset_path"]) / "validation_alt").resolve()
-    )
+    # config["alt_validation_path"] = str(
+    #     (Path(config["dataset_path"]) / "validation_alt").resolve()
+    # )
+    config["alt_validation_path"] = "" # don't use it 
     config["early_stopping"] = "val loss"
 
     config["freeze_pretrained"] = True
@@ -248,11 +251,14 @@ if __name__ == "__main__":
 
     augs = get_transforms(config["target_size"])
 
+    config["batch_size"] = 8
+
     lr_base = 5e-3
     config["focal_gamma"] = 1
 
     best_config = config
     best_f1 = 0
+
 
     print("Experiment set 1: Do the augmentations help?")
     config = best_config
@@ -284,7 +290,7 @@ if __name__ == "__main__":
                     best_config = config
     print(f"{best_config['loss_func']=}")
 
-    print("Experiment set 3: Does the resampling the background help?")
+    print("Experiment set 3: Does resampling the background help?")
     config = best_config
     for signal_fraction in (1.0, 0.75, 0.25):
         config["signal_fraction"] = signal_fraction
