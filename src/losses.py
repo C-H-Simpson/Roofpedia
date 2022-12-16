@@ -74,6 +74,7 @@ class mIoULoss2d(nn.Module):
 
     def forward(self, inputs, targets):
 
+        targets = targets.type(torch.int64)
         N, C, H, W = inputs.size()
 
         softs = nn.functional.softmax(inputs, dim=1).permute(1, 0, 2, 3)
@@ -108,12 +109,9 @@ class LovaszLoss2d(nn.Module):
 
     def forward(self, inputs, targets):
 
+        targets = targets.type(torch.int64)
         N, C, H, W = inputs.size()
-        masks = (
-            torch.zeros(N, C, H, W)
-            .to(targets.device)
-            .scatter_(1, targets.view(N, 1, H, W), 1)
-        )
+        masks = ( torch.zeros(N, C, H, W) .to(targets.device) .scatter_(1, targets.view(N, 1, H, W), 1))
 
         loss = 0.0
 
