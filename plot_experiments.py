@@ -35,7 +35,6 @@ for p in paths:
     # continue
     # if config["freeze_pretrained"] == 0:
     # continue
-    label = f"{config['freeze_pretrained']}; {config['transform']}; {config['lr']:0.1e}"
     for key in history:
         history[key] = np.array(history[key])
     f_score = history["val tp"] / (
@@ -77,9 +76,7 @@ for p in paths:
     # y = f_score_train - f_score
     # y = accuracy_n
     y = f_score
-    plt.plot(y, label=label)
 
-    plt.text(len(y) - 1, y[-1], label)
     plt.yscale("log")
     if f_score[-1] > best_f1:
         best_f1 = f_score[-1]
@@ -93,16 +90,16 @@ print(df)
 
 # Get best for a given set of parameters (across learning rates).
 df_best_lr = (
-    df.groupby(["loss_func", "transform", "freeze_pretrained"])
+    df.groupby(["loss_func", "transform_name", "freeze_pretrained"])
     .apply(lambda _df: _df.iloc[_df.f_score.argmax()])
     .sort_values("f_score")[
-        ["loss_func", "transform", "freeze_pretrained", "f_score", "lr"]
+        ["loss_func", "transform_name", "freeze_pretrained", "f_score", "lr"]
     ]
 )
 df_best_lr.to_csv("df_best_lr.csv")
 
 print("Best with no augs")
-print(df[df["transform"] == "no_augs"].tail(1).reset_index().to_dict())
+print(df[df["transform_name"] == "no_augs"].tail(1).reset_index().to_dict())
 
 print("Best config:", best_config)
 print(best_config_spec)
@@ -140,8 +137,10 @@ plt.tight_layout()
 # %%
 print(
     df[[
-        "transform", "loss_func", "lr", "focal_gamma", "f_score", "precision", "recall"
+        "transform_name", "signal_fraction", "loss_func", "lr", "focal_gamma", "f_score", "precision", "recall"
     ]].fillna(0).sort_values("f_score").to_string()
 )
 
 # %%
+df.plot.scatter("precision", "recall")
+plt.show()
