@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 from src.metrics import Metrics
 from src.plain_dataloader import LabelledDataset
-from src.resampling_dataloader import BackgroundResamplingLoader
+from src.resampling_dataloader import BackgroundResamplingLoader, SignalResamplingLoader
 from src.transforms import (
     ConvertImageMode,
     ImageToTensor,
@@ -21,7 +21,8 @@ from src.transforms import (
 
 
 def get_dataset_loaders(
-    target_size, batch_size, dataset_path, training_signal_fraction, transform=None
+    target_size, batch_size, dataset_path, training_signal_fraction, transform=None,
+    resampling_method="Background"
 ):
     target_size = (target_size, target_size)
     dataset_path = Path(dataset_path)
@@ -50,14 +51,25 @@ def get_dataset_loaders(
         + f"len(val_dataset)={len(val_dataset)}"
     )
 
-    train_loader = DataLoader(
-        BackgroundResamplingLoader(
-            train_s_dataset, train_b_dataset, training_signal_fraction
-        ),
-        batch_size=batch_size,
-        shuffle=True,
-        drop_last=True,
-    )
+    if resampling_method=="background":
+        train_loader = DataLoader(
+            BackgroundResamplingLoader(
+                train_s_dataset, train_b_dataset, training_signal_fraction
+            ),
+            batch_size=batch_size,
+            shuffle=True,
+            drop_last=True,
+        )
+    elif resampling_method=="signal":
+        train_loader = DataLoader(
+            SignalResamplingLoader(
+                train_s_dataset, train_b_dataset, training_signal_fraction
+            ),
+            batch_size=batch_size,
+            shuffle=True,
+            drop_last=True,
+        )
+
     val_loader = DataLoader(
         val_dataset, batch_size=batch_size, shuffle=False, drop_last=True
     )
