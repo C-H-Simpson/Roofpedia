@@ -144,6 +144,8 @@ def get_transforms(target_size=256):
                     ],
                     p=0.8,
                 ),
+                A.Normalize(mean=mean, std=std),
+                ToTensorV2(),
             ]
         ),
         non_spatial_A=A.Compose(
@@ -178,6 +180,8 @@ def get_transforms(target_size=256):
                 A.CLAHE(p=0.8),
                 A.RandomBrightnessContrast(p=0.8),
                 A.RandomGamma(p=0.8),
+                A.Normalize(mean=mean, std=std),
+                ToTensorV2(),
             ]
         ),
         blackout=A.Compose(
