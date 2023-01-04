@@ -65,7 +65,7 @@ class SignalResamplingLoader(Dataset):
 
     def __getitem__(self, i):
         if i < self.n_background:
-            self.background_tiles[i]
+            return self.background_tiles[i]
         else:
             idx = (i - self.n_background) % self.n_signal
             return self.signal_tiles[idx]
