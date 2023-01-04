@@ -72,16 +72,29 @@ for p in paths:
         history["val tp"][-1] + history["val fn"][-1]
     )
 
-    results.append(config)
     # y = f_score_train - f_score
     # y = accuracy_n
-    y = f_score
+    y = 1-f_score
+    plt.plot(1-f_score)
 
     plt.yscale("log")
-    if f_score[-1] > best_f1:
-        best_f1 = f_score[-1]
-        best_config = p
-        best_config_spec = config
+
+    if "checkpoint_path" not in config:
+        print("No checkpoint in config")
+    elif not (Path(config["checkpoint_path"])/"final_checkpoint.pth").exists():
+        print(f"Checkpoint wasn't saved correctly for {p}")
+    else:
+        print(f"Saving results of {p}")
+        results.append(config)
+
+        if f_score[-1] > best_f1:
+            best_f1 = f_score[-1]
+            best_config = p
+            best_config_spec = config
+
+print(f"{best_f1}, {best_config}")
+print(best_config_spec)
+
 df = pd.DataFrame(results)
 print(df.head())
 df = df.sort_values("f_score")
@@ -105,7 +118,7 @@ print("Best config:", best_config)
 print(best_config_spec)
 
 shutil.copy(Path(best_config) / "config.toml", "config/best-predict-config.toml")
-print("Config was copied into config/best-predict-config.toml")
+print(f"Config {best_config} was copied into config/best-predict-config.toml")
 
 # %%
 with open(best_config / "history.json", "r") as f:
