@@ -48,6 +48,7 @@ class FocalLoss2d(nn.Module):
         self.gamma = gamma
 
     def forward(self, inputs, targets):
+        targets = targets.type(torch.int64)
         penalty = (1 - nn.functional.softmax(inputs, dim=1)) ** self.gamma
         return self.nll_loss(
             penalty * nn.functional.log_softmax(inputs, dim=1), targets
@@ -132,3 +133,33 @@ class LovaszLoss2d(nn.Module):
             loss += torch.dot(nn.functional.relu(errors_sorted), iou)
 
         return loss / N
+
+
+class FLoss2d(nn.Module):
+    """F-score-like differentiable loss
+
+    based on 
+    https://www.kaggle.com/code/rejpalcz/best-loss-function-for-f1-score-metric/notebook
+    and 
+    https://link.springer.com/chapter/10.1007/978-3-642-38679-4_37
+    """
+    def __init__(self):
+        """Creates a `FLoss2d` instance."""
+        super().__init__()
+        self.eps=1e-10
+
+    def forward(self, inputs, targets):
+        targets = targets.type(torch.float32)
+        inputs = inputs.type(torch.float32)
+        # The size of tensor a (8) must match the size of tensor b (2) at non-singleton dimension 1 
+        # Needs a softmax?
+        tp = torch.sum((targets*inputs), axis=0)
+        fp = torch.sum(((1-targets)*inputs), axis=0)
+        fn = torch.sum(((targets)*(1-inputs)), axis=0)
+
+        p = tp / (tp + fp + self.eps())
+        r = tp / (tp + fn + self.eps())
+
+        f1 = 2*p*r / (p+r+self.eps())
+        f1 = torch.where(torch.is_nan(f1), torch.zeros_like(f1), f1)
+        return 1 - torch.mean(f1)
