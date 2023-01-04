@@ -15,10 +15,12 @@ target_size = 256
 batch_size  = 4
 checkpoint_path = "checkpoint"
 model_path = ''
-transform = "flips_and_rotations"
+transform_name = "flips_and_rotations"
 freeze_pretrained = true
 # NB pretrained_type is for the sake of records, this toml file does not control it.
 pretrained_type = "resnet50"
 signal_fraction = 1
 # kernel_size_denoise=3 - don't use 
 # kernel_size_grow=9 - don't use 
+resampling_method="background"
+early_stopping_window=5
