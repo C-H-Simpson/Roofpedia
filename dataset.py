@@ -32,7 +32,10 @@ k_folds = 5
 # This is a geodata file that labels the area that was hand labelled.
 training_area_path = "../data/selected_area_220404.gpkg"
 
-keep_background_proportion = 0.01
+# Get building footprints
+buildings = gpd.read_feather("../data/os_buildings_2021.feather")
+
+keep_background_proportion = 1
 keep_signal_proportion = 1.0
 
 dataset_folder = Path("dataset")
@@ -76,6 +79,12 @@ if __name__ == "__main__":
     intersect = (
         gpd.overlay(gdf_tiles, gdf_labelled_area).dissolve(["x", "y"]).reset_index()
     )
+    print(f"{len(intersect)} in labelled area")
+    # Only keep tiles that intersect with a building.
+    intersect = (
+        gpd.overlay(intersect, buildings).dissolve(["x", "y"]).reset_index()
+    )
+    print(f"{len(intersect)} with buildings")
 
     # Turn these into paths
     intersect = intersect.assign(
