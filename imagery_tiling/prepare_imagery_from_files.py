@@ -39,7 +39,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     # For debugging
     # args = parser.parse_args(
-    #     ["-g", "TQ27", "-i", "/home/ucbqc38/Scratch/getmapping_2021", "-o", "/lustre/scratch/scratch/ucbqc38/getmapping_2021_tiled/TQ27", "-L", "/lustre/home/ucbqc38/Roofpedia_clean/data/gr_manual_labels_221212.geojson"]
+    #     ["-g", "TQ27", "-i", "/home/ucbqc38/Scratch/getmapping_2021", "-o", "/lustre/scratch/scratch/ucbqc38/getmapping_2021_tiled/TQ27", "-L", "/lustre/home/ucbqc38/Roofpedia_clean/data/gr_manual_labels_230104.geojson"]
     # )
     print(args)
     window_height = 256
@@ -156,14 +156,14 @@ if __name__ == "__main__":
     # %%
     # Apply the tiling to the whole area.
     # This takes quite a while...
-    destination_dir = Path(args.output) / "images"
-    destination_dir.mkdir(exist_ok=True)
-    print("Splitting imagery")
-    gdf_tiles.assign(inp_tiles_str=gdf_tiles.inp_tiles.astype(str)).groupby(
-        "inp_tiles_str"
-    ).progress_apply(
-        lambda _df: query_tile(_df, destination_dir, input_tiles_path_dict)
-    )
+    # destination_dir = Path(args.output) / "images"
+    # destination_dir.mkdir(exist_ok=True)
+    # print("Splitting imagery")
+    # gdf_tiles.assign(inp_tiles_str=gdf_tiles.inp_tiles.astype(str)).groupby(
+    #     "inp_tiles_str"
+    # ).progress_apply(
+    #     lambda _df: query_tile(_df, destination_dir, input_tiles_path_dict)
+    # )
 
     # %%
     # Prepare masks from the same tiles.
