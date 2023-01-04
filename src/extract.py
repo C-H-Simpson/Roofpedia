@@ -17,10 +17,13 @@ def extract(input_glob, polygon_output_path, format="GeoJSON", force_crs="EPSG:2
             parameters = [
                 "",
                 "-8",
+                "-mask",
+                str(p),
                 str(p),
                 "-f",
                 format,
                 str(p_poly),
+                "-q"
             ]
             osgeo_utils.gdal_polygonize.main(parameters)
 
