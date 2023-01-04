@@ -22,8 +22,9 @@ from src.transforms import (
 
 def get_dataset_loaders(
     target_size, batch_size, dataset_path, training_signal_fraction, transform=None,
-    resampling_method="Background"
+    resampling_method="background"
 ):
+    print(f"{resampling_method=}")
     target_size = (target_size, target_size)
     dataset_path = Path(dataset_path)
     # using imagenet mean and std for Normalization
