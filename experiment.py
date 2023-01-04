@@ -18,7 +18,7 @@ from torch.optim import Adam
 
 from dataset_stats import count_signal_pixels
 from src.augmentations import get_transforms
-from src.losses import CrossEntropyLoss2d, FocalLoss2d, LovaszLoss2d, mIoULoss2d
+from src.losses import CrossEntropyLoss2d, FocalLoss2d, LovaszLoss2d, mIoULoss2d, FLoss2d
 from src.plain_dataloader import get_plain_dataset_loader
 from src.train import get_dataset_loaders, train, validate
 from src.unet import UNet
@@ -42,6 +42,8 @@ def run_training(
     target_size,
     transform_name,
     weight,
+    resampling_method,
+    early_stopping_window,
     focal_gamma=None,
 ):
     device = torch.device("cuda")
@@ -78,12 +80,15 @@ def run_training(
         criterion = FocalLoss2d(weight=weight, gamma=focal_gamma).to(device)
     elif loss_func == "Lovasz":
         criterion = LovaszLoss2d().to(device)
+    elif loss_func == "F1":
+        criterion = FLoss2d().to(device)
     else:
         raise ValueError("Error: Unknown Loss Function value !")
 
     # loading data
     train_loader, val_loader = get_dataset_loaders(
-        target_size, batch_size, dataset_path, signal_fraction, augs[transform_name]
+        target_size, batch_size, dataset_path, signal_fraction, augs[transform_name],
+        resampling_method=resampling_method
     )
     alt_validation_path = Path(alt_validation_path)
     if alt_validation_path.is_dir():
@@ -147,9 +152,11 @@ def run_training(
             plot(Path(checkpoint_path) / visual, history)
 
         if epoch > 10:
-            if np.mean(history["val loss"][-11:-6]) <= np.mean(
-                history["val loss"][-6:]
-            ):
+            w1 = early_stopping_window + 1
+            w2 = early_stopping_window *2 +1
+            f1_before = np.mean(history["val f1"][-w2:-w1])
+            f1_now = np.mean(history["val f1"][-w1:])
+            if not (f1_now > f1_before):
                 print("Early stopping")
                 break
 
@@ -174,10 +181,13 @@ def experiment(config):
     pixel_weights = count_signal_pixels(
         (Path(config["dataset_path"]).glob("training_s/labels/*/*png"))
     )
-    n_samples = (
-        pixel_weights["n_signal_tiles"]
-        * (config["tile_size"]**2) / config["signal_fraction"]
-    )
+    if config["signal_fraction"] != -1:
+        n_samples = (
+            pixel_weights["n_signal_tiles"]
+            * (config["tile_size"]**2) / config["signal_fraction"]
+        )
+    else:
+        n_samples = pixel_weights["n_tiles"] * 256 *256
     n_samplesj = pixel_weights["n_signal_pixels"]
     pos_weight = (
         n_samples / (config["num_classes"] * n_samplesj)
@@ -231,6 +241,8 @@ def experiment(config):
         transform_name=config["transform_name"],
         weight=config["weight"],
         focal_gamma=config["focal_gamma"],
+        resampling_method=config["resampling_method"],
+        early_stopping_window=config["early_stopping_window"]
     )
 
 
@@ -243,7 +255,7 @@ if __name__ == "__main__":
     #     (Path(config["dataset_path"]) / "validation_alt").resolve()
     # )
     config["alt_validation_path"] = "" # don't use it 
-    config["early_stopping"] = "val loss"
+    config["early_stopping"] = "val f1"
 
     config["freeze_pretrained"] = True
 
@@ -256,32 +268,48 @@ if __name__ == "__main__":
     lr_base = 5e-3
     config["focal_gamma"] = 1
 
-    best_config = config
     best_f1 = 0
 
+    config["resampling_method"] = "background"
 
-    print("Experiment set 1: Do the augmentations help?")
-    config = best_config
+    config["early_stopping_window"] = 5
+
+    config["signal_fraction"] = 1.0
     config["loss_func"] = "mIoU"
-    for transform_name in augs:
-        config["transform_name"] = transform_name
-        for lr_factor in (1, 0.1, 0.01):
+    config["transform_name"] = "no_augs_A"
+    config["lr"] = lr_base*0.1
+
+    best_config = config
+
+
+
+
+
+    print("Experiment set 2: Does resampling the background help?")
+    config = best_config
+    config["transform_name"] = "no_augs_A"
+    # for signal_fraction in (0.75, 0.5, 0.25, 0.1,):
+    for signal_fraction in (0.05,):
+        config["signal_fraction"] = signal_fraction
+        for lr_factor in (0.1, 0.01):
+            print(f"{signal_fraction=}, {lr_factor=}")
             config["lr"] = lr_base * lr_factor
-            print(f"{transform_name=}, {lr_factor=}")
             f1 = experiment(config)
             if f1 > best_f1:
                 best_f1 = f1
                 best_config = config
-    print(f"{best_config['transform_name']=}")
+    print(f"{best_config['signal_fraction']=}")
 
-    print("Experiment set 2: Is there a difference between the loss functions?")
+    print("Experiment set 3: Is there a difference between the loss functions?")
     config = best_config
-    for loss_func in ("Lovasz", "Focal", "mIoU", "CrossEntropy"):
+    config["signal_fraction"] = 0.1
+    config["transform_name"] = "no_augs_A"
+    for loss_func in ("Focal", "mIoU", "CrossEntropy"):
         config["loss_func"] = loss_func
         focal_gamma_loop = (2, 3, 4) if loss_func == "Focal" else (None,)
         for focal_gamma in focal_gamma_loop:
             config["focal_gamma"] = focal_gamma
-            for lr_factor in (1, 0.1, 0.01):
+            for lr_factor in (0.01,):
                 config["lr"] = lr_base * lr_factor
                 print(f"{loss_func=}, {focal_gamma=}, {lr_factor=}")
                 f1 = experiment(config)
@@ -290,15 +318,50 @@ if __name__ == "__main__":
                     best_config = config
     print(f"{best_config['loss_func']=}")
 
-    print("Experiment set 3: Does resampling the background help?")
+    print("Experiment set 1: Do the augmentations help?")
     config = best_config
-    for signal_fraction in (1.0, 0.75, 0.25):
-        config["signal_fraction"] = signal_fraction
-        for lr_factor in (1, 0.1, 0.01):
-            print(f"{signal_fraction=}, {lr_factor=}")
+    config["signal_fraction"] = 0.1
+    config["loss_func"] = "Focal"
+    config["focal_gamma"] = 1
+    for transform_name in augs:
+        config["transform_name"] = transform_name
+        for lr_factor in (0.1, 0.01):
             config["lr"] = lr_base * lr_factor
+            print(f"{transform_name=}, {lr_factor=}")
             f1 = experiment(config)
             if f1 > best_f1:
                 best_f1 = f1
                 best_config = config
-    print(f"{best_config['signal_fraction']=}")
+    print(f"{best_config['transform_name']=}")
+
+    print("Experiment: What about the other resampling method?")
+    config["resampling_method"] = "signal"
+    config["signal_fraction"] =0.5
+    config["loss_func"] = "Focal"
+    config["focal_gamma"] = 1
+    config["num_epochs"] = 200
+    config["lr"] = lr_base*0.001
+    f1 = experiment(config)
+
+    print("What about a long training run?")
+    config["signal_fraction"] =0.1
+    config["loss_func"] = "Focal"
+    config["focal_gamma"] = 1
+    config["num_epochs"] = 200
+    config["lr"] = lr_base*0.001
+    config["transform_name"] = "no_augs_A"
+    f1 = experiment(config)
+
+
+    print("What if we include background but don't resample at all?")
+    config["signal_fraction"] = -1
+    config["loss_func"] = "Focal"
+    config["focal_gamma"] = 1
+    config["num_epochs"] = 200
+    config["lr"] = lr_base*0.001
+    config["transform_name"] = "no_augs_A"
+    f1 = experiment(config)
+
+    print("What about the F1 loss function")
+    config["loss_func"] = "F1"
+    f1 = experiment(config)
