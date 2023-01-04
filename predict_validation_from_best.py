@@ -31,7 +31,7 @@ chkpt = torch.load(
 )
 
 truth_path = Path(
-    r"C:\Users\ucbqc38\Documents\RoofPedia\gr_manual_labels_221212.geojson"
+    r"C:\Users\ucbqc38\Documents\RoofPedia\gr_manual_labels_230104.geojson"
 )
 truth = gpd.read_file(truth_path).to_crs(native_crs)
 truth = gpd.GeoDataFrame(geometry=truth.geometry.explode(index_parts=False), crs=truth.crs) # Fix self intersection which is my fault.

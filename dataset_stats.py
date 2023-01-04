@@ -37,7 +37,7 @@ def count_signal_pixels(input_glob):
 def count_pixels(input_glob):
     masks = list(input_glob)
     assert len(masks)
-    not_blank = [np.count(Image.open(str(p))) for p in (masks)]
+    not_blank = [np.count_nonzero(Image.open(str(p))) for p in (masks)]
     count_not_blank = np.sum(not_blank)  # number of non-blank pixels
     all_not_blank = np.count_nonzero(not_blank)  # number of non blank tiles
     n = len(masks)
