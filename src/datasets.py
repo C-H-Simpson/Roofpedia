@@ -13,6 +13,8 @@ from torch.utils.data import Dataset
 from torchvision import transforms
 from src.augmentations import get_transforms
 
+from albumentations.pytorch.transforms import ToTensorV2
+
 
 class LabelledDataset(Dataset):
     """Return image/mask pairs"""
@@ -40,10 +42,7 @@ class LabelledDataset(Dataset):
         # label = np.array(Image.open(label_path))
         # image = np.array(image)
         # breakpoint()
-        try:
-            out = self.joint_transform(image=image, mask=label)
-        except:
-            breakpoint()
+        out = self.joint_transform(image=image, mask=label)
         image, label = out["image"], out["mask"]
         return torch.cat([image,], dim=0), label
 
@@ -61,12 +60,13 @@ class NamedDataset(Dataset):
     def __getitem__(self, idx):
         img_path = self.img_paths[idx]
         label_path = str(img_path).replace("images", "labels")
-        image = [
-            ToTensorV2()(Image.open(img_path)),
-        ]  # transform expects an iterable
-        label = Image.open(label_path)
-        image = torch.cat(image, dim=0)
-        if self.joint_transform:
-            image, label = self.joint_transform(image=image, mask=label)
+        image = cv.imread(str(img_path))
+        label = (cv.imread(str(label_path), cv.IMREAD_GRAYSCALE) > 200).astype("int64")
         x, y = int(img_path.parent.stem), int(img_path.stem)
-        return image, label, (x, y)
+        # label = (cv.imread(str(label_path))[:,:,0] > 0) # should be a 1 channel image
+        # label = np.array(Image.open(label_path))
+        # image = np.array(image)
+        # breakpoint()
+        out = self.joint_transform(image=image, mask=label)
+        image, label = out["image"], out["mask"]
+        return torch.cat([image,], dim=0), label, (x, y)
