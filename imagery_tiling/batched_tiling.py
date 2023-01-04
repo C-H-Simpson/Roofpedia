@@ -122,14 +122,14 @@ if __name__ == "__main__":
     for dset in ("getmapping_2021", "getmapping_2019"):
         destination_dir = Path("/home/ucbqc38/Scratch") / f"{dset}_tiled"
         imagery_dir = f"/home/ucbqc38/Scratch/{dset}"
-        # if destination_dir.is_dir():
-            # raise FileExistsError(str(destination_dir))
+        if destination_dir.is_dir():
+            raise FileExistsError(str(destination_dir))
         destination_dir.mkdir()
 
         for gref10k in tile_names_10km:
             destination = destination_dir / gref10k
-            # if destination.is_dir():
-                # raise FileExistsError(str(destination))
+            if destination.is_dir():
+                raise FileExistsError(str(destination))
             destination.mkdir()
 
             e_path = str((destination / "create.e").resolve())
