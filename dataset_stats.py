@@ -34,6 +34,19 @@ def count_signal_pixels(input_glob):
         "n_signal_tiles": all_not_blank
     }
 
+def count_pixels(input_glob):
+    masks = list(input_glob)
+    assert len(masks)
+    not_blank = [np.count(Image.open(str(p))) for p in (masks)]
+    count_not_blank = np.sum(not_blank)  # number of non-blank pixels
+    all_not_blank = np.count_nonzero(not_blank)  # number of non blank tiles
+    n = len(masks)
+    return {
+        "n_tiles": n,
+        "n_signal_pixels": count_not_blank,
+        "n_signal_tiles": all_not_blank
+    }
+
 
 if __name__ == "__main__":
     dataset_parents = list(Path("dataset").glob("*"))
