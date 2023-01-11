@@ -21,8 +21,7 @@ dataset/labels
 *.json
 dataset/training_area
 *.zip
-results/*/config.toml
 *.tiff
 *.xml
 *.feather
-*.toml
+results
