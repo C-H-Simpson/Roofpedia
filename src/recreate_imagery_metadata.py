@@ -7,7 +7,7 @@ from pathlib import Path
 # %%
 pixel_size = 0.25
 window_size = 256 * pixel_size
-gi = list(Path("dataset").glob("k*/*/images/*/*png"))
+gi = list(Path("dataset").glob("k*/*/images/*/*png")) + list(Path("dataset").glob("testing*/images/*/*png"))
 assert gi
 xy = ((p, float(p.parent.stem), float(p.stem) + window_size) for p in gi)
 meta = (
