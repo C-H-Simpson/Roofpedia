@@ -9,6 +9,9 @@ import toml
 
 from experiment import run_training
 from src.augmentations import get_transforms
+from src.plain_dataloader import LabelledDataset
+from src.train import validate
+from torch.utils.data import DataLoader
 
 if __name__ == "__main__":
     config = toml.load("config/best-predict-config.toml")
@@ -24,9 +27,8 @@ if __name__ == "__main__":
     target_type = config["target_type"]
     freeze_pretrained = config["freeze_pretrained"]
     signal_fraction = config["signal_fraction"]
-    weight = [signal_fraction, 1.0]
-    config["weight"] = weight
-    transform_name = config["transform"]
+    weight = [float(w) for w in config["weight"]]
+    transform_name = config["transform_name"]
     # Training a model from scratch
     config["model_path"] = ""
     model_path = ""
@@ -36,7 +38,6 @@ if __name__ == "__main__":
     # "Fold 0" is the test data in this code,
     # and fold 1 was used to train the "original" model in experiment.py
     # so there will only be three iterations with five folds.
-
     k_folds = 5
     for k in range(1, k_folds):
         if k == original_k:
@@ -74,4 +75,7 @@ if __name__ == "__main__":
             transform_name=transform_name,
             weight=weight,
             alt_validation_path=alt_validation_path,
+            resampling_method=config["resampling_method"],
+            early_stopping_window=config["early_stopping_window"],
+            focal_gamma=config["focal_gamma"]
         )
