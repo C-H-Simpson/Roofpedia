@@ -37,10 +37,18 @@ truth = gpd.read_file(truth_path).to_crs(native_crs)
 truth = gpd.GeoDataFrame(geometry=truth.geometry.explode(index_parts=False), crs=truth.crs) # Fix self intersection which is my fault.
 truth.to_file("truth_exploded.geojson")
 
-for name in ("validation", "training_s", "training_b",):
+for name in ("validation", "training_s", "training_b"):
     print(f"dataset={name}")
 
-    tiles_dir = Path(config["dataset_path"]) / name
+    if name == "testing":
+        ds_dir = Path(config["dataset_path"]).parent / "testing"
+    elif name == "testing_alt":
+        ds_dir = Path(config["dataset_path"]).parent / "testing_alt"
+    else:
+        ds_dir = Path(config["dataset_path"]) / name
+
+    tiles_dir = ds_dir
+    print(f"{tiles_dir=}")
     mask_dir = Path("results") / name / "masks"
     if mask_dir.parent.exists():
         shutil.rmtree(str(mask_dir.parent))
@@ -117,6 +125,3 @@ all_pred = ["results/training_b/training_b.geojson", "results/validation/validat
 pd.concat((gpd.read_file(p) for p in all_pred)).to_file(
     "merged_pred.geojson"
 )
-
-# %%
-# It seems like there might be a crs issue again? There are no false negatives, and the false positives file is very large.
