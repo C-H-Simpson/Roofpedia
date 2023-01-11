@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import toml
 import torch
 from PIL import Image
 from torch.utils.data import DataLoader
