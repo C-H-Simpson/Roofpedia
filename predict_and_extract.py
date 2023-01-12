@@ -32,14 +32,15 @@ tiles_parent_dir = Path("/home/ucbqc38/Scratch")
 for name in ("getmapping_2019_tiled", "getmapping_2021_tiled"):
     ds_path = tiles_parent_dir / name
 
-    tiles_dir = tiles_parent_dir / name
-    mask_dir = tiles_parent_dir / "results" / name / "masks"
-    if mask_dir.parent.exists():
-        shutil.rmtree(str(mask_dir.parent))
-    mask_dir.mkdir(parents=True)
+    tiles_dir = tiles_parent_dir / name / args.gref
+    mask_dir = tiles_parent_dir / "results" / name / args.gref / "masks"
+    #if mask_dir.parent.exists():
+        #shutil.rmtree(str(mask_dir.parent))
+    #mask_dir.mkdir(parents=True)
 
     tile_size = config["target_size"]
 
+    print(tiles_dir, mask_dir)
     predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=batch_size)
 
     input_glob = list(mask_dir.glob("*/*png"))
@@ -48,5 +49,4 @@ for name in ("getmapping_2019_tiled", "getmapping_2021_tiled"):
     extract(
         input_glob,
         polygon_output_path,
-        format="GeoJSON",
     )

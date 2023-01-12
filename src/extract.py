@@ -2,31 +2,31 @@ import tempfile
 from pathlib import Path
 
 import geopandas as gpd
-import osgeo_utils.gdal_merge
-import osgeo_utils.gdal_polygonize
+#import osgeo_utils.gdal_merge
+#import osgeo_utils.gdal_polygonize
 import pandas as pd
 
+import rasterio
+from rasterio import features
+import shapely
+from tqdm import tqdm
 
-def extract(input_glob, polygon_output_path, format="GeoJSON", force_crs="EPSG:27700"):
+def extract(input_glob, polygon_output_path, force_crs="EPSG:27700"):
     input_glob = list(input_glob)
     with tempfile.TemporaryDirectory() as tmpd:
         polygon_temp_paths = [Path(tmpd) / (p.name + ".geojson") for p in input_glob]
-        for p, p_poly in zip(input_glob, polygon_temp_paths):
+        valid_polygon_paths = []
+        for p, p_poly in zip(input_glob, tqdm(polygon_temp_paths, ascii=True)):
             p = str(p)
-            # Extract a vector dataset
-            parameters = [
-                "",
-                "-8",
-                "-mask",
-                str(p),
-                str(p),
-                "-f",
-                format,
-                str(p_poly),
-                "-q"
-            ]
-            osgeo_utils.gdal_polygonize.main(parameters)
+            with rasterio.open(p, "r") as src:
+                mask = src.read(1)
+                transform = src.transform
+            shapes = features.shapes(mask, mask=mask, transform=transform)
+            gdf = gpd.GeoDataFrame(geometry=[shapely.geometry.shape(s) for s,v in shapes], crs=force_crs)
+            if not gdf.empty:
+                gdf.to_file(p_poly, index=False)
+                valid_polygon_paths.append(p_poly)
 
-        pd.concat((gpd.read_file(p) for p in polygon_temp_paths)).set_crs(
+        pd.concat((gpd.read_file(p) for p in valid_polygon_paths)).set_crs(
             force_crs, allow_override=True
         ).to_file(polygon_output_path)
