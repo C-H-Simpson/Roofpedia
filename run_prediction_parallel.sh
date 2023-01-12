@@ -40,7 +40,11 @@ module load python3/recommended
     #python3 -u predict_from_best.py $gref;
 #fi
 # or overwrite
-python3 -u predict_and_extract.py $gref
+python3 -u predict_and_extract.py $gref config/best-predict-config.toml
 # NB python directs to the wrong install of python!
+
+cd /home/ucbqc38/Scratch/results
+echo zip ${gref}.zip -q -r ./getmapping_*/$gref
+zip ${gref}.zip -q -r ./getmapping_*/$gref
 
 date
