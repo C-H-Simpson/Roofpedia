@@ -14,6 +14,8 @@ from src.predict import predict
 
 gpd.options.use_pygeos = True
 
+erosion = 1.5
+
 # %%
 tiling_path = "./tiling_256_0.25.feather"
 native_crs = "EPSG:27700"
@@ -93,9 +95,11 @@ for config in kfold_config_paths + ["config/best-predict-config.toml"]:
         mask_dir.mkdir(parents=True)
         tile_size = config["target_size"]
 
+        print("Prediction")
         print(tiles_dir, mask_dir)
-        predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=4)
 
+
+        predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=4)
         input_glob = list(mask_dir.glob("*/*png"))
 
         print("Extraction")
@@ -109,6 +113,11 @@ for config in kfold_config_paths + ["config/best-predict-config.toml"]:
         predictions = gpd.read_file(polygon_output_path).set_crs(
             native_crs, allow_override=True
         )  # CRS not set correctly by gdal_polygonize
+
+        # Apply erosion
+        if erosion!=0:
+            predictions = gpd.GeoDataFrame(geometry=predictions.buffer(-erosion))
+
         gdf_tiles = (
             gpd.read_feather(tiling_path)
             .set_index(["x", "y"])
@@ -299,4 +308,5 @@ print(
     .round(4)
     .to_latex()
 )
+
 
