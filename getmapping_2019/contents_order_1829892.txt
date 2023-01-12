@@ -1,0 +1,543 @@
+********************************************************************
+
+EDINA DIGIMAP:
+
+DIGITAL DATA SUPPLY
+
+********************************************************************
+
+
+This data is distributed under licence by:
+
+    EDINA
+    University of Edinburgh
+    https://edina.ac.uk
+
+    Tel:    0131 650 3302
+    Fax:    0131 650 3308
+    Email:  digimap@ed.ac.uk
+		
+
+
+---------------------------------------------------------
+
+CONTENTS
+
+You will have received the data files listed below, each product and area has
+its own folder. Note that each data folder contains a conditions.txt file
+which states the conditions for use of the data within. These conditions can
+vary between different data products.
+
+
+
+-------------------------------------------------------------------------------
+Folder:           getmapping_rgb_25cm_4194083
+Extent:           530000.0, 200000.0 - 540000.0, 210000.0
+Date Ordered:     14 October 2021 at 10:14:32
+Product:          High Resolution (25cm) Vertical Aerial Imagery
+Version:          Latest available (2007-2020)
+Format:           JPG
+Theme:            N/A
+Area:             100 tiles
+Tiles:
+ 
+Tile Name:        tl3000
+Extent:           530000.0, 200000.0 - 531000.0, 201000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3001
+Extent:           530000.0, 201000.0 - 531000.0, 202000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3002
+Extent:           530000.0, 202000.0 - 531000.0, 203000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3003
+Extent:           530000.0, 203000.0 - 531000.0, 204000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3004
+Extent:           530000.0, 204000.0 - 531000.0, 205000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3005
+Extent:           530000.0, 205000.0 - 531000.0, 206000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3006
+Extent:           530000.0, 206000.0 - 531000.0, 207000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3007
+Extent:           530000.0, 207000.0 - 531000.0, 208000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3008
+Extent:           530000.0, 208000.0 - 531000.0, 209000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3009
+Extent:           530000.0, 209000.0 - 531000.0, 210000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3100
+Extent:           531000.0, 200000.0 - 532000.0, 201000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3101
+Extent:           531000.0, 201000.0 - 532000.0, 202000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3102
+Extent:           531000.0, 202000.0 - 532000.0, 203000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3103
+Extent:           531000.0, 203000.0 - 532000.0, 204000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3104
+Extent:           531000.0, 204000.0 - 532000.0, 205000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3105
+Extent:           531000.0, 205000.0 - 532000.0, 206000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3106
+Extent:           531000.0, 206000.0 - 532000.0, 207000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3107
+Extent:           531000.0, 207000.0 - 532000.0, 208000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3108
+Extent:           531000.0, 208000.0 - 532000.0, 209000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3109
+Extent:           531000.0, 209000.0 - 532000.0, 210000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3200
+Extent:           532000.0, 200000.0 - 533000.0, 201000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3201
+Extent:           532000.0, 201000.0 - 533000.0, 202000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3202
+Extent:           532000.0, 202000.0 - 533000.0, 203000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3203
+Extent:           532000.0, 203000.0 - 533000.0, 204000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3204
+Extent:           532000.0, 204000.0 - 533000.0, 205000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3205
+Extent:           532000.0, 205000.0 - 533000.0, 206000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3206
+Extent:           532000.0, 206000.0 - 533000.0, 207000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3207
+Extent:           532000.0, 207000.0 - 533000.0, 208000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3208
+Extent:           532000.0, 208000.0 - 533000.0, 209000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3209
+Extent:           532000.0, 209000.0 - 533000.0, 210000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3300
+Extent:           533000.0, 200000.0 - 534000.0, 201000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3301
+Extent:           533000.0, 201000.0 - 534000.0, 202000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3302
+Extent:           533000.0, 202000.0 - 534000.0, 203000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3303
+Extent:           533000.0, 203000.0 - 534000.0, 204000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3304
+Extent:           533000.0, 204000.0 - 534000.0, 205000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3305
+Extent:           533000.0, 205000.0 - 534000.0, 206000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3306
+Extent:           533000.0, 206000.0 - 534000.0, 207000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3307
+Extent:           533000.0, 207000.0 - 534000.0, 208000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3308
+Extent:           533000.0, 208000.0 - 534000.0, 209000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3309
+Extent:           533000.0, 209000.0 - 534000.0, 210000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3400
+Extent:           534000.0, 200000.0 - 535000.0, 201000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3401
+Extent:           534000.0, 201000.0 - 535000.0, 202000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3402
+Extent:           534000.0, 202000.0 - 535000.0, 203000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3403
+Extent:           534000.0, 203000.0 - 535000.0, 204000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3404
+Extent:           534000.0, 204000.0 - 535000.0, 205000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3405
+Extent:           534000.0, 205000.0 - 535000.0, 206000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3406
+Extent:           534000.0, 206000.0 - 535000.0, 207000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3407
+Extent:           534000.0, 207000.0 - 535000.0, 208000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3408
+Extent:           534000.0, 208000.0 - 535000.0, 209000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3409
+Extent:           534000.0, 209000.0 - 535000.0, 210000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3500
+Extent:           535000.0, 200000.0 - 536000.0, 201000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3501
+Extent:           535000.0, 201000.0 - 536000.0, 202000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3502
+Extent:           535000.0, 202000.0 - 536000.0, 203000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3503
+Extent:           535000.0, 203000.0 - 536000.0, 204000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3504
+Extent:           535000.0, 204000.0 - 536000.0, 205000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3505
+Extent:           535000.0, 205000.0 - 536000.0, 206000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3506
+Extent:           535000.0, 206000.0 - 536000.0, 207000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3507
+Extent:           535000.0, 207000.0 - 536000.0, 208000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3508
+Extent:           535000.0, 208000.0 - 536000.0, 209000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3509
+Extent:           535000.0, 209000.0 - 536000.0, 210000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3600
+Extent:           536000.0, 200000.0 - 537000.0, 201000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3601
+Extent:           536000.0, 201000.0 - 537000.0, 202000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3602
+Extent:           536000.0, 202000.0 - 537000.0, 203000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3603
+Extent:           536000.0, 203000.0 - 537000.0, 204000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3604
+Extent:           536000.0, 204000.0 - 537000.0, 205000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3605
+Extent:           536000.0, 205000.0 - 537000.0, 206000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3606
+Extent:           536000.0, 206000.0 - 537000.0, 207000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3607
+Extent:           536000.0, 207000.0 - 537000.0, 208000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3608
+Extent:           536000.0, 208000.0 - 537000.0, 209000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3609
+Extent:           536000.0, 209000.0 - 537000.0, 210000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3700
+Extent:           537000.0, 200000.0 - 538000.0, 201000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3701
+Extent:           537000.0, 201000.0 - 538000.0, 202000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3702
+Extent:           537000.0, 202000.0 - 538000.0, 203000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3703
+Extent:           537000.0, 203000.0 - 538000.0, 204000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3704
+Extent:           537000.0, 204000.0 - 538000.0, 205000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3705
+Extent:           537000.0, 205000.0 - 538000.0, 206000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3706
+Extent:           537000.0, 206000.0 - 538000.0, 207000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3707
+Extent:           537000.0, 207000.0 - 538000.0, 208000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3708
+Extent:           537000.0, 208000.0 - 538000.0, 209000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3709
+Extent:           537000.0, 209000.0 - 538000.0, 210000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3800
+Extent:           538000.0, 200000.0 - 539000.0, 201000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3801
+Extent:           538000.0, 201000.0 - 539000.0, 202000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3802
+Extent:           538000.0, 202000.0 - 539000.0, 203000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3803
+Extent:           538000.0, 203000.0 - 539000.0, 204000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3804
+Extent:           538000.0, 204000.0 - 539000.0, 205000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3805
+Extent:           538000.0, 205000.0 - 539000.0, 206000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3806
+Extent:           538000.0, 206000.0 - 539000.0, 207000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3807
+Extent:           538000.0, 207000.0 - 539000.0, 208000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3808
+Extent:           538000.0, 208000.0 - 539000.0, 209000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3809
+Extent:           538000.0, 209000.0 - 539000.0, 210000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3900
+Extent:           539000.0, 200000.0 - 540000.0, 201000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3901
+Extent:           539000.0, 201000.0 - 540000.0, 202000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3902
+Extent:           539000.0, 202000.0 - 540000.0, 203000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3903
+Extent:           539000.0, 203000.0 - 540000.0, 204000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3904
+Extent:           539000.0, 204000.0 - 540000.0, 205000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3905
+Extent:           539000.0, 205000.0 - 540000.0, 206000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3906
+Extent:           539000.0, 206000.0 - 540000.0, 207000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3907
+Extent:           539000.0, 207000.0 - 540000.0, 208000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3908
+Extent:           539000.0, 208000.0 - 540000.0, 209000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+   
+Tile Name:        tl3909
+Extent:           539000.0, 209000.0 - 540000.0, 210000.0
+Last Amended:     8 April 2020
+Date Flown:       2020-04-08
+      

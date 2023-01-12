@@ -1,0 +1,543 @@
+********************************************************************
+
+EDINA DIGIMAP:
+
+DIGITAL DATA SUPPLY
+
+********************************************************************
+
+
+This data is distributed under licence by:
+
+    EDINA
+    University of Edinburgh
+    https://edina.ac.uk
+
+    Tel:    0131 650 3302
+    Fax:    0131 650 3308
+    Email:  digimap@ed.ac.uk
+		
+
+
+---------------------------------------------------------
+
+CONTENTS
+
+You will have received the data files listed below, each product and area has
+its own folder. Note that each data folder contains a conditions.txt file
+which states the conditions for use of the data within. These conditions can
+vary between different data products.
+
+
+
+-------------------------------------------------------------------------------
+Folder:           getmapping_rgb_25cm_4194127
+Extent:           530000.0, 170000.0 - 540000.0, 180000.0
+Date Ordered:     14 October 2021 at 10:18:40
+Product:          High Resolution (25cm) Vertical Aerial Imagery
+Version:          Latest available (2007-2020)
+Format:           JPG
+Theme:            N/A
+Area:             100 tiles
+Tiles:
+ 
+Tile Name:        tq3070
+Extent:           530000.0, 170000.0 - 531000.0, 171000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3071
+Extent:           530000.0, 171000.0 - 531000.0, 172000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3072
+Extent:           530000.0, 172000.0 - 531000.0, 173000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3073
+Extent:           530000.0, 173000.0 - 531000.0, 174000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3074
+Extent:           530000.0, 174000.0 - 531000.0, 175000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3075
+Extent:           530000.0, 175000.0 - 531000.0, 176000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3076
+Extent:           530000.0, 176000.0 - 531000.0, 177000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3077
+Extent:           530000.0, 177000.0 - 531000.0, 178000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3078
+Extent:           530000.0, 178000.0 - 531000.0, 179000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3079
+Extent:           530000.0, 179000.0 - 531000.0, 180000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3170
+Extent:           531000.0, 170000.0 - 532000.0, 171000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3171
+Extent:           531000.0, 171000.0 - 532000.0, 172000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3172
+Extent:           531000.0, 172000.0 - 532000.0, 173000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3173
+Extent:           531000.0, 173000.0 - 532000.0, 174000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3174
+Extent:           531000.0, 174000.0 - 532000.0, 175000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3175
+Extent:           531000.0, 175000.0 - 532000.0, 176000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3176
+Extent:           531000.0, 176000.0 - 532000.0, 177000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3177
+Extent:           531000.0, 177000.0 - 532000.0, 178000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3178
+Extent:           531000.0, 178000.0 - 532000.0, 179000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3179
+Extent:           531000.0, 179000.0 - 532000.0, 180000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3270
+Extent:           532000.0, 170000.0 - 533000.0, 171000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3271
+Extent:           532000.0, 171000.0 - 533000.0, 172000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3272
+Extent:           532000.0, 172000.0 - 533000.0, 173000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3273
+Extent:           532000.0, 173000.0 - 533000.0, 174000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3274
+Extent:           532000.0, 174000.0 - 533000.0, 175000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3275
+Extent:           532000.0, 175000.0 - 533000.0, 176000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3276
+Extent:           532000.0, 176000.0 - 533000.0, 177000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3277
+Extent:           532000.0, 177000.0 - 533000.0, 178000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3278
+Extent:           532000.0, 178000.0 - 533000.0, 179000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3279
+Extent:           532000.0, 179000.0 - 533000.0, 180000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3370
+Extent:           533000.0, 170000.0 - 534000.0, 171000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3371
+Extent:           533000.0, 171000.0 - 534000.0, 172000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3372
+Extent:           533000.0, 172000.0 - 534000.0, 173000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3373
+Extent:           533000.0, 173000.0 - 534000.0, 174000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3374
+Extent:           533000.0, 174000.0 - 534000.0, 175000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3375
+Extent:           533000.0, 175000.0 - 534000.0, 176000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3376
+Extent:           533000.0, 176000.0 - 534000.0, 177000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3377
+Extent:           533000.0, 177000.0 - 534000.0, 178000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3378
+Extent:           533000.0, 178000.0 - 534000.0, 179000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3379
+Extent:           533000.0, 179000.0 - 534000.0, 180000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3470
+Extent:           534000.0, 170000.0 - 535000.0, 171000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3471
+Extent:           534000.0, 171000.0 - 535000.0, 172000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3472
+Extent:           534000.0, 172000.0 - 535000.0, 173000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3473
+Extent:           534000.0, 173000.0 - 535000.0, 174000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3474
+Extent:           534000.0, 174000.0 - 535000.0, 175000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3475
+Extent:           534000.0, 175000.0 - 535000.0, 176000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3476
+Extent:           534000.0, 176000.0 - 535000.0, 177000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3477
+Extent:           534000.0, 177000.0 - 535000.0, 178000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3478
+Extent:           534000.0, 178000.0 - 535000.0, 179000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3479
+Extent:           534000.0, 179000.0 - 535000.0, 180000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3570
+Extent:           535000.0, 170000.0 - 536000.0, 171000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3571
+Extent:           535000.0, 171000.0 - 536000.0, 172000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3572
+Extent:           535000.0, 172000.0 - 536000.0, 173000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3573
+Extent:           535000.0, 173000.0 - 536000.0, 174000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3574
+Extent:           535000.0, 174000.0 - 536000.0, 175000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3575
+Extent:           535000.0, 175000.0 - 536000.0, 176000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3576
+Extent:           535000.0, 176000.0 - 536000.0, 177000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3577
+Extent:           535000.0, 177000.0 - 536000.0, 178000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3578
+Extent:           535000.0, 178000.0 - 536000.0, 179000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3579
+Extent:           535000.0, 179000.0 - 536000.0, 180000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3670
+Extent:           536000.0, 170000.0 - 537000.0, 171000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3671
+Extent:           536000.0, 171000.0 - 537000.0, 172000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3672
+Extent:           536000.0, 172000.0 - 537000.0, 173000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3673
+Extent:           536000.0, 173000.0 - 537000.0, 174000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3674
+Extent:           536000.0, 174000.0 - 537000.0, 175000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3675
+Extent:           536000.0, 175000.0 - 537000.0, 176000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3676
+Extent:           536000.0, 176000.0 - 537000.0, 177000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3677
+Extent:           536000.0, 177000.0 - 537000.0, 178000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3678
+Extent:           536000.0, 178000.0 - 537000.0, 179000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3679
+Extent:           536000.0, 179000.0 - 537000.0, 180000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3770
+Extent:           537000.0, 170000.0 - 538000.0, 171000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3771
+Extent:           537000.0, 171000.0 - 538000.0, 172000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3772
+Extent:           537000.0, 172000.0 - 538000.0, 173000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3773
+Extent:           537000.0, 173000.0 - 538000.0, 174000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3774
+Extent:           537000.0, 174000.0 - 538000.0, 175000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3775
+Extent:           537000.0, 175000.0 - 538000.0, 176000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3776
+Extent:           537000.0, 176000.0 - 538000.0, 177000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3777
+Extent:           537000.0, 177000.0 - 538000.0, 178000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3778
+Extent:           537000.0, 178000.0 - 538000.0, 179000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3779
+Extent:           537000.0, 179000.0 - 538000.0, 180000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3870
+Extent:           538000.0, 170000.0 - 539000.0, 171000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3871
+Extent:           538000.0, 171000.0 - 539000.0, 172000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3872
+Extent:           538000.0, 172000.0 - 539000.0, 173000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3873
+Extent:           538000.0, 173000.0 - 539000.0, 174000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3874
+Extent:           538000.0, 174000.0 - 539000.0, 175000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3875
+Extent:           538000.0, 175000.0 - 539000.0, 176000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3876
+Extent:           538000.0, 176000.0 - 539000.0, 177000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3877
+Extent:           538000.0, 177000.0 - 539000.0, 178000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3878
+Extent:           538000.0, 178000.0 - 539000.0, 179000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3879
+Extent:           538000.0, 179000.0 - 539000.0, 180000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3970
+Extent:           539000.0, 170000.0 - 540000.0, 171000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3971
+Extent:           539000.0, 171000.0 - 540000.0, 172000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3972
+Extent:           539000.0, 172000.0 - 540000.0, 173000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3973
+Extent:           539000.0, 173000.0 - 540000.0, 174000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3974
+Extent:           539000.0, 174000.0 - 540000.0, 175000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3975
+Extent:           539000.0, 175000.0 - 540000.0, 176000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3976
+Extent:           539000.0, 176000.0 - 540000.0, 177000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3977
+Extent:           539000.0, 177000.0 - 540000.0, 178000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3978
+Extent:           539000.0, 178000.0 - 540000.0, 179000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq3979
+Extent:           539000.0, 179000.0 - 540000.0, 180000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+      
