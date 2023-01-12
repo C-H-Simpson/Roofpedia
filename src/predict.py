@@ -33,8 +33,8 @@ def predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=1):
             images = images.to(device)
             try:
                 outputs = net(images)
-            except RuntimeError as e:
-                print("Failure: {X=} {Y=} {str(e)}")
+            except Exception as e:
+                print(f"Failure: {X=} {Y=} {str(e)}")
                 continue
                 
 
