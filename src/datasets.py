@@ -59,14 +59,10 @@ class NamedDataset(Dataset):
 
     def __getitem__(self, idx):
         img_path = self.img_paths[idx]
-        label_path = str(img_path).replace("images", "labels")
+        # label_path = str(img_path).replace("images", "labels")
         image = cv.imread(str(img_path))
-        label = (cv.imread(str(label_path), cv.IMREAD_GRAYSCALE) > 200).astype("int64")
+        # label = (cv.imread(str(label_path), cv.IMREAD_GRAYSCALE) > 200).astype("int64")
         x, y = int(img_path.parent.stem), int(img_path.stem)
-        # label = (cv.imread(str(label_path))[:,:,0] > 0) # should be a 1 channel image
-        # label = np.array(Image.open(label_path))
-        # image = np.array(image)
-        # breakpoint()
-        out = self.joint_transform(image=image, mask=label)
-        image, label = out["image"], out["mask"]
-        return torch.cat([image,], dim=0), label, (x, y)
+        out = self.joint_transform(image=image)
+        image = out["image"]
+        return torch.cat([image,], dim=0), None, (x, y)
