@@ -20,6 +20,8 @@ def predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=1):
     net.load_state_dict(chkpt["state_dict"])
     net.eval()
 
+    print(tiles_dir)
+    assert Path(tiles_dir).is_dir()
     loader = get_named_dataset_loader(tile_size, batch_size, tiles_dir)
     assert len(loader)
 
@@ -29,7 +31,13 @@ def predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=1):
             loader, desc="Prediction", unit="batch", ascii=True
         ):
             images = images.to(device)
-            outputs = net(images)
+            try:
+                outputs = net(images)
+            except RuntimeError as e:
+                print("Failure: {X=} {Y=} {str(e)}")
+                continue
+                
+
 
             # manually compute segmentation mask class probabilities per pixel
             probs = nn.functional.softmax(outputs, dim=1).data.cpu().numpy()
