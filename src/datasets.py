@@ -65,4 +65,4 @@ class NamedDataset(Dataset):
         x, y = int(img_path.parent.stem), int(img_path.stem)
         out = self.joint_transform(image=image)
         image = out["image"]
-        return torch.cat([image,], dim=0), None, (x, y)
+        return torch.cat([image,], dim=0), (x, y)

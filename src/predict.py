@@ -27,7 +27,7 @@ def predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=1):
 
     # don't track tensors with autograd during prediction
     with torch.no_grad():
-        for images, _, (X, Y) in tqdm(
+        for images, (X, Y) in tqdm(
             loader, desc="Prediction", unit="batch", ascii=True
         ):
             images = images.to(device)
