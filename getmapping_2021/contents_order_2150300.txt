@@ -1,0 +1,369 @@
+********************************************************************
+
+EDINA DIGIMAP:
+
+DIGITAL DATA SUPPLY
+
+********************************************************************
+
+
+This data is distributed under licence by:
+
+    EDINA
+    University of Edinburgh
+    https://edina.ac.uk
+
+    Tel:    0131 650 3302
+    Fax:    0131 650 3308
+    Email:  digimap@ed.ac.uk
+		
+
+
+---------------------------------------------------------
+
+CONTENTS
+
+You will have received the data files listed below, each product and area has
+its own folder. Note that each data folder contains a conditions.txt file
+which states the conditions for use of the data within. These conditions can
+vary between different data products.
+
+
+
+-------------------------------------------------------------------------------
+Folder:           getmapping-rgb-25cm-2021_4829004
+Extent:           590363.7384932523, 181933.59629846562 - 604195.6643289423, 189769.02249440562
+Date Ordered:     9 December 2022 at 15:52:05
+Product:          High Resolution (25cm) Vertical Aerial Imagery (2021)
+Version:          2021
+Format:           JPG
+Theme:            N/A
+Area:             64 tiles
+Tiles:
+ 
+Tile Name:        tq9083
+Extent:           590000.0, 183000.0 - 591000.0, 184000.0
+Last Amended:     1 June 2021
+Date Flown:       2021-05-31
+Date Flown 2:     2021-06-01
+   
+Tile Name:        tq9084
+Extent:           590000.0, 184000.0 - 591000.0, 185000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9085
+Extent:           590000.0, 185000.0 - 591000.0, 186000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9086
+Extent:           590000.0, 186000.0 - 591000.0, 187000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9087
+Extent:           590000.0, 187000.0 - 591000.0, 188000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9088
+Extent:           590000.0, 188000.0 - 591000.0, 189000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9089
+Extent:           590000.0, 189000.0 - 591000.0, 190000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9183
+Extent:           591000.0, 183000.0 - 592000.0, 184000.0
+Last Amended:     1 June 2021
+Date Flown:       2021-05-31
+Date Flown 2:     2021-06-01
+   
+Tile Name:        tq9184
+Extent:           591000.0, 184000.0 - 592000.0, 185000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9185
+Extent:           591000.0, 185000.0 - 592000.0, 186000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9186
+Extent:           591000.0, 186000.0 - 592000.0, 187000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9187
+Extent:           591000.0, 187000.0 - 592000.0, 188000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9188
+Extent:           591000.0, 188000.0 - 592000.0, 189000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9189
+Extent:           591000.0, 189000.0 - 592000.0, 190000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9283
+Extent:           592000.0, 183000.0 - 593000.0, 184000.0
+Last Amended:     1 June 2021
+Date Flown:       2021-05-31
+Date Flown 2:     2021-06-01
+   
+Tile Name:        tq9284
+Extent:           592000.0, 184000.0 - 593000.0, 185000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9285
+Extent:           592000.0, 185000.0 - 593000.0, 186000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9286
+Extent:           592000.0, 186000.0 - 593000.0, 187000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9287
+Extent:           592000.0, 187000.0 - 593000.0, 188000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9288
+Extent:           592000.0, 188000.0 - 593000.0, 189000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9289
+Extent:           592000.0, 189000.0 - 593000.0, 190000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9383
+Extent:           593000.0, 183000.0 - 594000.0, 184000.0
+Last Amended:     1 June 2021
+Date Flown:       2021-05-31
+Date Flown 2:     2021-06-01
+   
+Tile Name:        tq9384
+Extent:           593000.0, 184000.0 - 594000.0, 185000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9385
+Extent:           593000.0, 185000.0 - 594000.0, 186000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9386
+Extent:           593000.0, 186000.0 - 594000.0, 187000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9387
+Extent:           593000.0, 187000.0 - 594000.0, 188000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9388
+Extent:           593000.0, 188000.0 - 594000.0, 189000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9389
+Extent:           593000.0, 189000.0 - 594000.0, 190000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9483
+Extent:           594000.0, 183000.0 - 595000.0, 184000.0
+Last Amended:     1 June 2021
+Date Flown:       2021-05-31
+Date Flown 2:     2021-06-01
+   
+Tile Name:        tq9484
+Extent:           594000.0, 184000.0 - 595000.0, 185000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9485
+Extent:           594000.0, 185000.0 - 595000.0, 186000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9486
+Extent:           594000.0, 186000.0 - 595000.0, 187000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9487
+Extent:           594000.0, 187000.0 - 595000.0, 188000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9488
+Extent:           594000.0, 188000.0 - 595000.0, 189000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9489
+Extent:           594000.0, 189000.0 - 595000.0, 190000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9583
+Extent:           595000.0, 183000.0 - 596000.0, 184000.0
+Last Amended:     1 June 2021
+Date Flown:       2021-05-31
+Date Flown 2:     2021-06-01
+   
+Tile Name:        tq9584
+Extent:           595000.0, 184000.0 - 596000.0, 185000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9585
+Extent:           595000.0, 185000.0 - 596000.0, 186000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9586
+Extent:           595000.0, 186000.0 - 596000.0, 187000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9587
+Extent:           595000.0, 187000.0 - 596000.0, 188000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9588
+Extent:           595000.0, 188000.0 - 596000.0, 189000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9589
+Extent:           595000.0, 189000.0 - 596000.0, 190000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9685
+Extent:           596000.0, 185000.0 - 597000.0, 186000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9686
+Extent:           596000.0, 186000.0 - 597000.0, 187000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9687
+Extent:           596000.0, 187000.0 - 597000.0, 188000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9688
+Extent:           596000.0, 188000.0 - 597000.0, 189000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9689
+Extent:           596000.0, 189000.0 - 597000.0, 190000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9785
+Extent:           597000.0, 185000.0 - 598000.0, 186000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9786
+Extent:           597000.0, 186000.0 - 598000.0, 187000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9787
+Extent:           597000.0, 187000.0 - 598000.0, 188000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9788
+Extent:           597000.0, 188000.0 - 598000.0, 189000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9789
+Extent:           597000.0, 189000.0 - 598000.0, 190000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9886
+Extent:           598000.0, 186000.0 - 599000.0, 187000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9887
+Extent:           598000.0, 187000.0 - 599000.0, 188000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9888
+Extent:           598000.0, 188000.0 - 599000.0, 189000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9889
+Extent:           598000.0, 189000.0 - 599000.0, 190000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9987
+Extent:           599000.0, 187000.0 - 600000.0, 188000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9988
+Extent:           599000.0, 188000.0 - 600000.0, 189000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tq9989
+Extent:           599000.0, 189000.0 - 600000.0, 190000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tr0087
+Extent:           600000.0, 187000.0 - 601000.0, 188000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tr0088
+Extent:           600000.0, 188000.0 - 601000.0, 189000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tr0089
+Extent:           600000.0, 189000.0 - 601000.0, 190000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tr0189
+Extent:           601000.0, 189000.0 - 602000.0, 190000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+   
+Tile Name:        tr0289
+Extent:           602000.0, 189000.0 - 603000.0, 190000.0
+Last Amended:     31 May 2021
+Date Flown:       2021-05-31
+      

@@ -1,0 +1,543 @@
+********************************************************************
+
+EDINA DIGIMAP:
+
+DIGITAL DATA SUPPLY
+
+********************************************************************
+
+
+This data is distributed under licence by:
+
+    EDINA
+    University of Edinburgh
+    https://edina.ac.uk
+
+    Tel:    0131 650 3302
+    Fax:    0131 650 3308
+    Email:  digimap@ed.ac.uk
+		
+
+
+---------------------------------------------------------
+
+CONTENTS
+
+You will have received the data files listed below, each product and area has
+its own folder. Note that each data folder contains a conditions.txt file
+which states the conditions for use of the data within. These conditions can
+vary between different data products.
+
+
+
+-------------------------------------------------------------------------------
+Folder:           getmapping_rgb_25cm_4194132
+Extent:           540000.0, 150000.0 - 550000.0, 160000.0
+Date Ordered:     14 October 2021 at 10:19:26
+Product:          High Resolution (25cm) Vertical Aerial Imagery
+Version:          Latest available (2007-2020)
+Format:           JPG
+Theme:            N/A
+Area:             100 tiles
+Tiles:
+ 
+Tile Name:        tq4050
+Extent:           540000.0, 150000.0 - 541000.0, 151000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4051
+Extent:           540000.0, 151000.0 - 541000.0, 152000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4052
+Extent:           540000.0, 152000.0 - 541000.0, 153000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4053
+Extent:           540000.0, 153000.0 - 541000.0, 154000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4054
+Extent:           540000.0, 154000.0 - 541000.0, 155000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4055
+Extent:           540000.0, 155000.0 - 541000.0, 156000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4056
+Extent:           540000.0, 156000.0 - 541000.0, 157000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4057
+Extent:           540000.0, 157000.0 - 541000.0, 158000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4058
+Extent:           540000.0, 158000.0 - 541000.0, 159000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4059
+Extent:           540000.0, 159000.0 - 541000.0, 160000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq4150
+Extent:           541000.0, 150000.0 - 542000.0, 151000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4151
+Extent:           541000.0, 151000.0 - 542000.0, 152000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4152
+Extent:           541000.0, 152000.0 - 542000.0, 153000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4153
+Extent:           541000.0, 153000.0 - 542000.0, 154000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4154
+Extent:           541000.0, 154000.0 - 542000.0, 155000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4155
+Extent:           541000.0, 155000.0 - 542000.0, 156000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4156
+Extent:           541000.0, 156000.0 - 542000.0, 157000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4157
+Extent:           541000.0, 157000.0 - 542000.0, 158000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4158
+Extent:           541000.0, 158000.0 - 542000.0, 159000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4159
+Extent:           541000.0, 159000.0 - 542000.0, 160000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq4250
+Extent:           542000.0, 150000.0 - 543000.0, 151000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4251
+Extent:           542000.0, 151000.0 - 543000.0, 152000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4252
+Extent:           542000.0, 152000.0 - 543000.0, 153000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4253
+Extent:           542000.0, 153000.0 - 543000.0, 154000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4254
+Extent:           542000.0, 154000.0 - 543000.0, 155000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4255
+Extent:           542000.0, 155000.0 - 543000.0, 156000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4256
+Extent:           542000.0, 156000.0 - 543000.0, 157000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4257
+Extent:           542000.0, 157000.0 - 543000.0, 158000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4258
+Extent:           542000.0, 158000.0 - 543000.0, 159000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4259
+Extent:           542000.0, 159000.0 - 543000.0, 160000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq4350
+Extent:           543000.0, 150000.0 - 544000.0, 151000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4351
+Extent:           543000.0, 151000.0 - 544000.0, 152000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4352
+Extent:           543000.0, 152000.0 - 544000.0, 153000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4353
+Extent:           543000.0, 153000.0 - 544000.0, 154000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4354
+Extent:           543000.0, 154000.0 - 544000.0, 155000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4355
+Extent:           543000.0, 155000.0 - 544000.0, 156000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4356
+Extent:           543000.0, 156000.0 - 544000.0, 157000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4357
+Extent:           543000.0, 157000.0 - 544000.0, 158000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4358
+Extent:           543000.0, 158000.0 - 544000.0, 159000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4359
+Extent:           543000.0, 159000.0 - 544000.0, 160000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq4450
+Extent:           544000.0, 150000.0 - 545000.0, 151000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4451
+Extent:           544000.0, 151000.0 - 545000.0, 152000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4452
+Extent:           544000.0, 152000.0 - 545000.0, 153000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4453
+Extent:           544000.0, 153000.0 - 545000.0, 154000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4454
+Extent:           544000.0, 154000.0 - 545000.0, 155000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4455
+Extent:           544000.0, 155000.0 - 545000.0, 156000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4456
+Extent:           544000.0, 156000.0 - 545000.0, 157000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4457
+Extent:           544000.0, 157000.0 - 545000.0, 158000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4458
+Extent:           544000.0, 158000.0 - 545000.0, 159000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4459
+Extent:           544000.0, 159000.0 - 545000.0, 160000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq4550
+Extent:           545000.0, 150000.0 - 546000.0, 151000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4551
+Extent:           545000.0, 151000.0 - 546000.0, 152000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4552
+Extent:           545000.0, 152000.0 - 546000.0, 153000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4553
+Extent:           545000.0, 153000.0 - 546000.0, 154000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4554
+Extent:           545000.0, 154000.0 - 546000.0, 155000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4555
+Extent:           545000.0, 155000.0 - 546000.0, 156000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4556
+Extent:           545000.0, 156000.0 - 546000.0, 157000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4557
+Extent:           545000.0, 157000.0 - 546000.0, 158000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4558
+Extent:           545000.0, 158000.0 - 546000.0, 159000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4559
+Extent:           545000.0, 159000.0 - 546000.0, 160000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq4650
+Extent:           546000.0, 150000.0 - 547000.0, 151000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4651
+Extent:           546000.0, 151000.0 - 547000.0, 152000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4652
+Extent:           546000.0, 152000.0 - 547000.0, 153000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4653
+Extent:           546000.0, 153000.0 - 547000.0, 154000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4654
+Extent:           546000.0, 154000.0 - 547000.0, 155000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4655
+Extent:           546000.0, 155000.0 - 547000.0, 156000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4656
+Extent:           546000.0, 156000.0 - 547000.0, 157000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4657
+Extent:           546000.0, 157000.0 - 547000.0, 158000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4658
+Extent:           546000.0, 158000.0 - 547000.0, 159000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4659
+Extent:           546000.0, 159000.0 - 547000.0, 160000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq4750
+Extent:           547000.0, 150000.0 - 548000.0, 151000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4751
+Extent:           547000.0, 151000.0 - 548000.0, 152000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4752
+Extent:           547000.0, 152000.0 - 548000.0, 153000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4753
+Extent:           547000.0, 153000.0 - 548000.0, 154000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4754
+Extent:           547000.0, 154000.0 - 548000.0, 155000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4755
+Extent:           547000.0, 155000.0 - 548000.0, 156000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4756
+Extent:           547000.0, 156000.0 - 548000.0, 157000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4757
+Extent:           547000.0, 157000.0 - 548000.0, 158000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4758
+Extent:           547000.0, 158000.0 - 548000.0, 159000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4759
+Extent:           547000.0, 159000.0 - 548000.0, 160000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq4850
+Extent:           548000.0, 150000.0 - 549000.0, 151000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4851
+Extent:           548000.0, 151000.0 - 549000.0, 152000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4852
+Extent:           548000.0, 152000.0 - 549000.0, 153000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4853
+Extent:           548000.0, 153000.0 - 549000.0, 154000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4854
+Extent:           548000.0, 154000.0 - 549000.0, 155000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4855
+Extent:           548000.0, 155000.0 - 549000.0, 156000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4856
+Extent:           548000.0, 156000.0 - 549000.0, 157000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4857
+Extent:           548000.0, 157000.0 - 549000.0, 158000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4858
+Extent:           548000.0, 158000.0 - 549000.0, 159000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4859
+Extent:           548000.0, 159000.0 - 549000.0, 160000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+   
+Tile Name:        tq4950
+Extent:           549000.0, 150000.0 - 550000.0, 151000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4951
+Extent:           549000.0, 151000.0 - 550000.0, 152000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4952
+Extent:           549000.0, 152000.0 - 550000.0, 153000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4953
+Extent:           549000.0, 153000.0 - 550000.0, 154000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4954
+Extent:           549000.0, 154000.0 - 550000.0, 155000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4955
+Extent:           549000.0, 155000.0 - 550000.0, 156000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4956
+Extent:           549000.0, 156000.0 - 550000.0, 157000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4957
+Extent:           549000.0, 157000.0 - 550000.0, 158000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4958
+Extent:           549000.0, 158000.0 - 550000.0, 159000.0
+Last Amended:     2 August 2018
+Date Flown:       2018-08-02
+   
+Tile Name:        tq4959
+Extent:           549000.0, 159000.0 - 550000.0, 160000.0
+Last Amended:     29 June 2019
+Date Flown:       2019-06-29
+      

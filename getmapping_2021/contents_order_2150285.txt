@@ -1,0 +1,543 @@
+********************************************************************
+
+EDINA DIGIMAP:
+
+DIGITAL DATA SUPPLY
+
+********************************************************************
+
+
+This data is distributed under licence by:
+
+    EDINA
+    University of Edinburgh
+    https://edina.ac.uk
+
+    Tel:    0131 650 3302
+    Fax:    0131 650 3308
+    Email:  digimap@ed.ac.uk
+		
+
+
+---------------------------------------------------------
+
+CONTENTS
+
+You will have received the data files listed below, each product and area has
+its own folder. Note that each data folder contains a conditions.txt file
+which states the conditions for use of the data within. These conditions can
+vary between different data products.
+
+
+
+-------------------------------------------------------------------------------
+Folder:           getmapping-rgb-25cm-2021_4828989
+Extent:           550398.8591316703, 200387.69881070583 - 559617.2507488703, 209659.68572800583
+Date Ordered:     9 December 2022 at 15:50:09
+Product:          High Resolution (25cm) Vertical Aerial Imagery (2021)
+Version:          2021
+Format:           JPG
+Theme:            N/A
+Area:             100 tiles
+Tiles:
+ 
+Tile Name:        tl5000
+Extent:           550000.0, 200000.0 - 551000.0, 201000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5001
+Extent:           550000.0, 201000.0 - 551000.0, 202000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5002
+Extent:           550000.0, 202000.0 - 551000.0, 203000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5003
+Extent:           550000.0, 203000.0 - 551000.0, 204000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5004
+Extent:           550000.0, 204000.0 - 551000.0, 205000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5005
+Extent:           550000.0, 205000.0 - 551000.0, 206000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5006
+Extent:           550000.0, 206000.0 - 551000.0, 207000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5007
+Extent:           550000.0, 207000.0 - 551000.0, 208000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5008
+Extent:           550000.0, 208000.0 - 551000.0, 209000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5009
+Extent:           550000.0, 209000.0 - 551000.0, 210000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5100
+Extent:           551000.0, 200000.0 - 552000.0, 201000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5101
+Extent:           551000.0, 201000.0 - 552000.0, 202000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5102
+Extent:           551000.0, 202000.0 - 552000.0, 203000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5103
+Extent:           551000.0, 203000.0 - 552000.0, 204000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5104
+Extent:           551000.0, 204000.0 - 552000.0, 205000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5105
+Extent:           551000.0, 205000.0 - 552000.0, 206000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5106
+Extent:           551000.0, 206000.0 - 552000.0, 207000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5107
+Extent:           551000.0, 207000.0 - 552000.0, 208000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5108
+Extent:           551000.0, 208000.0 - 552000.0, 209000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5109
+Extent:           551000.0, 209000.0 - 552000.0, 210000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5200
+Extent:           552000.0, 200000.0 - 553000.0, 201000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5201
+Extent:           552000.0, 201000.0 - 553000.0, 202000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5202
+Extent:           552000.0, 202000.0 - 553000.0, 203000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5203
+Extent:           552000.0, 203000.0 - 553000.0, 204000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5204
+Extent:           552000.0, 204000.0 - 553000.0, 205000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5205
+Extent:           552000.0, 205000.0 - 553000.0, 206000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5206
+Extent:           552000.0, 206000.0 - 553000.0, 207000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5207
+Extent:           552000.0, 207000.0 - 553000.0, 208000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5208
+Extent:           552000.0, 208000.0 - 553000.0, 209000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5209
+Extent:           552000.0, 209000.0 - 553000.0, 210000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5300
+Extent:           553000.0, 200000.0 - 554000.0, 201000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5301
+Extent:           553000.0, 201000.0 - 554000.0, 202000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5302
+Extent:           553000.0, 202000.0 - 554000.0, 203000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5303
+Extent:           553000.0, 203000.0 - 554000.0, 204000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5304
+Extent:           553000.0, 204000.0 - 554000.0, 205000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5305
+Extent:           553000.0, 205000.0 - 554000.0, 206000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5306
+Extent:           553000.0, 206000.0 - 554000.0, 207000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5307
+Extent:           553000.0, 207000.0 - 554000.0, 208000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5308
+Extent:           553000.0, 208000.0 - 554000.0, 209000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5309
+Extent:           553000.0, 209000.0 - 554000.0, 210000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5400
+Extent:           554000.0, 200000.0 - 555000.0, 201000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5401
+Extent:           554000.0, 201000.0 - 555000.0, 202000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5402
+Extent:           554000.0, 202000.0 - 555000.0, 203000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5403
+Extent:           554000.0, 203000.0 - 555000.0, 204000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5404
+Extent:           554000.0, 204000.0 - 555000.0, 205000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5405
+Extent:           554000.0, 205000.0 - 555000.0, 206000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5406
+Extent:           554000.0, 206000.0 - 555000.0, 207000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5407
+Extent:           554000.0, 207000.0 - 555000.0, 208000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5408
+Extent:           554000.0, 208000.0 - 555000.0, 209000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5409
+Extent:           554000.0, 209000.0 - 555000.0, 210000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5500
+Extent:           555000.0, 200000.0 - 556000.0, 201000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5501
+Extent:           555000.0, 201000.0 - 556000.0, 202000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5502
+Extent:           555000.0, 202000.0 - 556000.0, 203000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5503
+Extent:           555000.0, 203000.0 - 556000.0, 204000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5504
+Extent:           555000.0, 204000.0 - 556000.0, 205000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5505
+Extent:           555000.0, 205000.0 - 556000.0, 206000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5506
+Extent:           555000.0, 206000.0 - 556000.0, 207000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5507
+Extent:           555000.0, 207000.0 - 556000.0, 208000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5508
+Extent:           555000.0, 208000.0 - 556000.0, 209000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5509
+Extent:           555000.0, 209000.0 - 556000.0, 210000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5600
+Extent:           556000.0, 200000.0 - 557000.0, 201000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5601
+Extent:           556000.0, 201000.0 - 557000.0, 202000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5602
+Extent:           556000.0, 202000.0 - 557000.0, 203000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5603
+Extent:           556000.0, 203000.0 - 557000.0, 204000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5604
+Extent:           556000.0, 204000.0 - 557000.0, 205000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5605
+Extent:           556000.0, 205000.0 - 557000.0, 206000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5606
+Extent:           556000.0, 206000.0 - 557000.0, 207000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5607
+Extent:           556000.0, 207000.0 - 557000.0, 208000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5608
+Extent:           556000.0, 208000.0 - 557000.0, 209000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5609
+Extent:           556000.0, 209000.0 - 557000.0, 210000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5700
+Extent:           557000.0, 200000.0 - 558000.0, 201000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5701
+Extent:           557000.0, 201000.0 - 558000.0, 202000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5702
+Extent:           557000.0, 202000.0 - 558000.0, 203000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5703
+Extent:           557000.0, 203000.0 - 558000.0, 204000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5704
+Extent:           557000.0, 204000.0 - 558000.0, 205000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5705
+Extent:           557000.0, 205000.0 - 558000.0, 206000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5706
+Extent:           557000.0, 206000.0 - 558000.0, 207000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5707
+Extent:           557000.0, 207000.0 - 558000.0, 208000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5708
+Extent:           557000.0, 208000.0 - 558000.0, 209000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5709
+Extent:           557000.0, 209000.0 - 558000.0, 210000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5800
+Extent:           558000.0, 200000.0 - 559000.0, 201000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5801
+Extent:           558000.0, 201000.0 - 559000.0, 202000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5802
+Extent:           558000.0, 202000.0 - 559000.0, 203000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5803
+Extent:           558000.0, 203000.0 - 559000.0, 204000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5804
+Extent:           558000.0, 204000.0 - 559000.0, 205000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5805
+Extent:           558000.0, 205000.0 - 559000.0, 206000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5806
+Extent:           558000.0, 206000.0 - 559000.0, 207000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5807
+Extent:           558000.0, 207000.0 - 559000.0, 208000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5808
+Extent:           558000.0, 208000.0 - 559000.0, 209000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5809
+Extent:           558000.0, 209000.0 - 559000.0, 210000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5900
+Extent:           559000.0, 200000.0 - 560000.0, 201000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5901
+Extent:           559000.0, 201000.0 - 560000.0, 202000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5902
+Extent:           559000.0, 202000.0 - 560000.0, 203000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5903
+Extent:           559000.0, 203000.0 - 560000.0, 204000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5904
+Extent:           559000.0, 204000.0 - 560000.0, 205000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5905
+Extent:           559000.0, 205000.0 - 560000.0, 206000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5906
+Extent:           559000.0, 206000.0 - 560000.0, 207000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5907
+Extent:           559000.0, 207000.0 - 560000.0, 208000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5908
+Extent:           559000.0, 208000.0 - 560000.0, 209000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+   
+Tile Name:        tl5909
+Extent:           559000.0, 209000.0 - 560000.0, 210000.0
+Last Amended:     17 April 2021
+Date Flown:       2021-04-17
+      

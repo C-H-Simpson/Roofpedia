@@ -1,0 +1,94 @@
+********************************************************************
+
+EDINA DIGIMAP:
+
+DIGITAL DATA SUPPLY
+
+********************************************************************
+
+
+This data is distributed under licence by:
+
+    EDINA
+    University of Edinburgh
+    https://edina.ac.uk
+
+    Tel:    0131 650 3302
+    Fax:    0131 650 3308
+    Email:  digimap@ed.ac.uk
+		
+
+
+---------------------------------------------------------
+
+CONTENTS
+
+You will have received the data files listed below, each product and area has
+its own folder. Note that each data folder contains a conditions.txt file
+which states the conditions for use of the data within. These conditions can
+vary between different data products.
+
+
+
+-------------------------------------------------------------------------------
+Folder:           getmapping-rgb-25cm-2021_4828990
+Extent:           527299.2847885704, 200494.88941090583 - 536464.0811056703, 200655.67531120582
+Date Ordered:     9 December 2022 at 15:50:19
+Product:          High Resolution (25cm) Vertical Aerial Imagery (2021)
+Version:          2021
+Format:           JPG
+Theme:            N/A
+Area:             10 tiles
+Tiles:
+ 
+Tile Name:        tl2700
+Extent:           527000.0, 200000.0 - 528000.0, 201000.0
+Last Amended:     14 June 2021
+Date Flown:       2021-06-14
+   
+Tile Name:        tl2800
+Extent:           528000.0, 200000.0 - 529000.0, 201000.0
+Last Amended:     14 June 2021
+Date Flown:       2021-06-14
+   
+Tile Name:        tl2900
+Extent:           529000.0, 200000.0 - 530000.0, 201000.0
+Last Amended:     14 June 2021
+Date Flown:       2021-06-14
+   
+Tile Name:        tl3000
+Extent:           530000.0, 200000.0 - 531000.0, 201000.0
+Last Amended:     14 June 2021
+Date Flown:       2021-06-14
+   
+Tile Name:        tl3100
+Extent:           531000.0, 200000.0 - 532000.0, 201000.0
+Last Amended:     14 June 2021
+Date Flown:       2021-06-14
+   
+Tile Name:        tl3200
+Extent:           532000.0, 200000.0 - 533000.0, 201000.0
+Last Amended:     14 June 2021
+Date Flown:       2021-06-14
+   
+Tile Name:        tl3300
+Extent:           533000.0, 200000.0 - 534000.0, 201000.0
+Last Amended:     14 June 2021
+Date Flown:       2021-06-14
+   
+Tile Name:        tl3400
+Extent:           534000.0, 200000.0 - 535000.0, 201000.0
+Last Amended:     14 June 2021
+Date Flown:       2021-06-14
+   
+Tile Name:        tl3500
+Extent:           535000.0, 200000.0 - 536000.0, 201000.0
+Last Amended:     14 June 2021
+Date Flown:       2021-06-14
+   
+Tile Name:        tl3600
+Extent:           536000.0, 200000.0 - 537000.0, 201000.0
+Last Amended:     17 July 2021
+Date Flown:       2021-06-14
+Date Flown 2:     2021-07-17
+      
