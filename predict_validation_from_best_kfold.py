@@ -14,7 +14,7 @@ from src.predict import predict
 
 gpd.options.use_pygeos = True
 
-erosion = 1.5
+erosion = 0.5
 
 # %%
 tiling_path = "./tiling_256_0.25.feather"
@@ -113,6 +113,9 @@ for config in kfold_config_paths + ["config/best-predict-config.toml"]:
         predictions = gpd.read_file(polygon_output_path).set_crs(
             native_crs, allow_override=True
         )  # CRS not set correctly by gdal_polygonize
+
+        # Join across gaps
+        predictions = gpd.GeoDataFrame(geometry=list(predictions.unary_union.geoms))
 
         # Apply erosion
         if erosion!=0:
