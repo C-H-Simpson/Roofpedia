@@ -29,14 +29,14 @@ chkpt = torch.load(
 )
 
 tiles_parent_dir = Path("/home/ucbqc38/Scratch")
-for name in ("getmapping_2019_tiled", "getmapping_2021_tiled"):
+for name in ("getmapping_2021_tiled", "getmapping_2019_tiled"):
     ds_path = tiles_parent_dir / name
 
     tiles_dir = tiles_parent_dir / name / args.gref
     mask_dir = tiles_parent_dir / "results" / name / args.gref / "masks"
-    #if mask_dir.parent.exists():
-        #shutil.rmtree(str(mask_dir.parent))
-    #mask_dir.mkdir(parents=True)
+    if mask_dir.parent.exists():
+        shutil.rmtree(str(mask_dir.parent))
+    mask_dir.mkdir(parents=True)
 
     tile_size = config["target_size"]
 
@@ -50,3 +50,4 @@ for name in ("getmapping_2019_tiled", "getmapping_2021_tiled"):
         input_glob,
         polygon_output_path,
     )
+    print(polygon_output_path)
