@@ -132,6 +132,7 @@ ax_log.set_ylabel("Loss")
 ax_log.set_yscale("log")
 plt.tight_layout()
 fig_log.savefig("loss_log.png", dpi=200, bbox_inches="tight")
+fig_log.savefig("loss_log.pdf", bbox_inches="tight")
 # plt.show()
 
 # %%
@@ -143,6 +144,8 @@ ax_log.set_xlabel("Epoch")
 ax_log.set_ylabel("1-F1")
 ax_log.set_yscale("log")
 plt.tight_layout()
+fig_log.savefig("f1_log.png", dpi=200, bbox_inches="tight")
+fig_log.savefig("f1_log.pdf", bbox_inches="tight")
 # plt.show()
 
 # plt.show()
