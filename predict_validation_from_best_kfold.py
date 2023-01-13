@@ -106,7 +106,6 @@ for config in kfold_config_paths + ["config/best-predict-config.toml"]:
         extract(
             input_glob,
             polygon_output_path,
-            format="GeoJSON",
         )
 
         xy = [(float(p.parent.stem), float(p.stem)) for p in input_glob]
@@ -115,11 +114,11 @@ for config in kfold_config_paths + ["config/best-predict-config.toml"]:
         )  # CRS not set correctly by gdal_polygonize
 
         # Join across gaps
-        predictions = gpd.GeoDataFrame(geometry=list(predictions.unary_union.geoms))
+        predictions = gpd.GeoDataFrame(geometry=list(predictions.unary_union.geoms), crs=predictions.crs)
 
         # Apply erosion
         if erosion!=0:
-            predictions = gpd.GeoDataFrame(geometry=predictions.buffer(-erosion))
+            predictions = gpd.GeoDataFrame(geometry=predictions.buffer(-erosion), crs=predictions.crs)
 
         gdf_tiles = (
             gpd.read_feather(tiling_path)
@@ -135,7 +134,7 @@ for config in kfold_config_paths + ["config/best-predict-config.toml"]:
         # Remove predictions outside the selected area.
         predictions = gpd.overlay(predictions, gdf_tiles)
         # Remove predictions outside building footprints.
-        predictions = gpd.overlay(predictions, buildings)
+        predictions_bui = gpd.overlay(predictions, buildings)
         # Remove truth outside the selected area.
         truth_local = gpd.overlay(truth, gdf_tiles, "intersection")
         truth_local = gpd.overlay(truth_local, buildings, "intersection")
@@ -146,30 +145,34 @@ for config in kfold_config_paths + ["config/best-predict-config.toml"]:
 
         print("Truth overlay")
         if name != "training_b":
-            truth_local.to_file(polygon_output_path.parent / "truth_local.geojson", driver="GeoJSON")
-            print("gen fp")
+            fp_bui = gpd.overlay(predictions_bui, truth_local, "difference")
+            tp_bui = gpd.overlay(predictions_bui, truth_local, "intersection")
+            fn_bui = gpd.overlay(truth_local, predictions_bui, "difference")
+            union_bui = gpd.overlay(predictions_bui, truth_local, "union")
+            tn_bui = gpd.overlay(gdf_tiles, union_bui, "difference")
+
             fp = gpd.overlay(predictions, truth_local, "difference")
             tp = gpd.overlay(predictions, truth_local, "intersection")
-            print("gen fn")
             fn = gpd.overlay(truth_local, predictions, "difference")
             union = gpd.overlay(predictions, truth_local, "union")
             tn = gpd.overlay(gdf_tiles, union, "difference")
-            if not fn.empty:
-                fn.to_file(polygon_output_path.parent / "fn.geojson", driver="GeoJSON")
-            else:
-                print("No false negatives?")
 
             # Count area.
-            # This seems to lead to results where tp+fp>1
             fp_area = fp.area.sum()
             tp_area = tp.area.sum()
             fn_area = fn.area.sum()
             tn_area = tn.area.sum()
             union_area = union.area.sum()
 
+            fp_bui_area = fp_bui.area.sum()
+            tp_bui_area = tp_bui.area.sum()
+            fn_bui_area = fn_bui.area.sum()
+            tn_bui_area = tn_bui.area.sum()
+            union_bui_area = union_bui.area.sum()
+
             # Count buildings.
             truth_buildings = truth_local.sjoin(ukb).geomni_premise_id.unique()
-            pred_buildings = predictions.sjoin(ukb).geomni_premise_id.unique()
+            pred_buildings = predictions_bui.sjoin(ukb).geomni_premise_id.unique()
             tp_count = np.intersect1d(truth_buildings, pred_buildings).shape[0]
             fp_count = np.setdiff1d(pred_buildings, truth_buildings).shape[0]
             fn_count = np.setdiff1d(truth_buildings, pred_buildings).shape[0]
@@ -180,27 +183,20 @@ for config in kfold_config_paths + ["config/best-predict-config.toml"]:
         else:
             print("No truth geometry")
             fp = predictions
-            fn = None
-            tp = None
-            fp_area = fp.area.sum()
-            fn_area = 0
-            tp_area = 0
+            fp_bui = predictions_bui
+            fn, fn_bui = None, None
+            tp, tp_bui = None, None
+            fp_area, fp_bui_area = fp.area.sum(), fp_bui.area.sum()
+            fn_area, fn_bui_area = 0, 0
+            tp_area, tp_bui_area = 0, 0
             fp_count = fp.sjoin(ukb).geomni_premise_id.unique().shape[0]
             tp_count = 0
             fn_count = 0
-            union_area = predictions.area.sum()
-
-        if not fp.empty:
-            fp.to_file(polygon_output_path.parent / "fp.geojson", driver="GeoJSON")
-        else:
-            print("No false positives?")
-
-        if not tp is None:
-            if not tp.empty:
-                tp.to_file(polygon_output_path.parent / "tp.geojson")
+            union_area, union_bui_area = predictions.area.sum(), predictions_bui.area.sum()
 
         results.append ({
             "tp_area": tp_area, "fp_area": fp_area, "fn_area": fn_area, "tn_area": tn_area,
+            "tp_bui_area": tp_bui_area, "fp_bui_area": fp_bui_area, "fn_bui_area": fn_bui_area, "tn_bui_area": tn_bui_area,
             "fp_count": fp_count, "tp_count": tp_count, "fn_count": fn_count, "tn_count": tn_count,
             "total_area": total_area,
             "total_buildings_count": total_buildings_count, "built_area": total_buildings_area,
