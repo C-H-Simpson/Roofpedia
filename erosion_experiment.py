@@ -173,7 +173,7 @@ df["f1"] = 2*(df.precision*df.recall)/(df.precision+df.recall+ epsilon)
 print(df[["connection", "erosion", "precision", "recall", "f1"]].sort_values("erosion"))
 # %%
 fig, ax = plt.subplots()
-df.plot.scatter("erosion", "f1", ax=ax, c="connection")
+df.plot.scatter("erosion", "f1", ax=ax)
 ax.set_xlabel("Erosion distance (m)")
 ax.set_ylabel("F-score")
 fig.savefig("erosion.png", dpi=300)
