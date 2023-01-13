@@ -1,3 +1,4 @@
+# %%
 from pathlib import Path
 
 import geopandas as gpd
@@ -25,8 +26,11 @@ def extract(input_glob, polygon_output_path, force_crs="EPSG:27700"):
             gdf.to_file(p_poly, index=False)
             valid_polygon_paths.append(p_poly)
 
+    if valid_polygon_paths:
         gdf = pd.concat((gpd.read_file(p) for p in valid_polygon_paths)).set_crs(
             force_crs, allow_override=True
         )
         gdf = gpd.GeoDataFrame(geometry=list(gdf.unary_union.geoms), crs=force_crs)
         gdf.to_file(polygon_output_path)
+    else:
+        raise ValueError("No polygons found")
