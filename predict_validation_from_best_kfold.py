@@ -90,16 +90,16 @@ for config in kfold_config_paths + ["config/best-predict-config.toml"]:
         mask_dir = Path("results") / f"k{config['kfold']}" / name / "masks"
         polygon_output_path = mask_dir.parent / f"{name}.geojson"
 
-        if mask_dir.parent.exists():
-            shutil.rmtree(str(mask_dir.parent))
-        mask_dir.mkdir(parents=True)
+        # if mask_dir.parent.exists():
+            # shutil.rmtree(str(mask_dir.parent))
+        # mask_dir.mkdir(parents=True)
         tile_size = config["target_size"]
 
         print("Prediction")
         print(tiles_dir, mask_dir)
 
 
-        predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=4)
+        # predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=4)
         input_glob = list(mask_dir.glob("*/*png"))
 
         print("Extraction")
@@ -111,14 +111,17 @@ for config in kfold_config_paths + ["config/best-predict-config.toml"]:
         xy = [(float(p.parent.stem), float(p.stem)) for p in input_glob]
         predictions = gpd.read_file(polygon_output_path).set_crs(
             native_crs, allow_override=True
-        )  # CRS not set correctly by gdal_polygonize
+        )
 
-        # Join across gaps
+        # Join across 0 width gaps
         predictions = gpd.GeoDataFrame(geometry=list(predictions.unary_union.geoms), crs=predictions.crs)
 
         # Apply erosion
         if erosion!=0:
             predictions = gpd.GeoDataFrame(geometry=predictions.buffer(-erosion), crs=predictions.crs)
+
+        # Drop tiny polygons
+        predictions = predictions[predictions.area>1]
 
         gdf_tiles = (
             gpd.read_feather(tiling_path)
@@ -128,6 +131,7 @@ for config in kfold_config_paths + ["config/best-predict-config.toml"]:
             .to_crs(native_crs)
             .reset_index()
         )
+        gdf_tiles_signal = gdf_tiles.sjoin(predictions[["geometry"]].assign(pred=True)).pipe(lambda _df: _df[_df.pred==True])[["geometry"]]
         total_area = gdf_tiles.area.sum()
         total_buildings_count = gdf_tiles.sjoin(ukb).geomni_premise_id.unique().shape[0]
 
@@ -145,17 +149,20 @@ for config in kfold_config_paths + ["config/best-predict-config.toml"]:
 
         print("Truth overlay")
         if name != "training_b":
+            # If the building intersection is used.
             fp_bui = gpd.overlay(predictions_bui, truth_local, "difference")
             tp_bui = gpd.overlay(predictions_bui, truth_local, "intersection")
             fn_bui = gpd.overlay(truth_local, predictions_bui, "difference")
             union_bui = gpd.overlay(predictions_bui, truth_local, "union")
             tn_bui = gpd.overlay(gdf_tiles, union_bui, "difference")
 
+            # If it isn't used.
             fp = gpd.overlay(predictions, truth_local, "difference")
             tp = gpd.overlay(predictions, truth_local, "intersection")
             fn = gpd.overlay(truth_local, predictions, "difference")
             union = gpd.overlay(predictions, truth_local, "union")
             tn = gpd.overlay(gdf_tiles, union, "difference")
+
 
             # Count area.
             fp_area = fp.area.sum()
@@ -180,12 +187,22 @@ for config in kfold_config_paths + ["config/best-predict-config.toml"]:
             tn_count = np.setdiff1d(gdf_tiles.sjoin(ukb).geomni_premise_id.unique(), union_buildings).shape[0]
             union_count = union_buildings.shape[0]
 
+            # If only positive tiles are included.
+            truth_pos = gpd.overlay(truth_local, gdf_tiles_signal, "intersection")
+            predictions_bui_pos = gpd.overlay(predictions_bui, gdf_tiles_signal, "intersection")
+            truth_buildings = truth_pos.sjoin(ukb).geomni_premise_id.unique()
+            pred_buildings = predictions_bui_pos.sjoin(ukb).geomni_premise_id.unique()
+            tp_pos_count = np.intersect1d(truth_buildings, pred_buildings).shape[0]
+            fp_pos_count = np.setdiff1d(pred_buildings, truth_buildings).shape[0]
+            fn_pos_count = np.setdiff1d(truth_buildings, pred_buildings).shape[0]
+            union_buildings = np.union1d(truth_buildings, pred_buildings)
+            tn_pos_count = np.setdiff1d(gdf_tiles.sjoin(ukb).geomni_premise_id.unique(), union_buildings).shape[0]
+            union_pos_count = union_buildings.shape[0]
+
         else:
             print("No truth geometry")
             fp = predictions
             fp_bui = predictions_bui
-            fn, fn_bui = None, None
-            tp, tp_bui = None, None
             fp_area, fp_bui_area = fp.area.sum(), fp_bui.area.sum()
             fn_area, fn_bui_area = 0, 0
             tp_area, tp_bui_area = 0, 0
@@ -193,25 +210,31 @@ for config in kfold_config_paths + ["config/best-predict-config.toml"]:
             tp_count = 0
             fn_count = 0
             union_area, union_bui_area = predictions.area.sum(), predictions_bui.area.sum()
+            fp_pos_count = gpd.overlay(fp_bui, gdf_tiles_signal, "intersection").sjoin(ukb).geomni_premise_id.unique().shape[0]
 
-        results.append ({
+        results.append({
             "tp_area": tp_area, "fp_area": fp_area, "fn_area": fn_area, "tn_area": tn_area,
             "tp_bui_area": tp_bui_area, "fp_bui_area": fp_bui_area, "fn_bui_area": fn_bui_area, "tn_bui_area": tn_bui_area,
             "fp_count": fp_count, "tp_count": tp_count, "fn_count": fn_count, "tn_count": tn_count,
+            "fp_pos_count": fp_pos_count, "tp_pos_count": tp_pos_count, "fn_pos_count": fn_pos_count, "tn_pos_count": tn_pos_count,
             "total_area": total_area,
-            "total_buildings_count": total_buildings_count, "built_area": total_buildings_area,
-            "union_area": union_area, "union_count": union_count,
+            "total_buildings_count": total_buildings_count,
+            "built_area": total_buildings_area,
+            "union_area": union_area,
+            "union_count": union_count,
+            "union_pos_count": union_pos_count,
             "positive_predict_area": positive_predictions,
             "kfold": config["kfold"], "ds": name
         })
 
-        pd.DataFrame(results).to_csv("kfold_vector_confusion.csv")
+        df = pd.DataFrame(results)
+        df.to_csv("kfold_vector_confusion.csv")
+        print(df)
 
 
 
 # %%
 import pandas as pd
-import json
 
 # %%
 df = pd.read_csv("kfold_vector_confusion.csv")
@@ -239,12 +262,18 @@ df = df.set_index(["ds", "kfold"]).sort_index()
 
 # %%
 epsilon = 1e-10 # prevent zero division error for training_b
+df["precision_bui_area"] = df.tp_bui_area / (df.tp_bui_area + df.fp_bui_area + epsilon)
+df["recall_bui_area"] = df.tp_bui_area / (df.tp_bui_area + df.fn_bui_area + epsilon)
+df["f1_bui_area"] = 2*(df.precision_bui_area*df.recall_bui_area)/(df.precision_bui_area+df.recall_bui_area + epsilon)
 df["precision_area"] = df.tp_area / (df.tp_area + df.fp_area + epsilon)
-df["precision_count"] = df.tp_count / (df.tp_count + df.fp_count + epsilon)
 df["recall_area"] = df.tp_area / (df.tp_area + df.fn_area + epsilon)
-df["recall_count"] = df.tp_count / (df.tp_count + df.fn_count + epsilon)
 df["f1_area"] = 2*(df.precision_area*df.recall_area)/(df.precision_area+df.recall_area + epsilon)
+df["precision_count"] = df.tp_count / (df.tp_count + df.fp_count + epsilon)
+df["recall_count"] = df.tp_count / (df.tp_count + df.fn_count + epsilon)
 df["f1_count"] = 2*(df.precision_count*df.recall_count)/(df.precision_count+df.recall_count + epsilon)
+df["precision_pos_count"] = df.tp_pos_count / (df.tp_pos_count + df.fp_pos_count + epsilon)
+df["recall_pos_count"] = df.tp_pos_count / (df.tp_pos_count + df.fn_pos_count + epsilon)
+df["f1_pos_count"] = 2*(df.precision_pos_count*df.recall_pos_count)/(df.precision_pos_count+df.recall_pos_count + epsilon)
 
 df.to_csv("kfold_vector_confusion_format.csv")
 
@@ -255,10 +284,10 @@ df = pd.read_csv("kfold_vector_confusion_format.csv")
 
 ## Area based
 # df = df.assign(fp=df.fp_area/df.total_area, tp=df.tp_area/df.total_area, fn=df.fn_area/df.total_area, tn=df.tn_area/df.total_area)
-df = df.assign(fp=df.fp_area/df.built_area, tp=df.tp_area/df.built_area, fn=df.fn_area/df.built_area, tn=df.tn_area/df.built_area)
+df = df.assign(fp=df.fp_bui_area/df.built_area, tp=df.tp_bui_area/df.built_area, fn=df.fn_bui_area/df.built_area, tn=df.tn_bui_area/df.built_area)
 df = df.assign(tn=1-df.fp-df.fn-df.tp)
 df = df.assign(
-    iou_area=(df.tp_area/df.union_area), accuracy_area=(1-df.fn-df.fp)
+    iou_bui_area=(df.tp_bui_area/df.union_area), accuracy_bui_area=(1-df.fn-df.fp)
 )
 
 # print(df.reset_index().set_index(["ds", "kfold"])[["total_area", "built_area", "tp", "tn", "fp", "fn"]])
@@ -276,9 +305,25 @@ print(
 )
 # print(df.reset_index().set_index(["ds", "kfold"])[["accuracy_area", "iou_area", "precision_area", "recall_area", "f1_area"]])
 print(
-    df.reset_index().set_index(["ds", "kfold"])[["accuracy_area", "iou_area", "precision_area", "recall_area", "f1_area"]]
+    df.reset_index().set_index(["ds", "kfold"])[["accuracy_bui_area", "iou_bui_area", "precision_bui_area", "recall_bui_area", "f1_bui_area"]]
     .round(4)
     .to_latex()
+)
+# %%
+# What if we didn't use the building footprints?
+print(
+    (df.reset_index().set_index(["ds", "kfold"])[["precision_area", "recall_area", "f1_area"]]
+    - df.reset_index().set_index(["ds", "kfold"])[["precision_bui_area", "recall_bui_area", "f1_bui_area"]].values)
+    .round(4)
+)
+# %%
+# What about the 'positive tile only' case?
+df = df.assign(
+    iou_pos_count=(df.tp_pos_count/df.union_pos_count)
+)
+print(
+    df.reset_index().set_index(["ds", "kfold"])[["f1_pos_count", "iou_pos_count", "iou_count"]]
+    .round(4)
 )
 
 # %%
@@ -309,3 +354,5 @@ print(
 )
 
 
+
+# %%
