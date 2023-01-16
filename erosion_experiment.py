@@ -82,6 +82,8 @@ for connection in (True, False):
         if erosion!=0:
             predictions = gpd.GeoDataFrame(geometry=list(predictions.unary_union.buffer(-erosion).geoms), crs=native_crs)
 
+        predictions = predictions[predictions.area>1]
+
         gdf_tiles = (
             gpd.read_feather(tiling_path)
             .set_index(["x", "y"])
