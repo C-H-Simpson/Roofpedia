@@ -257,8 +257,6 @@ if __name__ == "__main__":
                     destination = dataset_folder / f"k{k}" / name
                 else:
                     name = "training"
-                    if "alt" in s_or_b:
-                        continue
                     destination = dataset_folder / f"k{k}" / f"training_{s_or_b}"
 
                 labels_paths = list(dataset_folder.glob(f"{i}{s_or_b}/labels/*/*.png"))
