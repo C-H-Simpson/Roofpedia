@@ -142,6 +142,18 @@ class FLoss2d(nn.Module):
     https://www.kaggle.com/code/rejpalcz/best-loss-function-for-f1-score-metric/notebook
     and 
     https://link.springer.com/chapter/10.1007/978-3-642-38679-4_37
+
+    The best loss function would be, of course the metric itself. Then the
+    misalignment disappears. The macro F1-score has one big trouble. It's
+    non-differentiable. Which means we cannot use it as a loss function.
+    
+    But we can modify it to be differentiable. Instead of accepting 0/1 integer
+    predictions, let's accept probabilities instead. Thus if the ground truth is
+    1 and the model prediction is 0.4, we calculate it as 0.4 true positive and
+    0.6 false negative. If the ground truth is 0 and the model prediction is
+    0.4, we calculate it as 0.6 true negative and 0.4 false positive.
+    
+    Also, we minimize 1-F1 (because minimizing 1−f(x) is same as maximizing f(x))
     """
     def __init__(self):
         """Creates a `FLoss2d` instance."""
@@ -149,17 +161,16 @@ class FLoss2d(nn.Module):
         self.eps=1e-10
 
     def forward(self, inputs, targets):
-        targets = targets.type(torch.float32)
         inputs = inputs.type(torch.float32)
-        # The size of tensor a (8) must match the size of tensor b (2) at non-singleton dimension 1 
-        # Needs a softmax?
-        tp = torch.sum((targets*inputs), axis=0)
-        fp = torch.sum(((1-targets)*inputs), axis=0)
-        fn = torch.sum(((targets)*(1-inputs)), axis=0)
+        targets = targets.type(torch.int64)
+        probs = nn.functional.softmax(inputs, dim=1)[:,1] # Class 1 probability
+        tp = torch.sum((targets*probs), axis=0)
+        fp = torch.sum(((1-targets)*probs), axis=0)
+        fn = torch.sum(((targets)*(1-probs)), axis=0)
 
-        p = tp / (tp + fp + self.eps())
-        r = tp / (tp + fn + self.eps())
+        p = tp / (tp + fp + self.eps)
+        r = tp / (tp + fn + self.eps)
 
-        f1 = 2*p*r / (p+r+self.eps())
-        f1 = torch.where(torch.is_nan(f1), torch.zeros_like(f1), f1)
+        f1 = 2*p*r / (p+r+self.eps)
+        f1 = torch.where(torch.isnan(f1), torch.zeros_like(f1), f1)
         return 1 - torch.mean(f1)
