@@ -77,7 +77,10 @@ if __name__ == "__main__":
     # %%
     # Limit to the valid labelled area.
     intersect = (
-        gpd.overlay(gdf_tiles, gdf_labelled_area).dissolve(["x", "y"]).reset_index()
+        # This version excludes tiles at the edge of the domain, reducing the amount of data available.
+        gdf_tiles[gdf_tiles.within(gdf_labelled_area.unitary_union)]
+        # This version has a slight problem because tiles at the edge of the labelled area will be included.
+        # gpd.overlay(gdf_tiles, gdf_labelled_area).dissolve(["x", "y"]).reset_index()
     )
     print(f"{len(intersect)} in labelled area")
     # Only keep tiles that intersect with a building.
