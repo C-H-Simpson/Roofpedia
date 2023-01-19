@@ -35,7 +35,10 @@ domain_east = domain_east + window_width
 domain_north = domain_north + window_height
 domain_west, domain_south, domain_east, domain_north
 
-label_polygon_path = Path("../data/gr_manual_labels_230104.geojson").resolve()
+label_polygon_path = {
+    "getmapping_2019": Path("../data/gr_manual_labels_checked_2019.geojson").resolve(),
+    "getmapping_2021": Path("../data/gr_manual_labels_checked_2021.geojson").resolve()
+}
 
 # A geodataframe will be created in this location which identifies the tiles.
 tiling_path = f"../data/tiling_{pitch}_{pixel_size}.feather"
@@ -140,7 +143,7 @@ if __name__ == "__main__":
                 .replace("$destination", str(destination.resolve()))
                 .replace(
                     "$labels",
-                    str(label_polygon_path),
+                    str(label_polygon_path[dset]),
                 )
                 .replace("$ERRFILE", e_path)
                 .replace("$OUTFILE", o_path)
