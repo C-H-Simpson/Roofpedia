@@ -77,7 +77,7 @@ plt.legend()
 fig, ax = plt.subplots(2)
 for name in results:
     for i in (0, 1,):
-        ax[i].hist(results[i], label=name, bins=np.arange(40, 220, 1), histtype="step", density=True)
+        ax[i].hist(results[name][i], label=name, bins=np.arange(40, 220, 1), histtype="step", density=True)
 ax[0].set_xlabel("Red")
 ax[1].set_xlabel("Green")
 plt.legend()
@@ -85,12 +85,18 @@ plt.tight_layout()
 
 # %%
 # False positives in this dataset tend to be more red rather than green.
-fig, ax = plt.subplots(2)
+fig, ax = plt.subplots(4, figsize=(6, 6))
 for name in results:
     ness = results[name] / results[name].mean(0)
-    for i in (0, 1,):
-        ax[i].hist(ness[i], label=name, bins=np.linspace(0.8, 1.4, 30), histtype="step", density=True)
+    for i in (0, 1, 2):
+        ax[i].hist(ness[i], label=name, bins=np.linspace(0.8, 1.4, 100), histtype="step", density=True)
+    ax[3].hist(results[name].mean(0), label=name, bins=np.arange(0, 256, 2), histtype="step", density=True)
 ax[0].set_xlabel("Redness")
 ax[1].set_xlabel("Greenness")
+ax[2].set_xlabel("Blueness")
+ax[3].set_xlabel("Brightness")
 plt.legend()
 plt.tight_layout()
+
+# %%
+results[name].mean(0)
