@@ -9,13 +9,117 @@ import numpy as np
 import osgeo_utils.gdal_merge
 import rasterio
 import rasterio.mask
+from osgeo import gdal, ogr
 from tqdm import tqdm
+
+from imagery_tiling.batched_tiling import tiling_path
 
 tqdm.pandas()
 gpd.options.use_pygeos = True
-from pathlib import Path
 
-from imagery_tiling.batched_tiling import tiling_path
+
+def query_tile(_df, destination_dir, input_tiles_path_dict):
+    """
+    For a _df that may contain multiple rows, which are multiple tiles to be clipped out.
+    And which might straddle multiple input tiles.
+    """
+    inp_tiles = _df.inp_tiles.iloc[0]  # should always be the same
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        if len(inp_tiles) > 1:
+            # Merge the input rasters to a temporary file.
+            output_path = str(Path(tmpdirname) / "temp.tif")
+            input_list = [
+                str(input_tiles_path_dict[t])
+                for t in inp_tiles
+                if t in input_tiles_path_dict
+            ]
+            if len(input_list) == 0:
+                print("No imagery tiles", inp_tiles)
+                return False
+            parameters = ["", "-o", output_path] + input_list
+            osgeo_utils.gdal_merge.main(parameters)
+        else:
+            t = inp_tiles[0]
+            output_path = (
+                input_tiles_path_dict[t] if t in input_tiles_path_dict else None
+            )
+            if output_path is None:
+                print("No imagery tiles", inp_tiles)
+                return False
+
+        # Clip from the temporary file.
+        input_path = output_path
+        for i, _row in _df.iterrows():
+            destination = (
+                Path(destination_dir) / f"{int(_row.x):d}" / f"{int(_row.y):d}.png"
+            )
+            if destination.is_file():
+                continue
+
+            try:
+                with rasterio.open(input_path) as src:
+                    out_image, out_transform = rasterio.mask.mask(
+                        src, [_row.geometry], crop=True
+                    )
+                    out_meta = src.meta
+            except ValueError:
+                # If the geometry does not overlap with the raster.
+                print("No imagery", _row)
+                continue
+
+            out_meta.update(
+                {
+                    "driver": "PNG",
+                    "height": out_image.shape[1],
+                    "width": out_image.shape[2],
+                    "transform": out_transform,
+                }
+            )
+
+            destination.parent.mkdir(exist_ok=True)
+            with rasterio.open(destination, "w", **out_meta) as dest:
+                dest.write(out_image)
+
+
+def write_mask(
+    _df,
+    nrows,
+    ncols,
+    shapefile,
+    destination_dir,
+    maskvalue=1,
+):
+    destination = Path(destination_dir) / f"{int(_df.x):d}" / f"{int(_df.y):d}.png"
+    if destination.is_file():
+        return
+
+    src_ds = ogr.Open(shapefile)
+
+    # Get the transform from the metadata of the corresponding image file
+    metadata_path = str(destination).replace("labels", "images") + ".aux.xml"
+    assert Path(metadata_path).is_file()
+    tree = ET.parse(metadata_path)
+    root = tree.getroot()
+    geotransform = tuple([float(s) for s in root[0].text.strip().split(",")])
+
+    destination.parent.mkdir(exist_ok=True, parents=True)
+    destination = destination.resolve().as_posix()
+
+    src_lyr = src_ds.GetLayer()
+
+    dst_ds = gdal.GetDriverByName("MEM").Create("", ncols, nrows, 1, gdal.GDT_Byte)
+    dst_rb = dst_ds.GetRasterBand(1)
+    dst_rb.Fill(0)  # initialise raster with zeros
+    dst_rb.SetNoDataValue(0)
+    dst_ds.SetGeoTransform(geotransform)
+
+    err = gdal.RasterizeLayer(dst_ds, [1], src_lyr, burn_values=[maskvalue])
+
+    dst_ds.FlushCache()
+    ds2 = gdal.GetDriverByName("PNG").CreateCopy(destination, dst_ds, 0)
+
+    # raise ValueError(destination)
+
 
 if __name__ == "__main__":
     # Parse args
@@ -91,68 +195,6 @@ if __name__ == "__main__":
     gdf_tiles
 
     # %%
-    def query_tile(_df, destination_dir, input_tiles_path_dict):
-        """
-        For a _df that may contain multiple rows, which are multiple tiles to be clipped out.
-        And which might straddle multiple input tiles.
-        """
-        inp_tiles = _df.inp_tiles.iloc[0]  # should always be the same
-        with tempfile.TemporaryDirectory() as tmpdirname:
-            if len(inp_tiles) > 1:
-                # Merge the input rasters to a temporary file.
-                output_path = str(Path(tmpdirname) / "temp.tif")
-                input_list = [
-                    str(input_tiles_path_dict[t])
-                    for t in inp_tiles
-                    if t in input_tiles_path_dict
-                ]
-                if len(input_list) == 0:
-                    print("No imagery tiles", inp_tiles)
-                    return False
-                parameters = ["", "-o", output_path] + input_list
-                osgeo_utils.gdal_merge.main(parameters)
-            else:
-                t = inp_tiles[0]
-                output_path = (
-                    input_tiles_path_dict[t] if t in input_tiles_path_dict else None
-                )
-                if output_path is None:
-                    print("No imagery tiles", inp_tiles)
-                    return False
-
-            # Clip from the temporary file.
-            input_path = output_path
-            for i, _row in _df.iterrows():
-                destination = (
-                    Path(destination_dir) / f"{int(_row.x):d}" / f"{int(_row.y):d}.png"
-                )
-                if destination.is_file():
-                    continue
-
-                try:
-                    with rasterio.open(input_path) as src:
-                        out_image, out_transform = rasterio.mask.mask(
-                            src, [_row.geometry], crop=True
-                        )
-                        out_meta = src.meta
-                except ValueError:
-                    # If the geometry does not overlap with the raster.
-                    print("No imagery", _row)
-                    continue
-
-                out_meta.update(
-                    {
-                        "driver": "PNG",
-                        "height": out_image.shape[1],
-                        "width": out_image.shape[2],
-                        "transform": out_transform,
-                    }
-                )
-
-                destination.parent.mkdir(exist_ok=True)
-                with rasterio.open(destination, "w", **out_meta) as dest:
-                    dest.write(out_image)
-
     # %%
     # Apply the tiling to the whole area.
     # This takes quite a while...
@@ -167,48 +209,8 @@ if __name__ == "__main__":
 
     # %%
     # Prepare masks from the same tiles.
-    from osgeo import gdal, ogr
 
     shapefile = args.labels
-
-    def write_mask(
-        _df,
-        nrows,
-        ncols,
-        shapefile,
-        destination_dir,
-        maskvalue=1,
-    ):
-        destination = Path(destination_dir) / f"{int(_df.x):d}" / f"{int(_df.y):d}.png"
-        if destination.is_file():
-            return
-
-        src_ds = ogr.Open(shapefile)
-
-        # Get the transform from the metadata of the corresponding image file
-        metadata_path = str(destination).replace("labels", "images") + ".aux.xml"
-        assert Path(metadata_path).is_file()
-        tree = ET.parse(metadata_path)
-        root = tree.getroot()
-        geotransform = tuple([float(s) for s in root[0].text.strip().split(",")])
-
-        destination.parent.mkdir(exist_ok=True, parents=True)
-        destination = destination.resolve().as_posix()
-
-        src_lyr = src_ds.GetLayer()
-
-        dst_ds = gdal.GetDriverByName("MEM").Create("", ncols, nrows, 1, gdal.GDT_Byte)
-        dst_rb = dst_ds.GetRasterBand(1)
-        dst_rb.Fill(0)  # initialise raster with zeros
-        dst_rb.SetNoDataValue(0)
-        dst_ds.SetGeoTransform(geotransform)
-
-        err = gdal.RasterizeLayer(dst_ds, [1], src_lyr, burn_values=[maskvalue])
-
-        dst_ds.FlushCache()
-        ds2 = gdal.GetDriverByName("PNG").CreateCopy(destination, dst_ds, 0)
-
-        # raise ValueError(destination)
 
     destination_dir = Path(args.output) / "labels"
     destination_dir.mkdir(exist_ok=True)
@@ -226,5 +228,3 @@ if __name__ == "__main__":
         ),
         axis=1,
     )
-
-# %%
