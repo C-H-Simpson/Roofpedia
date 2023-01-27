@@ -5,13 +5,14 @@ import geopandas as gpd
 #import osgeo_utils.gdal_merge
 #import osgeo_utils.gdal_polygonize
 import pandas as pd
+from scipy.ndimage.morphology import binary_closing, binary_opening
 
 import rasterio
 from rasterio import features
 import shapely
 from tqdm import tqdm
 
-def extract(input_glob, polygon_output_path, force_crs="EPSG:27700"):
+def extract(input_glob, polygon_output_path, force_crs="EPSG:27700", closing=None, opening=None):
     input_glob = list(input_glob)
     polygon_temp_paths = [p.parent / (p.name + ".geojson") for p in input_glob]
     valid_polygon_paths = []
@@ -20,6 +21,12 @@ def extract(input_glob, polygon_output_path, force_crs="EPSG:27700"):
         with rasterio.open(p, "r") as src:
             mask = src.read(1)
             transform = src.transform
+
+        if closing:
+            mask = binary_closing(mask, iterations=closing).astype("uint8")
+        if opening:
+            mask = binary_opening(mask, iterations=opening).astype("uint8")
+
         shapes = features.shapes(mask, mask=mask, transform=transform)
         gdf = gpd.GeoDataFrame(geometry=[shapely.geometry.shape(s) for s,v in shapes], crs=force_crs)
         if not gdf.empty:
