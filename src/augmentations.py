@@ -110,7 +110,9 @@ def get_transforms(target_size=256):
         flip_rotate_A=A.Compose(
             [
                 A.VerticalFlip(p=0.5),
+                A.HorizontalFlip(p=0.5),
                 A.RandomRotate90(p=0.5),
+                A.Transpose(p=0.5),
                 A.Normalize(mean=mean, std=std),
                 ToTensorV2(),
             ]
@@ -148,6 +150,48 @@ def get_transforms(target_size=256):
                 ToTensorV2(),
             ]
         ),
+        medium_augs_B=A.Compose(
+            [
+                # based on https://albumentations.ai/docs/examples/example_kaggle_salt/
+                A.VerticalFlip(p=0.5),
+                A.HorizontalFlip(p=0.5),
+                A.RandomRotate90(p=0.5),
+                A.Transpose(p=0.5),
+                A.CLAHE(p=0.5),
+                A.RandomBrightnessContrast(p=0.5),
+                A.RandomGamma(p=0.5),
+                A.OneOf(
+                    [
+                        A.RandomSizedCrop(
+                            min_max_height=(200, 255),
+                            height=target_size,
+                            width=target_size,
+                            p=0.5,
+                        ),
+                        A.PadIfNeeded(
+                            min_height=target_size, min_width=target_size, p=0.5
+                        ),
+                    ],
+                    p=0.5,
+                ),
+                A.Normalize(mean=mean, std=std),
+                ToTensorV2(),
+            ]
+        ),
+        non_spatial_B=A.Compose(
+            [
+                # based on https://albumentations.ai/docs/examples/example_kaggle_salt/
+                A.VerticalFlip(p=0.5),
+                A.HorizontalFlip(p=0.5),
+                A.RandomRotate90(p=0.5),
+                A.Transpose(p=0.5),
+                A.CLAHE(p=0.5),
+                A.RandomBrightnessContrast(p=0.5),
+                A.RandomGamma(p=0.5),
+                A.Normalize(mean=mean, std=std),
+                ToTensorV2(),
+            ]
+        ),
         non_spatial_A=A.Compose(
             [
                 # based on https://albumentations.ai/docs/examples/example_kaggle_salt/
@@ -180,6 +224,78 @@ def get_transforms(target_size=256):
                 A.CLAHE(p=0.8),
                 A.RandomBrightnessContrast(p=0.8),
                 A.RandomGamma(p=0.8),
+                A.Normalize(mean=mean, std=std),
+                ToTensorV2(),
+            ]
+        ),
+        non_spatial_C=A.Compose(
+            [
+                # add RGBshift to flips etc
+                # based on https://albumentations.ai/docs/examples/example_kaggle_salt/
+                A.VerticalFlip(p=0.5),
+                A.HorizontalFlip(p=0.5),
+                A.RandomRotate90(p=0.5),
+                A.Transpose(p=0.5),
+                A.RGBShift(r_shift_limit=25, g_shift_limit=25, b_shift_limit=25, p=1.0),
+                A.Normalize(mean=mean, std=std),
+                ToTensorV2(),
+            ]
+        ),
+        non_spatial_D=A.Compose(
+            [
+                # add RGBshift and random gamma to flips etc.
+                # based on https://albumentations.ai/docs/examples/example_kaggle_salt/
+                A.VerticalFlip(p=0.5),
+                A.HorizontalFlip(p=0.5),
+                A.RandomRotate90(p=0.5),
+                A.Transpose(p=0.5),
+                A.RGBShift(r_shift_limit=25, g_shift_limit=25, b_shift_limit=25, p=1.0),
+                A.RandomGamma((50, 300), p=0.8),
+                A.Normalize(mean=mean, std=std),
+                ToTensorV2(),
+            ]
+        ),
+        non_spatial_E=A.Compose(
+            [
+                # try slight elastic transform
+                # based on https://albumentations.ai/docs/examples/example_kaggle_salt/
+                A.VerticalFlip(p=0.5),
+                A.HorizontalFlip(p=0.5),
+                A.RandomRotate90(p=0.5),
+                A.Transpose(p=0.5),
+                A.ElasticTransform(alpha=1, sigma=1, p=1),
+                A.RGBShift(r_shift_limit=25, g_shift_limit=25, b_shift_limit=25, p=1.0),
+                A.RandomGamma((50, 300), p=0.8),
+                A.Normalize(mean=mean, std=std),
+                ToTensorV2(),
+            ]
+        ),
+        non_spatial_F=A.Compose(
+            [
+                # try grid distortion
+                # based on https://albumentations.ai/docs/examples/example_kaggle_salt/
+                A.VerticalFlip(p=0.5),
+                A.HorizontalFlip(p=0.5),
+                A.RandomRotate90(p=0.5),
+                A.Transpose(p=0.5),
+                A.GridDistortion(p=1),
+                A.RGBShift(r_shift_limit=25, g_shift_limit=25, b_shift_limit=25, p=1.0),
+                A.RandomGamma((50, 300), p=0.8),
+                A.Normalize(mean=mean, std=std),
+                ToTensorV2(),
+            ]
+        ),
+        non_spatial_G=A.Compose(
+            [
+                # try shift-scale-rotate
+                # based on https://albumentations.ai/docs/examples/example_kaggle_salt/
+                A.VerticalFlip(p=0.5),
+                A.HorizontalFlip(p=0.5),
+                A.RandomRotate90(p=0.5),
+                A.Transpose(p=0.5),
+                A.ShiftScaleRotate(shift_limit=0.2, scale_limit=0.2, p=0.5),
+                A.RGBShift(r_shift_limit=25, g_shift_limit=25, b_shift_limit=25, p=1.0),
+                A.RandomGamma((50, 300), p=0.8),
                 A.Normalize(mean=mean, std=std),
                 ToTensorV2(),
             ]
