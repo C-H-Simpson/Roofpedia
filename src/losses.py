@@ -164,13 +164,12 @@ class FLoss2d(nn.Module):
         inputs = inputs.type(torch.float32)
         targets = targets.type(torch.int64)
         probs = nn.functional.softmax(inputs, dim=1)[:,1] # Class 1 probability
-        tp = torch.sum((targets*probs), axis=0)
-        fp = torch.sum(((1-targets)*probs), axis=0)
-        fn = torch.sum(((targets)*(1-probs)), axis=0)
+        tp = torch.sum((targets*probs))
+        fp = torch.sum(((1-targets)*probs))
+        fn = torch.sum(((targets)*(1-probs)))
 
         p = tp / (tp + fp + self.eps)
         r = tp / (tp + fn + self.eps)
 
         f1 = 2*p*r / (p+r+self.eps)
-        f1 = torch.where(torch.isnan(f1), torch.zeros_like(f1), f1)
-        return 1 - torch.mean(f1)
+        return 1 - f1
