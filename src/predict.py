@@ -27,17 +27,13 @@ def predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=1):
 
     # don't track tensors with autograd during prediction
     with torch.no_grad():
-        for images, (X, Y) in tqdm(
-            loader, desc="Prediction", unit="batch", ascii=True
-        ):
+        for images, (X, Y) in tqdm(loader, desc="Prediction", unit="batch", ascii=True):
             images = images.to(device)
             try:
                 outputs = net(images)
             except Exception as e:
                 print(f"Failure: {X=} {Y=} {str(e)}")
                 continue
-                
-
 
             # manually compute segmentation mask class probabilities per pixel
             probs = nn.functional.softmax(outputs, dim=1).data.cpu().numpy()

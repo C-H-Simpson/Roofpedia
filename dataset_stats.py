@@ -31,8 +31,9 @@ def count_signal_pixels(input_glob):
     return {
         "n_tiles": n,
         "n_signal_pixels": count_not_blank,
-        "n_signal_tiles": all_not_blank
+        "n_signal_tiles": all_not_blank,
     }
+
 
 def count_pixels(input_glob):
     masks = list(input_glob)
@@ -44,7 +45,7 @@ def count_pixels(input_glob):
     return {
         "n_tiles": n,
         "n_signal_pixels": count_not_blank,
-        "n_signal_tiles": all_not_blank
+        "n_signal_tiles": all_not_blank,
     }
 
 

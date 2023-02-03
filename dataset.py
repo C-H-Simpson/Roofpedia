@@ -19,26 +19,9 @@ import numpy as np
 from PIL import Image
 from tqdm import tqdm
 
-from imagery_tiling.batched_tiling import tiling_path
 from src.colors import make_palette
 
 random_obj = random.Random(144)
-
-# This is the location from which the imagery will be taken.
-# This has been created by imagery_tiling/batched_tiling.py
-source_path = "/home/ucbqc38/Scratch/getmapping_2021_tiled/"
-# This is the number of splits.
-k_folds = 5
-# This is a geodata file that labels the area that was hand labelled.
-training_area_path = "../data/selected_area_220404.gpkg"
-
-# Get building footprints
-buildings = gpd.read_feather("../data/os_buildings_2021.feather")
-
-keep_background_proportion = 1
-keep_signal_proportion = 1.0
-
-dataset_folder = Path("dataset")
 
 
 def convert_mask(file):
@@ -68,7 +51,25 @@ if __name__ == "__main__":
     # Delete the old dataset, otherwise it piles up.
     assert not dataset_folder.exists(), "recommend deleting the folder first"
 
+    # This is the location from which the imagery will be taken.
+    # This has been created by imagery_tiling/batched_tiling.py
+    source_path = "/home/ucbqc38/Scratch/getmapping_2021_tiled/"
+    # This is the number of splits.
+    k_folds = 5
+    # This is a geodata file that labels the area that was hand labelled.
+    training_area_path = "../data/selected_area_220404.gpkg"
+
+    # Get building footprints
+    buildings = gpd.read_feather("../data/os_buildings_2021.feather")
+
+    keep_background_proportion = 1
+    keep_signal_proportion = 1.0
+
+    dataset_folder = Path("dataset")
+
     # Load the file that encodes the geometry of the tiling.
+    from imagery_tiling.batched_tiling import tiling_path
+
     gdf_tiles = gpd.read_feather(tiling_path)
 
     # Load the limits of the labelled area.
@@ -78,15 +79,13 @@ if __name__ == "__main__":
     # Limit to the valid labelled area.
     intersect = (
         # This version excludes tiles at the edge of the domain, reducing the amount of data available.
-        gdf_tiles[gdf_tiles.within(gdf_labelled_area.unitary_union)]
+        gdf_tiles[gdf_tiles.within(gdf_labelled_area.unary_union)]
         # This version has a slight problem because tiles at the edge of the labelled area will be included.
         # gpd.overlay(gdf_tiles, gdf_labelled_area).dissolve(["x", "y"]).reset_index()
     )
     print(f"{len(intersect)} in labelled area")
     # Only keep tiles that intersect with a building.
-    intersect = (
-        gpd.overlay(intersect, buildings).dissolve(["x", "y"]).reset_index()
-    )
+    intersect = gpd.overlay(intersect, buildings).dissolve(["x", "y"]).reset_index()
     print(f"{len(intersect)} with buildings")
 
     # Turn these into paths

@@ -25,3 +25,4 @@ dataset/training_area
 *.xml
 *.feather
 results
+*.excluded

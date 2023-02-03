@@ -22,8 +22,13 @@ from src.transforms import (
 
 
 def get_dataset_loaders(
-    target_size, batch_size, dataset_path, training_signal_fraction, transform=None,
-    resampling_method="background"
+    target_size,
+    batch_size,
+    dataset_path,
+    training_signal_fraction,
+    transform=None,
+    resampling_method="background",
+    base_transform=None,
 ):
     print(f"{resampling_method=}")
     target_size = (target_size, target_size)
@@ -42,7 +47,7 @@ def get_dataset_loaders(
 
     val_image_paths = list(dataset_path.glob("validation/images/*/*.png"))
     val_dataset = LabelledDataset(
-        image_paths=val_image_paths, joint_transform=None
+        image_paths=val_image_paths, joint_transform=base_transform
     )
 
     assert len(train_b_dataset) > 0, "at least one tile in training background dataset"
@@ -53,7 +58,7 @@ def get_dataset_loaders(
         + f"len(val_dataset)={len(val_dataset)}"
     )
 
-    if resampling_method=="background":
+    if resampling_method == "background":
         train_loader = DataLoader(
             BackgroundResamplingLoader(
                 train_s_dataset, train_b_dataset, training_signal_fraction
@@ -62,7 +67,7 @@ def get_dataset_loaders(
             shuffle=True,
             drop_last=True,
         )
-    elif resampling_method=="signal":
+    elif resampling_method == "signal":
         train_loader = DataLoader(
             SignalResamplingLoader(
                 train_s_dataset, train_b_dataset, training_signal_fraction

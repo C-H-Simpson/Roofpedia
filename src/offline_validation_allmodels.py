@@ -58,8 +58,12 @@ if __name__ == "__main__":
 
         # Run on the datasets
         for ds in (
-            "training_s", "training_b", "validation",
-            "testing", "validation_alt", "testing_alt",
+            "training_s",
+            "training_b",
+            "validation",
+            "testing",
+            "validation_alt",
+            "testing_alt",
         ):
             if ds == "testing":
                 ds_dir = Path(config["dataset_path"]).parent / "testing"

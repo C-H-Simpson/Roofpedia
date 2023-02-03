@@ -112,7 +112,11 @@ class LovaszLoss2d(nn.Module):
 
         targets = targets.type(torch.int64)
         N, C, H, W = inputs.size()
-        masks = ( torch.zeros(N, C, H, W) .to(targets.device) .scatter_(1, targets.view(N, 1, H, W), 1))
+        masks = (
+            torch.zeros(N, C, H, W)
+            .to(targets.device)
+            .scatter_(1, targets.view(N, 1, H, W), 1)
+        )
 
         loss = 0.0
 
@@ -138,39 +142,39 @@ class LovaszLoss2d(nn.Module):
 class FLoss2d(nn.Module):
     """F-score-like differentiable loss
 
-    based on 
+    based on
     https://www.kaggle.com/code/rejpalcz/best-loss-function-for-f1-score-metric/notebook
-    and 
+    and
     https://link.springer.com/chapter/10.1007/978-3-642-38679-4_37
 
     The best loss function would be, of course the metric itself. Then the
     misalignment disappears. The macro F1-score has one big trouble. It's
     non-differentiable. Which means we cannot use it as a loss function.
-    
+
     But we can modify it to be differentiable. Instead of accepting 0/1 integer
     predictions, let's accept probabilities instead. Thus if the ground truth is
     1 and the model prediction is 0.4, we calculate it as 0.4 true positive and
     0.6 false negative. If the ground truth is 0 and the model prediction is
     0.4, we calculate it as 0.6 true negative and 0.4 false positive.
-    
+
     Also, we minimize 1-F1 (because minimizing 1−f(x) is same as maximizing f(x))
     """
+
     def __init__(self):
         """Creates a `FLoss2d` instance."""
         super().__init__()
-        self.eps=1e-10
+        self.eps = 1e-10
 
     def forward(self, inputs, targets):
         inputs = inputs.type(torch.float32)
         targets = targets.type(torch.int64)
-        probs = nn.functional.softmax(inputs, dim=1)[:,1] # Class 1 probability
-        tp = torch.sum((targets*probs), axis=0)
-        fp = torch.sum(((1-targets)*probs), axis=0)
-        fn = torch.sum(((targets)*(1-probs)), axis=0)
+        probs = nn.functional.softmax(inputs, dim=1)[:, 1]  # Class 1 probability
+        tp = torch.sum((targets * probs))
+        fp = torch.sum(((1 - targets) * probs))
+        fn = torch.sum(((targets) * (1 - probs)))
 
         p = tp / (tp + fp + self.eps)
         r = tp / (tp + fn + self.eps)
 
-        f1 = 2*p*r / (p+r+self.eps)
-        f1 = torch.where(torch.isnan(f1), torch.zeros_like(f1), f1)
-        return 1 - torch.mean(f1)
+        f1 = 2 * p * r / (p + r + self.eps)
+        return 1 - f1

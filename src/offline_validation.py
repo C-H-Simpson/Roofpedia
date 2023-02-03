@@ -34,7 +34,13 @@ if __name__ == "__main__":
         print(p)
         config = toml.load(p)
         for key in original_config:
-            if key in ("dataset_path", "checkpoint_path", "kfold", "alt_validation_path", "weight"):
+            if key in (
+                "dataset_path",
+                "checkpoint_path",
+                "kfold",
+                "alt_validation_path",
+                "weight",
+            ):
                 continue
             if config[key] != original_config[key]:
                 raise ValueError(
@@ -74,7 +80,13 @@ if __name__ == "__main__":
         net.eval()
 
         # Run on the datasets
-        for ds in ("training_s", "training_b", "validation", "testing", "validation_alt"):
+        for ds in (
+            "training_s",
+            "training_b",
+            "validation",
+            "testing",
+            "validation_alt",
+        ):
             if ds == "testing":
                 ds_dir = Path(config["dataset_path"]).parent / "testing"
             elif ds == "testing_alt":
@@ -86,7 +98,7 @@ if __name__ == "__main__":
 
             # Get validation data.
             loader = get_plain_dataset_loader(config["target_size"], batch_size, ds_dir)
-            
+
             val = validate(loader, num_classes, device, net, criterion)
             # val = validate_offline(loader, num_classes, device, net)
             val["kfold"] = config["kfold"]

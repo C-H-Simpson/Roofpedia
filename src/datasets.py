@@ -22,8 +22,8 @@ class LabelledDataset(Dataset):
     def __init__(self, image_paths, joint_transform=None):
         self.img_paths = image_paths
         self.joint_transform = joint_transform
-        if joint_transform==None:
-            self.joint_transform=get_transforms()["no_augs_A"]
+        if joint_transform == None:
+            self.joint_transform = get_transforms()["no_augs_A"]
 
     def __len__(self):
         return len(self.img_paths)
@@ -44,7 +44,15 @@ class LabelledDataset(Dataset):
         # breakpoint()
         out = self.joint_transform(image=image, mask=label)
         image, label = out["image"], out["mask"]
-        return torch.cat([image,], dim=0), label
+        return (
+            torch.cat(
+                [
+                    image,
+                ],
+                dim=0,
+            ),
+            label,
+        )
 
 
 class NamedDataset(Dataset):
@@ -65,4 +73,12 @@ class NamedDataset(Dataset):
         x, y = int(img_path.parent.stem), int(img_path.stem)
         out = self.joint_transform(image=image)
         image = out["image"]
-        return torch.cat([image,], dim=0), (x, y)
+        return (
+            torch.cat(
+                [
+                    image,
+                ],
+                dim=0,
+            ),
+            (x, y),
+        )
