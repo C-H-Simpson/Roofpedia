@@ -21,6 +21,12 @@ from src.transforms import (
 import albumentations as A
 from albumentations.pytorch.transforms import ToTensorV2
 
+def norm(img, **kwds):
+    return (img.astype("float32") / (img.sum(-1, keepdims=True).astype("float32")+1e-10))
+
+def tofloat(img, **kwds):
+    return img.astype("float32")
+
 
 def get_transforms(target_size=256):
     # using imagenet mean and std for Normalization
@@ -322,5 +328,79 @@ def get_transforms(target_size=256):
                 ToTensorV2(),
             ]
         ),
+        no_augs_B=A.Compose(
+            [
+                A.Lambda(image=norm),
+                ToTensorV2(),
+            ]
+        ),
+        no_augs_C=A.Compose(
+            [
+                A.Lambda(image=tofloat),
+                ToTensorV2(),
+            ]
+        ),
+        non_spatial_E_nonorm=A.Compose(
+            [
+                # try slight elastic transform
+                # based on https://albumentations.ai/docs/examples/example_kaggle_salt/
+                A.VerticalFlip(p=0.5),
+                A.HorizontalFlip(p=0.5),
+                A.RandomRotate90(p=0.5),
+                A.Transpose(p=0.5),
+                A.ElasticTransform(alpha=1, sigma=1, p=1),
+                A.RGBShift(r_shift_limit=25, g_shift_limit=25, b_shift_limit=25, p=1.0),
+                A.RandomGamma((50, 300), p=0.8),
+                A.Lambda(image=tofloat),
+                ToTensorV2(),
+            ]
+        ),
+        non_spatial_H_nonorm=A.Compose(
+            [
+                # try slight elastic transform
+                # based on https://albumentations.ai/docs/examples/example_kaggle_salt/
+                A.VerticalFlip(p=0.5),
+                A.HorizontalFlip(p=0.5),
+                A.RandomRotate90(p=0.5),
+                A.Transpose(p=0.5),
+                A.ElasticTransform(alpha=1, sigma=1, p=1),
+                # Don't do RGBShift as we want it to learn colours
+                # A.RGBShift(r_shift_limit=25, g_shift_limit=25, b_shift_limit=25, p=1.0),
+                A.RandomGamma((50, 300), p=0.8),
+                A.Lambda(image=tofloat),
+                ToTensorV2(),
+            ]
+        ),
+        non_spatial_E_colornorm=A.Compose(
+            [
+                # try slight elastic transform
+                # based on https://albumentations.ai/docs/examples/example_kaggle_salt/
+                A.VerticalFlip(p=0.5),
+                A.HorizontalFlip(p=0.5),
+                A.RandomRotate90(p=0.5),
+                A.Transpose(p=0.5),
+                A.ElasticTransform(alpha=1, sigma=1, p=1),
+                # Don't do RGBShift as we want it to learn colours
+                # A.RGBShift(r_shift_limit=25, g_shift_limit=25, b_shift_limit=25, p=1.0),
+                A.RandomGamma((50, 300), p=0.8),
+                A.Lambda(image=norm),
+                ToTensorV2(),
+            ]
+        ),
+        non_spatial_E_colornorm_rgbshift=A.Compose(
+            [
+                # try slight elastic transform
+                # based on https://albumentations.ai/docs/examples/example_kaggle_salt/
+                A.VerticalFlip(p=0.5),
+                A.HorizontalFlip(p=0.5),
+                A.RandomRotate90(p=0.5),
+                A.Transpose(p=0.5),
+                A.ElasticTransform(alpha=1, sigma=1, p=1),
+                A.RGBShift(r_shift_limit=25, g_shift_limit=25, b_shift_limit=25, p=1.0),
+                A.RandomGamma((50, 300), p=0.8),
+                A.Lambda(image=norm),
+                ToTensorV2(),
+            ]
+        )
     )
     return augs
