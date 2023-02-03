@@ -21,8 +21,12 @@ from src.transforms import (
 import albumentations as A
 from albumentations.pytorch.transforms import ToTensorV2
 
+
 def norm(img, **kwds):
-    return (img.astype("float32") / (img.sum(-1, keepdims=True).astype("float32")+1e-10))
+    return img.astype("float32") / (
+        img.sum(-1, keepdims=True).astype("float32") + 1e-10
+    )
+
 
 def tofloat(img, **kwds):
     return img.astype("float32")
@@ -401,6 +405,6 @@ def get_transforms(target_size=256):
                 A.Lambda(image=norm),
                 ToTensorV2(),
             ]
-        )
+        ),
     )
     return augs

@@ -37,7 +37,7 @@ domain_west, domain_south, domain_east, domain_north
 
 label_polygon_path = {
     "getmapping_2019": Path("../data/gr_manual_labels_checked_2019.geojson").resolve(),
-    "getmapping_2021": Path("../data/gr_manual_labels_checked_2021.geojson").resolve()
+    "getmapping_2021": Path("../data/gr_manual_labels_checked_2021.geojson").resolve(),
 }
 
 # A geodataframe will be created in this location which identifies the tiles.

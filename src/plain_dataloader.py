@@ -15,7 +15,9 @@ from src.transforms import (
 from src.augmentations import get_transforms
 
 
-def get_plain_dataset_loader(target_size, batch_size, dataset_path, base_transform="no_augs_A"):
+def get_plain_dataset_loader(
+    target_size, batch_size, dataset_path, base_transform="no_augs_A"
+):
     """
     A dataset loader for validation.
     """
@@ -31,7 +33,9 @@ def get_plain_dataset_loader(target_size, batch_size, dataset_path, base_transfo
     return loader
 
 
-def get_named_dataset_loader(target_size, batch_size, dataset_path, base_transform="no_augs_A"):
+def get_named_dataset_loader(
+    target_size, batch_size, dataset_path, base_transform="no_augs_A"
+):
     """
     A dataset loader for prediction. Returns filenames.
     """

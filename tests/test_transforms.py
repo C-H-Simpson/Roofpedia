@@ -18,7 +18,14 @@ aug = get_transforms()
 
 plt.rcParams["savefig.bbox"] = "tight"
 orig_img = np.asarray(cv.imread("dataset/k1/training_s/images/531536/181323.png"))
-orig_mask = np.asarray((cv.imread(str("dataset/k1/training_s/labels/531536/181323.png"), cv.IMREAD_GRAYSCALE) > 200).astype("int64"))
+orig_mask = np.asarray(
+    (
+        cv.imread(
+            str("dataset/k1/training_s/labels/531536/181323.png"), cv.IMREAD_GRAYSCALE
+        )
+        > 200
+    ).astype("int64")
+)
 # if you change the seed, make sure that the randomly-applied transforms
 # properly show that the image can be both transformed and *not* transformed!
 torch.manual_seed(0)
@@ -80,7 +87,9 @@ mask = out["mask"]
 plot([orig_img, img, orig_mask, mask], with_orig=False)
 plt.show()
 # %%
-out = A.ShiftScaleRotate(shift_limit=0.2, scale_limit=0.2, p=1)(image=orig_img, mask=orig_mask)
+out = A.ShiftScaleRotate(shift_limit=0.2, scale_limit=0.2, p=1)(
+    image=orig_img, mask=orig_mask
+)
 img = out["image"]
 mask = out["mask"]
 # img = np.transpose(out["image"], (1, 2, 0))

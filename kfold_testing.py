@@ -77,5 +77,5 @@ if __name__ == "__main__":
             alt_validation_path=alt_validation_path,
             resampling_method=config["resampling_method"],
             early_stopping_window=config["early_stopping_window"],
-            focal_gamma=config["focal_gamma"]
+            focal_gamma=config["focal_gamma"],
         )

@@ -26,4 +26,6 @@ for k in range(1, k_folds):
             for s in files[ds]
         ]
         bounds[ds] = gdf.loc[tiles[ds]].assign(ds=ds)
-        gdf[["geometry"]].to_file(f"dataset/k{k}/{ds}.geojson", driver="GeoJSON", index=False)
+        gdf[["geometry"]].to_file(
+            f"dataset/k{k}/{ds}.geojson", driver="GeoJSON", index=False
+        )

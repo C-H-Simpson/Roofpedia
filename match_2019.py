@@ -10,7 +10,9 @@ from tqdm import tqdm
 from imagery_tiling.batched_tiling import tiling_path
 
 # %%
-dataset = list(Path("dataset").glob("k*/*/images/*/*png")) + list(Path("dataset").glob("*/images/*/*png"))
+dataset = list(Path("dataset").glob("k*/*/images/*/*png")) + list(
+    Path("dataset").glob("*/images/*/*png")
+)
 alt_source = Path("/home/ucbqc38/Scratch/getmapping_2019_tiled")
 alt_destination = Path("alt_dataset")
 alt_destination.mkdir()

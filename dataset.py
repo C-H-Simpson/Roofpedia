@@ -51,7 +51,6 @@ if __name__ == "__main__":
     # Delete the old dataset, otherwise it piles up.
     assert not dataset_folder.exists(), "recommend deleting the folder first"
 
-
     # This is the location from which the imagery will be taken.
     # This has been created by imagery_tiling/batched_tiling.py
     source_path = "/home/ucbqc38/Scratch/getmapping_2021_tiled/"
@@ -70,6 +69,7 @@ if __name__ == "__main__":
 
     # Load the file that encodes the geometry of the tiling.
     from imagery_tiling.batched_tiling import tiling_path
+
     gdf_tiles = gpd.read_feather(tiling_path)
 
     # Load the limits of the labelled area.
@@ -85,9 +85,7 @@ if __name__ == "__main__":
     )
     print(f"{len(intersect)} in labelled area")
     # Only keep tiles that intersect with a building.
-    intersect = (
-        gpd.overlay(intersect, buildings).dissolve(["x", "y"]).reset_index()
-    )
+    intersect = gpd.overlay(intersect, buildings).dissolve(["x", "y"]).reset_index()
     print(f"{len(intersect)} with buildings")
 
     # Turn these into paths

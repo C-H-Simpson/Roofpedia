@@ -157,9 +157,9 @@ for config in kfold_config_paths + ["config/best-predict-config.toml"]:
             .set_geometry("geometry")
             .reset_index()
         )
-        gdf_tiles_signal = gdf_tiles.sjoin(
-            truth[["geometry"]].assign(truth=True)
-        ).pipe(lambda _df: _df[_df.truth == True])[["geometry"]]
+        gdf_tiles_signal = gdf_tiles.sjoin(truth[["geometry"]].assign(truth=True)).pipe(
+            lambda _df: _df[_df.truth == True]
+        )[["geometry"]]
         total_area = gdf_tiles.area.sum()
         total_buildings_count = gdf_tiles.sjoin(ukb).geomni_premise_id.unique().shape[0]
 
@@ -590,13 +590,16 @@ with open("results/accuracy_count_average.tex", "w") as w:
 
 # %%
 # If only tiles with signal are included,
-# 
+#
 df["precision_pos_count"] = df.tp_pos_count / (
     df.tp_pos_count + df.fp_pos_count + epsilon
 )
-df["precision_count"] = df.tp_count / (
-    df.tp_count + df.fp_count + epsilon
-)
+df["precision_count"] = df.tp_count / (df.tp_count + df.fp_count + epsilon)
 df["recall_pos_count"] = df.tp_pos_count / (df.tp_pos_count + df.fn_pos_count + epsilon)
 print(df[["kfold", "ds", "precision_count", "precision_pos_count", "recall_pos_count"]])
-print(df[["kfold", "ds", "precision_count", "precision_pos_count", "recall_pos_count"]].groupby("ds").mean().pipe(lambda _df: _df.precision_count - _df.precision_pos_count))
+print(
+    df[["kfold", "ds", "precision_count", "precision_pos_count", "recall_pos_count"]]
+    .groupby("ds")
+    .mean()
+    .pipe(lambda _df: _df.precision_count - _df.precision_pos_count)
+)

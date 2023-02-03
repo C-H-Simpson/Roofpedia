@@ -34,7 +34,9 @@ truth_path = Path(
     r"C:\Users\ucbqc38\Documents\RoofPedia\gr_manual_labels_230104.geojson"
 )
 truth = gpd.read_file(truth_path).to_crs(native_crs)
-truth = gpd.GeoDataFrame(geometry=truth.geometry.explode(index_parts=False), crs=truth.crs) # Fix self intersection which is my fault.
+truth = gpd.GeoDataFrame(
+    geometry=truth.geometry.explode(index_parts=False), crs=truth.crs
+)  # Fix self intersection which is my fault.
 truth.to_file("truth_exploded.geojson")
 
 for name in ("validation", "training_s", "training_b"):
@@ -84,7 +86,9 @@ for name in ("validation", "training_s", "training_b"):
     print("Truth overlay")
     try:
         truth_local = gpd.overlay(truth, gdf_tiles, "intersection")
-        truth_local.to_file(polygon_output_path.parent / "truth_local.geojson", driver="GeoJSON")
+        truth_local.to_file(
+            polygon_output_path.parent / "truth_local.geojson", driver="GeoJSON"
+        )
         print("gen fp")
         fp = gpd.overlay(predictions, truth_local, "difference")
         print("gen fn")
@@ -109,19 +113,17 @@ fp = list(Path("results").glob("*/fp.geojson"))
 if not fp:
     print("No fp?")
 else:
-    pd.concat((gpd.read_file(p) for p in fp)).to_file(
-        "merged_fp.geojson"
-    )
+    pd.concat((gpd.read_file(p) for p in fp)).to_file("merged_fp.geojson")
 print("Merging fn")
 fn = list(Path("results").glob("*/fn.geojson"))
 if not fn:
     print("No fn?")
 else:
-    pd.concat((gpd.read_file(p) for p in fn)).to_file(
-        "merged_fn.geojson"
-    )
+    pd.concat((gpd.read_file(p) for p in fn)).to_file("merged_fn.geojson")
 
-all_pred = ["results/training_b/training_b.geojson", "results/validation/validation.geojson", "results/training_s/training_s.geojson"]
-pd.concat((gpd.read_file(p) for p in all_pred)).to_file(
-    "merged_pred.geojson"
-)
+all_pred = [
+    "results/training_b/training_b.geojson",
+    "results/validation/validation.geojson",
+    "results/training_s/training_s.geojson",
+]
+pd.concat((gpd.read_file(p) for p in all_pred)).to_file("merged_pred.geojson")

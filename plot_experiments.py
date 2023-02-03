@@ -74,14 +74,14 @@ for p in paths:
 
     # y = f_score_train - f_score
     # y = accuracy_n
-    y = 1-f_score
-    plt.plot(1-f_score)
+    y = 1 - f_score
+    plt.plot(1 - f_score)
 
     plt.yscale("log")
 
     if "checkpoint_path" not in config:
         print("No checkpoint in config")
-    elif not (Path(config["checkpoint_path"])/"final_checkpoint.pth").exists():
+    elif not (Path(config["checkpoint_path"]) / "final_checkpoint.pth").exists():
         print(f"Checkpoint wasn't saved correctly for {p}")
     else:
         print(f"Saving results of {p}")
@@ -152,9 +152,21 @@ fig_log.savefig("f1_log.pdf", bbox_inches="tight")
 
 # %%
 print(
-    df[[
-        "transform_name", "signal_fraction", "loss_func", "lr", "focal_gamma", "f_score", "precision", "recall"
-    ]].fillna(0).sort_values("f_score").to_string()
+    df[
+        [
+            "transform_name",
+            "signal_fraction",
+            "loss_func",
+            "lr",
+            "focal_gamma",
+            "f_score",
+            "precision",
+            "recall",
+        ]
+    ]
+    .fillna(0)
+    .sort_values("f_score")
+    .to_string()
 )
 
 # %%
