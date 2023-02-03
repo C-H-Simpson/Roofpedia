@@ -150,16 +150,16 @@ for config in kfold_config_paths + ["config/best-predict-config.toml"]:
 
         gdf_tiles = (
             gpd.read_feather(tiling_path)
+            .to_crs(native_crs)
             .pipe(lambda _gdf: _gdf[_gdf.within(labelling_area.unary_union)])
             .set_index(["x", "y"])
             .loc[xy][["geometry"]]
             .set_geometry("geometry")
-            .to_crs(native_crs)
             .reset_index()
         )
         gdf_tiles_signal = gdf_tiles.sjoin(
-            predictions[["geometry"]].assign(pred=True)
-        ).pipe(lambda _df: _df[_df.pred == True])[["geometry"]]
+            truth[["geometry"]].assign(truth=True)
+        ).pipe(lambda _df: _df[_df.truth == True])[["geometry"]]
         total_area = gdf_tiles.area.sum()
         total_buildings_count = gdf_tiles.sjoin(ukb).geomni_premise_id.unique().shape[0]
 
@@ -236,11 +236,11 @@ for config in kfold_config_paths + ["config/best-predict-config.toml"]:
             tp_pos_count = np.intersect1d(truth_buildings, pred_buildings).shape[0]
             fp_pos_count = np.setdiff1d(pred_buildings, truth_buildings).shape[0]
             fn_pos_count = np.setdiff1d(truth_buildings, pred_buildings).shape[0]
-            union_buildings = np.union1d(truth_buildings, pred_buildings)
+            union_pos_buildings = np.union1d(truth_buildings, pred_buildings)
             tn_pos_count = np.setdiff1d(
                 gdf_tiles.sjoin(ukb).geomni_premise_id.unique(), union_buildings
             ).shape[0]
-            union_pos_count = union_buildings.shape[0]
+            union_pos_count = union_pos_buildings.shape[0]
 
         else:
             print("No truth geometry")
@@ -589,3 +589,14 @@ with open("results/accuracy_count_average.tex", "w") as w:
 # # %%
 
 # %%
+# If only tiles with signal are included,
+# 
+df["precision_pos_count"] = df.tp_pos_count / (
+    df.tp_pos_count + df.fp_pos_count + epsilon
+)
+df["precision_count"] = df.tp_count / (
+    df.tp_count + df.fp_count + epsilon
+)
+df["recall_pos_count"] = df.tp_pos_count / (df.tp_pos_count + df.fn_pos_count + epsilon)
+print(df[["kfold", "ds", "precision_count", "precision_pos_count", "recall_pos_count"]])
+print(df[["kfold", "ds", "precision_count", "precision_pos_count", "recall_pos_count"]].groupby("ds").mean().pipe(lambda _df: _df.precision_count - _df.precision_pos_count))
