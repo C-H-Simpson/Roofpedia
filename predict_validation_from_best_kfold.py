@@ -118,22 +118,22 @@ for config in kfold_config_paths + ["config/best-predict-config.toml"]:
         mask_dir = Path("results") / f"k{config['kfold']}" / name / "masks"
         polygon_output_path = mask_dir.parent / f"{name}.geojson"
 
-        # if mask_dir.parent.exists():
-        # shutil.rmtree(str(mask_dir.parent))
-        # mask_dir.mkdir(parents=True)
+        if mask_dir.parent.exists():
+            shutil.rmtree(str(mask_dir.parent))
+        mask_dir.mkdir(parents=True)
         tile_size = config["target_size"]
 
         print("Prediction")
         print(tiles_dir, mask_dir)
 
-        # predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=4)
+        predict(tiles_dir, mask_dir, tile_size, device, chkpt, batch_size=4)
         input_glob = list(mask_dir.glob("*/*png"))
 
-        # print("Extraction")
-        # extract(
-        #     input_glob,
-        #     polygon_output_path,
-        # )
+        print("Extraction")
+        extract(
+            input_glob,
+            polygon_output_path,
+        )
 
         xy = [(float(p.parent.stem), float(p.stem)) for p in input_glob]
         predictions = gpd.read_file(polygon_output_path).set_crs(
